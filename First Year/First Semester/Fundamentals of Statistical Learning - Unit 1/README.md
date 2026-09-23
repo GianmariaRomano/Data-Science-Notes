@@ -7,7 +7,6 @@
   1. A two-part written exam covering Probability and Statistics topics, which is worth 65% of the final grade.
      
     > [!TIP]
-    >
     > It is possible to separate the written exam within the January-April sessions, but not during the June-November sessions.
 
   2. Some classworks, which are worth 35% of the final grade.
