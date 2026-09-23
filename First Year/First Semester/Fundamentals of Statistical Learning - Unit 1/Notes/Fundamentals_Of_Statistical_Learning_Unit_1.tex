@@ -1,0 +1,358 @@
+\documentclass{report}
+
+% Packages for images.
+\usepackage{graphicx}
+\usepackage{float}
+
+% Packages for mathematical formulae/symbols.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% Packages for code snippets and algorithms.
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{110,110,110}
+\definecolor{codepurple}{RGB}{163,21,21}
+\definecolor{codeblue}{RGB}{0,0,180}
+\definecolor{backwhite}{RGB}{255,255,255}
+\definecolor{backcolour}{RGB}{248,248,248}
+
+\lstdefinestyle{myRstyle}{
+    language=R,
+    backgroundcolor=\color{backwhite},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    numbers=left,
+    numbersep=8pt,
+    frame=single,
+    rulecolor=\color{black!20},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2,
+    keepspaces=true,
+    otherkeywords={0,1,2,3,4,5,6,7,8,9,<-},
+    morekeywords={TRUE,FALSE,NULL,NA,NaN,Inf}
+}
+
+\lstset{style=myRstyle}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% Creating the Example and Proof boxes.
+\definecolor{exampleback}{RGB}{240, 248, 240}
+\definecolor{exampleframe}{RGB}{34, 112, 62}
+\definecolor{proofback}{RGB}{240, 244, 250}
+\definecolor{proofframe}{RGB}{25, 80, 150}
+\usepackage[most]{tcolorbox}
+\newtcolorbox{examplebox}[1][]{
+    colback=exampleback,
+    colframe=exampleframe,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={#1},
+    arc=2pt,
+    boxrule=1pt
+}
+\newtcolorbox{proofbox}[1][]{
+    colback=proofback,
+    colframe=proofframe,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Proof: #1},
+    arc=2pt,
+    boxrule=1pt
+}
+
+% Packages for styling and layout.
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+% Packages for plotting graphs.
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Packages for compilation.
+\usepackage{microtype}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    % Subject Title.
+    {\Huge \bfseries Fundamentals of Statistical Learning - Unit 1 \par}
+    \vspace{1.5cm}
+    
+    % Master's Degree and Faculty.
+    {\Large Master's Degree in Data Science, Sapienza Università di Roma \par}
+    {\large Faculty of Information Engineering, Informatics and Statistics \par}
+    \vspace{0.5cm}
+    
+    % Department.
+    {\large Department of Computer Science \par}
+    \vspace{3cm}
+    
+    % Author.
+    {\Large \textbf{Author:} Gianmaria Romano \par}
+    \vspace{3cm}
+
+    % Reference Bibliography
+    {\Large Reference Bibliography \par}
+    {\large F. M. Dekking, C. Kraaikamp, H. P. Lopuhaa, L. E. Meester: \href{https://cis.temple.edu/~latecki/Courses/CIS2033-Spring13/Modern_intro_probability_statistics_Dekking05.pdf}{\textit{A Modern Introduction to Probability and Statistics}} \\
+    L. Wasserman: \href{https://egrcc.github.io/docs/math/all-of-statistics.pdf}{\textit{All of Statistics: A Concise Course in Statistical Inference}}} \\
+    N. Matloff: \href{https://events.psai.ph/2018/ac/downloads/trainings/T3/book_matloff.pdf}{\textit{The Art of R Programming}} \\
+    \vfill
+    
+    % Academic Year.
+    {\large Academic Year 2026/2027 \par}
+    \vspace*{1cm}
+\end{titlepage}
+
+\clearpage
+
+%\maketitle
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=Disclaimer]
+    This document contains notes for the \textbf{Fundamentals of Statistical Learning - Unit 1} course, given by \textbf{Professor Brutti} as part of the Master’s Degree in Data Science at \textbf{Sapienza Università di Roma} during the \textbf{first} semester of Academic Year \textbf{2026/2027}.
+    
+    \smallskip
+    \textbf{Note: }These notes may not cover all details of each lecture, so it is highly suggested to consult the Professor's official resources and materials. 
+    
+    \smallskip
+    \textbf{Important: }These notes are free to share and use, but please remember to credit me as the author and do not try to hide/remove this page.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=Contacts]
+    For further information or requests, feel free to \href{https://t.me/toritosenso}{contact me privately} or reach out through my repository: \href{https://github.com/GianmariaRomano/Data-Science-Notes}{https://github.com/GianmariaRomano/Data-Science-Notes}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=License]
+    These documents are distributed under the \href{https://www.gnu.org/licenses/gpl-3.0.en.html}{GNU General Public License 3.0}, a form of copyleft intended for use on a manual, textbook or other documents. Material licensed under the current version of the license can be used for any purpose, as long as the use meets certain conditions:
+    \begin{itemize}
+        \item All previous authors of the work must be attributed.
+        \item All changes to the work must be logged.
+        \item All derivative works must be licensed under the same license.
+        \item The full text of the license, unmodified invariant sections as defined by the author if any, and any other added warranty disclaimers (such as a general disclaimer alerting readers that the document may not be accurate for example) and copyright notices from previous versions must be maintained.
+        \item Technical measures such as DRM may not be used to control or obstruct distribution or editing of the document.
+    \end{itemize}
+\end{tcolorbox}
+
+\tableofcontents
+
+\chapter{Defining probability}
+\section{Introducing a qualitative idea of probability}
+Probability is the field of mathematics that studies events and how likely they are to occur in order to describe relationships or patterns in existing models. \newline
+Starting from a model's data generation process, probability aims to investigate the properties of the observed outcomes, whereas inference makes use of the observed outcomes to study the underlying data generation process.
+\begin{examplebox}[\textbf{Example: }Diffusion models]
+    Diffusion models are a type of generative model that create new data by gradually reversing a noising process. \newline
+    From a mathematical perspective, a diffusion model can be described using a \textit{Markovian Direct Acyclic Graph} whose nodes represent the observable or latent variables involved in the process and whose edges denote the transition probabilities of the model.
+\end{examplebox}
+\section{Formalizing probability using set theory}
+It is possible to formalize probabilistic experiments using set theory. \newline
+In fact, starting from a sample space $\displaystyle \Omega$, which represents the set of all possible outcomes, an event $\displaystyle A$ on $\displaystyle \Omega$ can be defined as the set of all favourable outcomes in which the event does occur.
+\begin{examplebox}[\textbf{Example: }Tossing a coin]
+    Suppose you toss a coin: it is possible to construct a random experiment by defining the sample space $\displaystyle \Omega = \{Heads, Tails\}$ and considering the event $\displaystyle A = \{Heads\}$.
+\end{examplebox}
+\subsection{Set operations on probability spaces}
+Given two events $\displaystyle A$ and $\displaystyle B$ on the same sample space $\displaystyle \Omega$, it is possible to define three main operations:
+\begin{itemize}
+    \item \textbf{Union: }The set $\displaystyle A \cup B = \{\omega \in \Omega: \omega \in A \text{ or } \omega \in B\}$ corresponds to the event in which at least one of $\displaystyle A$ or $\displaystyle B$, or both, occurs. \newline
+    In particular, it is always the case that $\displaystyle A \cup \Omega = \Omega$ and $\displaystyle A \cup \emptyset = A$.
+    \item \textbf{Intersection: }The set $\displaystyle A \cap B = \{\omega \in \Omega : \omega \in A \text{ and } \omega \in B\}$ corresponds to the event in which both $\displaystyle A$ and $\displaystyle B$ occur. \newline
+    In particular, it is always the case that $\displaystyle A \cap \Omega = A$ and $\displaystyle A \cap \emptyset = \emptyset$.
+    \item \textbf{Complement: }The set $\displaystyle A^C = \Omega \setminus A = \{\omega \in \Omega: \omega \notin A\}$ corresponds to the event in which $\displaystyle A$ does not occur. \newline
+    In particular, it is always the case that $\displaystyle A \cup A^C = \Omega$ and $\displaystyle A \cap A^C = \emptyset$.
+\end{itemize}
+Additionally, given a sequence of events $\displaystyle \{A_1, \dots, A_n\}$ on the same sample space $\displaystyle \Omega$, De Morgan's laws allow to switch between the union and intersection operations through the following identities:
+\[\Bigg(\bigcup_{i = 1}^n A_i\Bigg)^C = \bigcap_{i = 1}^n A_i^C \text{ and } \Bigg(\bigcap_{i = 1}^n A_i\Bigg)^C = \bigcup_{i = 1}^n A_i^C\]
+\subsection{Sample space partitions}
+A sequence of events $\displaystyle \{A_1, \dots, A_n\}$ is said to form a partition on a sample space $\displaystyle \Omega$ if the following conditions are satisfied:
+\begin{enumerate}
+    \item $\displaystyle A_1 \cup \dots \cup A_n = \Omega$, typically requiring $\displaystyle A_i \neq \emptyset \text{ } \forall i =1, \dots, n$ as well.
+    \item The sets in the sequence are pairwise disjoint, meaning that $\displaystyle A_i \cap A_j = \emptyset \text{ } \forall i \neq j$.
+\end{enumerate}
+Generally speaking, partitions come in handy to explain the probability of an event by decomposing it as a union of disjoint sets with respect to a sequence of mutually exclusive hypotheses.
+\section{Probability measure functions}
+While several definitions of probability exist, Kolmogorov's axiomatic definition is the most commonly used when defining probability measures. \newline
+According to this definition, a probability measure function $\displaystyle \mathbb{P}: \mathcal{P}(\Omega) \to [0, 1]$ assigns to each event $\displaystyle A \subseteq \Omega$ a probability $\displaystyle \mathbb{P}(A)$ such that:
+\begin{enumerate}
+    \item $\displaystyle \mathbb{P}(A) \in [0, 1] \text{ } \forall A \subseteq \Omega$.
+    \item $\displaystyle \mathbb{P}(\emptyset) = 0$ and $\displaystyle \mathbb{P}(\Omega) = 1$.
+    \item $\displaystyle \mathbb{P}(A \cup B) = \mathbb{P}(A) + \mathbb{P}(B) - \mathbb{P}(A \cap B)$, with $\displaystyle \mathbb{P}(A \cup B) = \mathbb{P}(A) + \mathbb{P}(B)$ if and only if $\displaystyle A \cap B = \emptyset$. \newline
+    This last axiom can be generalized for a sequence of $\displaystyle n$ events through the inclusion-exclusion principle, which states that
+    \[\mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i\Bigg) = \sum_{k = 1}^n (-1)^{k + 1}\Bigg(\sum_{1 \leq i_1 < \dots < i_k \leq n} \mathbb{P}(A_{i_1} \cap \dots A_{i_k})\Bigg)\]
+\end{enumerate}
+\begin{examplebox}[\textbf{Example: }Checking polynomial identities using a randomized algorithm]
+    Consider two polynomials of degree $\displaystyle d$:
+    \[F(x) = \prod_{i = 1}^d (x - a_i) \text{ and } G(x) = \sum_{i = 1}^d c_ix^i\]
+    A simple way of checking whether $\displaystyle F(x) \equiv G(x)$ involves expanding $\displaystyle F(x)$ into its canonical form and compare the resulting coefficient with those of $\displaystyle G(x)$, although this algorithm would require performing $\displaystyle \Theta(d^2)$ operations. \newline
+    Knowing that, for any randomly chosen point $\displaystyle x_0$, evaluating $\displaystyle F(x_0)$ and $\displaystyle G(x_0)$ requires $\displaystyle O(d)$ time, it is possible to cut down complexity using a randomized algorithm:
+    \begin{algorithm}[H]
+        \caption{Randomized Algorithm for Polynomial Identities.}
+        \KwData{$\displaystyle F(x), G(X)$}
+        \KwResult{Whether $\displaystyle F(x) \equiv G(x)$.}
+
+        Generate $\displaystyle r$ uniformly at random from a set $\displaystyle \mathcal{I} = \{1, \dots, 100d\}$\;
+        Compute $\displaystyle F(r)$ and $\displaystyle G(r)$\;
+        \eIf{$\displaystyle F(r) = G(r)$}{
+            $\displaystyle F(x) \equiv G(x)$\;
+        }{
+            $\displaystyle F(x) \not\equiv G(x)$\;
+        }
+    \end{algorithm}
+    \noindent However, the randomized nature of this algorithm can result in a wrong evaluation. \newline
+    In fact, while $\displaystyle F(x) \equiv G(x)$ results in $\displaystyle F(r) = G(r) \text{ } \forall r$, it might be the case that, for some $\displaystyle r$, $\displaystyle F(r) = G(r)$ even if $\displaystyle F(x) \not\equiv G(x)$: this implies that the algorithm has one-sided error as it can make mistakes only when deciding that $\displaystyle F(x) \equiv G(x)$. \newline
+    Therefore, define the event
+    \[E = \{F(r) = G(r) \text{ but } F(x) \not\equiv G(x)\}\]
+    This event occurs if and only if $\displaystyle r$ is a root of the polynomial $\displaystyle H(x) = F(x) - G(x)$: since $\displaystyle H(x)$ will always have degree at most $\displaystyle d$, it will have at most $\displaystyle d$ roots, allowing to compute the error probability as follows:
+    \[\mathbb{P}(E) = \frac{|\{r \in \mathcal{I} : r \text{ is a root of } H(x)\}|}{|\mathcal{I}|} \leq \frac{d}{100d} = \frac{1}{100}\]
+\end{examplebox}
+\noindent As a consequence to Kolmogorov's axiomatic definition of probability, every probability space $\displaystyle (\Omega, \mathbb{P})$ satisfies the property that $\displaystyle \mathbb{P}(A^C) = 1 - \mathbb{P}(A) \text{ } \forall A \subseteq \Omega$.
+\begin{proofbox}
+    Consider the partition $\displaystyle \Omega = A \cup A^C$ and apply Kolmogorov's axioms.
+    \[1 = \mathbb{P}(\Omega) = \mathbb{P}(A \cup A^C) = \mathbb{P}(A) + \mathbb{P}(A^C) \Rightarrow \mathbb{P}(A^C) = 1 - \mathbb{P}(A)\]
+\end{proofbox}
+\subsection{Probability bounds}
+Boole's inequality states that, for every sequence of events $\displaystyle \{A_1, \dots, A_n\}$, it holds that
+\[\mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i\Bigg) \leq \sum_{i = 1}^n \mathbb{P}(A_i)\]
+\begin{proofbox}
+    This inequality can be proved by induction on the length of the sequence.
+    \begin{itemize}
+        \item For the base case, give by $\displaystyle n = 1$, the inequality is trivially true as $\displaystyle \mathbb{P}(A_1) \leq \mathbb{P}(A_1)$.
+        \item Assuming the inequality is true for some $\displaystyle n$, the goal is to show that it is true for $\displaystyle (n + 1)$ as well. \newline
+        Reformulate $\displaystyle A_1 \cup \dots \cup A_{n + 1} = (A_1 \cup \dots \cup A_n) \cup A_{n + 1}$ and let
+        \begin{align*}
+            \mathbb{P}\Bigg(\bigcup_{i = 1}^{n + 1} A_i\Bigg) 
+              &= \mathbb{P}\Bigg(\Bigg(\bigcup_{i = 1}^n A_i\Bigg) \cup A_{n + 1}\Bigg) = \mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i\Bigg) + \mathbb{P}(A_{n + 1}) - \mathbb{P}\Bigg(\Bigg(\bigcup_{i = 1}^n A_i\Bigg) \cap A_{n + 1}\Bigg) \\
+              &\stackrel{\mathbb{P}(.) \ge 0}{\le} \mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i\Bigg) + \mathbb{P}(A_{n + 1}) \stackrel{\text{hp. ind.}}{\le} \sum_{i=1}^{n} \mathbb{P}(A_i) + \mathbb{P}(A_{n+1}) = \sum_{i=1}^{n+1} \mathbb{P}(A_i)
+        \end{align*}
+    \end{itemize}
+    Having proved the base case and the inductive case, this inequality must be true $\displaystyle \forall n \in \mathbb{N}$, which implies that probability measure functions are always sub-additive.
+\end{proofbox}
+\noindent As a consequence to Boole's inequality, Bonferroni's inequality states that, for every sequence of events $\displaystyle \{A_1, \dots, A_n\}$, it must be the case that
+\[\mathbb{P}\Bigg(\bigcap_{i = 1}^n A_i\Bigg) \ge \sum_{i = 1}^n \mathbb{P}(A_i) - (n - 1)\]
+\begin{proofbox}
+    Reformulate the joint probability of the events using De Mrogan's laws.
+    \begin{align*}
+        \mathbb{P}\Bigg(\bigcap_{i = 1}^n A_i\Bigg)
+            &= 1 - \mathbb{P}\Bigg(\Bigg(\bigcap_{i = 1}^n A_i\Bigg)^C\Bigg) = \stackrel{\text{De Morgan}}{=} 1 - \mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i^C\Bigg) \\
+            &\stackrel{\text{Boole}}{\ge} 1 - \sum_{i = 1}^n \mathbb{P}(A_i^C) = 1 - \sum_{i = 1}^n (1 - \mathbb{P}(A_i)) \\
+            &= 1 - \Bigg(\sum_{i = 1}^n 1 - \sum_{i = 1}^n \mathbb{P}(A_i)\Bigg) = \sum_{i = 1}^n \mathbb{P}(A_i) - (n - 1)
+    \end{align*}
+\end{proofbox}
+
+\chapter{Conditional probability}
+\section{Understanding conditional probability}
+Given a sample space $\displaystyle \Omega$, the conditional probability that event $\displaystyle A$ occurs knowing that event $\displaystyle B$ was observed can be defined as follows:
+\[\mathbb{P}(A|B) = \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(B)} \text{, with $\mathbb{P}(B) > 0$.}\]
+\begin{examplebox}[\textbf{Example: }Measles and red spots]
+    Consider the two events
+    \[A = \{\text{I have measles}\} \text{ and } B = \{\text{I have red spots on my face}\}\]
+    Knowing that red spots are a common symptom of measles, it will be the case that $\displaystyle \mathbb{P}(B|A) = 1$. \newline
+    However, the same thing cannot be said about $\displaystyle \mathbb{P}(A|B)$ as red spots might be caused by other external factors, such as eating hot food or getting a scratch.
+\end{examplebox}
+\noindent From a broader perspective, a conditional probability distribution can be described using a probability measure function that satisfies the following properties:
+\begin{enumerate}
+    \item $\displaystyle \mathbb{P}(A|B) \in [0, 1] \text{ } \forall A \subseteq \Omega$.
+    \item $\displaystyle \mathbb{P}(\Omega|B) = 1$.
+    \item For any sequence of disjoint events $\displaystyle \{A_1, \dots A_n\}$, it is always the case that
+    \[\mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i|B\Bigg) = \sum_{i = 1}^n \mathbb{P}(A_i|B)\]
+    As a consequence, it is always the case that $\displaystyle \mathbb{P}(A^C|B) = 1 - \mathbb{P}(A|B) \text{ } \forall A \subseteq \Omega$.
+    \begin{proofbox}
+        Let $\displaystyle B = B \cap \Omega$ on the partition $\displaystyle \Omega = A \cup A^C$.
+        \begin{align*}
+            \mathbb{P}(B)
+                &= \mathbb{P}(B \cap \Omega) = \mathbb{P}(B \cap (A \cup A^C)) = \mathbb{P}((B \cap A) \cup (B \cap A^C)) \\
+                &= \mathbb{P}(A \cap B) + \mathbb{P}(A^C \cap B) \Rightarrow \mathbb{P}(A^C \cap B) = \mathbb{P}(B) - \mathbb{P}(A \cap B)
+        \end{align*}
+        Therefore, applying the definition of conditional probability will result in
+        \[\mathbb{P}(A^C|B) = \frac{\mathbb{P}(A^C \cap B)}{\mathbb{P}(B)} = \frac{\mathbb{P}(B) - \mathbb{P}(A \cap B)}{\mathbb{P}(B)} = \frac{\mathbb{P}(B)}{\mathbb{P}(B)} - \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(B)} = 1 - \mathbb{P}(A|B)\]
+    \end{proofbox}
+\end{enumerate}
+\subsection{The (conditional) odds of an event}
+Generally speaking, the odds of an event can be seen as the likelihood that the event will occur relative to it not occurring. \newline
+For this reason, the odds of an event $\displaystyle A \subseteq \Omega$ with probability $\displaystyle \mathbb{P}(A) \in [0, 1)$ can be computed as
+\[\mathcal{O}(A) = \frac{\mathbb{P}(A)}{\mathbb{P}(A^C)} = \frac{\mathbb{P}(A)}{1 - \mathbb{P}(A)}\]
+More specifically, the conditional odds of event $\displaystyle A$ given that a second event $\displaystyle B$ occurred can be computed as
+\[\mathcal{O}(A|B) = \frac{\mathbb{P}(A|B)}{\mathbb{P}(A^C|B)} = \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(A^C \cap B)}\]
+\subsection{The multiplication rule}
+The multiplication rule allows to reformulate the joint probability of two events $\displaystyle A$ and $\displaystyle B$ according to the following equation:
+\[\mathbb{P}(A \cap B) = \mathbb{P}(A|B)\mathbb{P}(B) = \mathbb{P}(B|A)\mathbb{P}(A)\]
+In particular, repeatedly applying the multiplication rule to a sequence of events $\displaystyle \{A_1, \dots, A_n\}$ results in the chain rule, which can be formulated as
+\[\mathbb{P}\Bigg(\bigcap_{i = 1}^n A_i\Bigg) = \mathbb{P}(A_1)\cdot\mathbb{P}(A_2|A_1)\cdot\dots\cdot\mathbb{P}(A_n|A_1 \cap \dots A_{n + 1})\]
+\section{Defining event independence}
+Two events $\displaystyle A$ and $\displaystyle B$ on a sample space $\displaystyle \Omega$ are said to be independent if knowing that $\displaystyle B$ occurred does not add information about the probability of $\displaystyle A$ occurring, resulting in
+\[A \bot B \Leftrightarrow \mathbb{P}(A|B) = \mathbb{P}(A) \text{ and } \mathbb{P}(B|A) = \mathbb{P}(B) \text{, resulting in $\mathbb{P}(A \cap B) = \mathbb{P}(A)\mathbb{P}(B)$.}\]
+Depending on the context, event independence can be assumed or verified, although it is always possible to show that, if $\displaystyle A$ and $\displaystyle B$ are events such that $\displaystyle \mathbb{P}(A), \mathbb{P}(B) > 0$ and $\displaystyle A \cap B = \emptyset$, then they events cannot be independent.
+\begin{proofbox}
+    It is possible to notice that having $\displaystyle A \cap B = \emptyset$ and knowing that one of the two events occurred would violate the definition of event independence because
+    \[\mathbb{P}(A)\mathbb{P}(B) > 0 \text{, but $\mathbb{P}(A \cap B) = \mathbb{P}(\emptyset) = 0$.}\]
+\end{proofbox}
+\section{Generalizing event independence}
+For $\displaystyle n>2$ events, independence can be defined at several distinct levels.
+\subsection{Pairwise and mutual independence}
+A (countable) sequence of events $\displaystyle \{A_1, \dots, A_n\}$ is said to be pairwise independent if
+\[A_i \bot A_j \text{ } \forall i \neq j \Leftrightarrow \mathbb{P}(A_i \cap A_j) = \mathbb{P}(A_i)\mathbb{P}(A_j) \text{ } \forall i \neq j\]
+Additionally, a (countable) sequence of events $\displaystyle \{A_1, \dots, A_n\}$ is said to be mutually independent if, for any group of $\displaystyle k$ events in the sequence, it is the case that
+\[\mathbb{P}\Bigg(\bigcap_{i = 1}^k A_{n_i}\Bigg) = \prod_{i = 1}^k \mathbb{P}(A_{n_i}) \text{, for $1 \leq k \leq n$ and $k \in \mathbb{N}$.}\]
+It should be noticed that, while mutual independence always implies pairwise independence, the converse statement is not true because a sequence of events can be pairwise independent but not mutually independent.
+\begin{examplebox}[\textbf{Example: }A special die]
+    Given a balanced four-faced die, which has a red face, a green face, a blue face and a striped face with all three colours, define the events
+    \[R = \{\text{I see red}\} \text{, } G = \{\text{I see green}\} \text{ and } B = \{\text{I see blue}\}\]
+    It is possible to show that these events are pairwise independent as
+    \begin{align*}
+        \mathbb{P}(R \cap G) &= 0.25 = 0.5 \cdot 0.5 = \mathbb{P}(R)\mathbb{P}(G) \\
+        \mathbb{P}(R \cap B) &= 0.25 = 0.5 \cdot 0.5 = \mathbb{P}(R)\mathbb{P}(B) \\
+        \mathbb{P}(G \cap B) &= 0.25 = 0.5 \cdot 0.5 = \mathbb{P}(G)\mathbb{P}(B)
+    \end{align*}
+    However, the events are not mutually independent because
+    \[\mathbb{P}(R \cap G \cap B) = 0.25 \neq 0.125 = 0.5 \cdot 0.5 \cdot 0.5 = \mathbb{P}(R)\mathbb{P}(G)\mathbb{P}(B)\]
+\end{examplebox}
+\subsection{Conditional independence}
+Two events $\displaystyle A$ and $\displaystyle B$ are said to be conditionally independent given an event $\displaystyle C$ if, knowing that $\displaystyle C$ occurred, observing event $\displaystyle B$ does not add information about the probability of $\displaystyle A$ occurring, resulting in
+\[\mathbb{P}(A \cap B|C) = \mathbb{P}(A|C)\mathbb{P}(B|C) \text{, with $\mathbb{P}(C) > 0$.}\]
+\begin{examplebox}[\textbf{Example: }University admissions]
+    For a student applying to a Master's Degree course, define the events
+    \[DS = \{\text{Accepted to Data Science}\} \text{ and } ST = \{\text{Accepted to Statistics}\}\]
+    Knowing that event $\displaystyle DS$ occurred can provide additional information about the likelihood of event $\displaystyle ST$ occurring, meaning that the two events are not independent. \newline
+    However, if the admission procedure is solely based on the student's GPA $\displaystyle C$, knowing that one event occurred does not provide additional information about the other event occurring as well, making $\displaystyle DS$ and $\displaystyle ST$ conditionally independent given event $\displaystyle C$.
+\end{examplebox}
+\section{The law of total probability}
+Given a sample space $\displaystyle \Omega$, the law of total probability allows to explain the probability of an event $\displaystyle A \subseteq \Omega$ by decomposing it over the partition $\displaystyle \Omega = B \cup B^C$, resulting in
+\[\mathbb{P}(A) = \mathbb{P}(A \cap B) + \mathbb{P}(A \cap B^C) = \mathbb{P}(A|B)\mathbb{P}(B) + \mathbb{P}(A|B^C)\mathbb{P}(B^C)\]
+\begin{proofbox}
+    Let $\displaystyle A = A \cap \Omega$ on the partition $\displaystyle \Omega = B \cup B^C$.
+    \begin{align*}
+        \mathbb{P}(A)
+            &= \mathbb{P}(A \cap \Omega) = \mathbb{P}(A \cap (B \cup B^C)) = \mathbb{P}((A \cap B) \cup (A \cap B^C)) \\
+            &= \mathbb{P}(A \cap B) + \mathbb{P}(A \cap B^C) \stackrel{\text{Multiplication rule}}{=} \mathbb{P}(A|B)\mathbb{P}(B) + \mathbb{P}(A|B^C)\mathbb{P}(B)
+    \end{align*}
+\end{proofbox}
+\noindent Additionally, it is possible to generalize the law of total probability to explain the probability of an event $\displaystyle E$ with respect to a sequence of mutually exclusive hypotheses $\displaystyle \{H_1, \dots, H_n\}$ as
+\[\mathbb{P}(E) = \sum_{i = 1}^n \mathbb{P}(E|H_i) = \sum_{i = 1}^n \mathbb{P}(E|H_i)\mathbb{P}(H_i)\]
+\section{Bayes' theorem}
+Bayes' theorem allows to switch between conditional probabilities by setting
+\[\mathbb{P}(A|B) = \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(B)} = \frac{\mathbb{P}(B|A)\mathbb{P}(A)}{\mathbb{P}(B)} \text{ with $\mathbb{P}(B) > 0$.}\]
+In particular, when considering a sequence of mutually exclusive hypotheses $\displaystyle \{H_1, \dots, H_n\}$ with known prior probabilities, Bayes' theorem allows to compute the posterior probability of hypothesis $\displaystyle H_i$ given the observed evidence $\displaystyle E$ as
+\[\mathbb{P}(H_i|E) = \frac{\mathbb{P}(E|H_i)\mathbb{P}(H_i)}{\mathbb{P}(E)} = \frac{\mathbb{P}(E|H_i)\mathbb{P}(H_i)}{\sum_{j = 1}^n \mathbb{P}(E|H_j)\mathbb{P}(H_j)}\]
+In fact, the posterior probability of each hypothesis given the observed evidence will be computed in terms of the likelihood $\displaystyle \mathbb{P}(E|H_i)$, which describes the probability of seeing the evidence given that the hypothesis $\displaystyle H_i$ is true, the prior probability $\displaystyle \mathbb{P}(H_i)$, which describes the probability of $\displaystyle H_i$ being true, and the marginal probability $\displaystyle \mathbb{P}(E)$, which denotes the total probability of seeing the evidence under all possible hypotheses.
+\begin{examplebox}[\textbf{Example: }Iterated Bayes for medical diagnosis]
+    Consider the events
+    \[T = \{\text{I test positive to a disease}\} \text{ and } D = \{\text{I actually have the disease}\}\]
+    In particular, the disease affects $\displaystyle 0.1\%$ of the population and it is known that a dedicated test correctly detects $\displaystyle 99\%$ of disease case but produces a false positive result on $\displaystyle 1\%$ of occasions, which means that
+    \[\mathbb{P}(D|P) = \frac{\mathbb{P}(P|D)\mathbb{P}(D)}{\mathbb{P}(P|D)\mathbb{P}(D) + \mathbb{P}(P|D^C)\mathbb{P}(D^C)} = \frac{0.99 \cdot 0.001}{(0.99 \cdot 0.001) + (0.01 \cdot 0.999)} = 9\%\]
+    Since the posterior probability appears to be quite low, Bayes' rule is applied once again, using the posterior probability as the new prior probability, resulting in
+    \[\mathbb{P}(D|P) = \frac{\mathbb{P}(P|D)\mathbb{P}(D)}{\mathbb{P}(P|D)\mathbb{P}(D) + \mathbb{P}(P|D^C)\mathbb{P}(D^C)} = \frac{0.99 \cdot 0.09}{(0.99 \cdot 0.09) + (0.01 \cdot 0.91)} = 91\%\]
+\end{examplebox}
+\subsection{The posterior odds of a hypothesis}
+When considering an event $\displaystyle E$ on a sequence of mutually exclusive hypotheses $\displaystyle \{H_1, \dots, H_n\}$, it is possible to compute the posterior odds of hypothesis $\displaystyle H_i$ given evidence $\displaystyle E$ as
+\[\mathcal{O}(H_i|E) = \frac{\mathbb{P}(H_i|E)}{\mathbb{P}(H_i^C|E)} = \frac{\frac{\mathbb{P}(E|H_i)\mathbb{P}(H_i)}{\mathbb{P}(E)}}{\frac{\mathbb{P}(E|H_i^C)\mathbb{P}(H_i^C)}{\mathbb{P}(E)}} = \frac{\mathbb{P}(E|H_i)\mathcal{O}(H_i)}{\mathbb{P}(E|H_i)}\]
+
+\end{document}
