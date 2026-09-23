@@ -6,7 +6,7 @@
 * **Exam Modality:** The exam will consist of:
   1. A two-part written exam covering Probability and Statistics topics, which is worth 65% of the final grade.
      
-    >[!TIP]
+    > [!TIP]
     >
     > It is possible to separate the written exam within the January-April sessions, but not during the June-November sessions.
 
