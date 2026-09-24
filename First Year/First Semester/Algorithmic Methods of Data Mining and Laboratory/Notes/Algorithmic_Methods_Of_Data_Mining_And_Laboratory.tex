@@ -1,0 +1,157 @@
+\documentclass{report}
+
+% Packages for images.
+\usepackage{graphicx}
+\usepackage{float}
+
+% Packages for mathematical formulae/symbols.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% Packages for code snippets and algorithms.
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{110,110,110}
+\definecolor{codepurple}{RGB}{163,21,21}
+\definecolor{codeblue}{RGB}{0,0,180}
+\definecolor{backwhite}{RGB}{255,255,255}
+\definecolor{backcolour}{RGB}{248,248,248}
+\lstdefinestyle{mypython}{
+    language=Python,
+    backgroundcolor=\color{backwhite},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    numbers=left,
+    numbersep=8pt,
+    frame=single,
+    rulecolor=\color{black!20},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    keepspaces=true
+}
+\lstset{style=mypython}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% Creating the Example boxes.
+\definecolor{exampleback}{RGB}{240, 248, 240}
+\definecolor{exampleframe}{RGB}{34, 112, 62}
+\usepackage[most]{tcolorbox}
+\newtcolorbox{examplebox}[1][]{
+    colback=exampleback,
+    colframe=exampleframe,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Example\ifblank{#1}{}{: #1}},
+    arc=2pt,
+    boxrule=1pt
+}
+
+% Packages for styling and layout.
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+% Packages for plotting graphs.
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Packages for compilation.
+\usepackage{microtype}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    % Subject Title.
+    {\Huge \bfseries Algorithmic Methods of Data Mining and Laboratory \par}
+    \vspace{1.5cm}
+    
+    % Master's Degree and Faculty.
+    {\Large Master's Degree in Data Science, Sapienza Università di Roma \par}
+    {\large Faculty of Information Engineering, Informatics and Statistics \par}
+    \vspace{0.5cm}
+    
+    % Department.
+    {\large Department of Computer Science \par}
+    \vspace{3cm}
+    
+    % Author.
+    {\Large \textbf{Author:} Gianmaria Romano \par}
+    \vspace{3cm}
+
+    % Reference Bibliography
+    {\Large Reference Bibliography \par}
+    {\large C. Aggarwal: \href{https://www.charuaggarwal.net/Data-Mining.htm}{\textit{Data Mining: The Textbook}} \\
+    R. Zafarani, M. A. Abbasi, and H. Liu: \href{https://dmml.asu.edu/smm/}{\textit{Social Media Mining: An Introduction}} \\
+    J. Leskovec, A. Rajaraman, and J. Ullman: \href{http://www.mmds.org/}{\textit{Mining of Massive Datasets}} \\
+    C. D. Manning, P. Raghavan, and H. Schütze: \href{https://www-nlp.stanford.edu/IR-book/}{\textit{Introduction to Information Retrieval}} \\
+    J. Janssens: \href{https://github.com/jeroenjanssens/data-science-at-the-command-line}{\textit{Data Science at the Command Line}} \\}
+    \vfill
+    
+    % Academic Year.
+    {\large Academic Year 2026/2027 \par}
+    \vspace*{1cm}
+\end{titlepage}
+
+\clearpage
+
+%\maketitle
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=Disclaimer]
+    This document contains notes for the \textbf{Algorithmic Methods of Data Mining and Laboratory} course, given by \textbf{Professors Anagnastopolous and Siciliano} as part of the Master’s Degree in Data Science at \textbf{Sapienza Università di Roma} during the \textbf{first} semester of Academic Year \textbf{2026/2027}.
+    
+    \smallskip
+    \textbf{Note: }These notes may not cover all details of each lecture, so it is highly suggested to consult the Professor's official resources and materials. 
+    
+    \smallskip
+    \textbf{Important: }These notes are free to share and use, but please remember to credit me as the author and do not try to hide/remove this page.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=Contacts]
+    For further information or requests, feel free to \href{https://t.me/toritosenso}{contact me privately} or reach out through my repository: \href{https://github.com/GianmariaRomano/Data-Science-Notes}{https://github.com/GianmariaRomano/Data-Science-Notes}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=License]
+    These documents are distributed under the \href{https://www.gnu.org/licenses/gpl-3.0.en.html}{GNU General Public License 3.0}, a form of copyleft intended for use on a manual, textbook or other documents. Material licensed under the current version of the license can be used for any purpose, as long as the use meets certain conditions:
+    \begin{itemize}
+        \item All previous authors of the work must be attributed.
+        \item All changes to the work must be logged.
+        \item All derivative works must be licensed under the same license.
+        \item The full text of the license, unmodified invariant sections as defined by the author if any, and any other added warranty disclaimers (such as a general disclaimer alerting readers that the document may not be accurate for example) and copyright notices from previous versions must be maintained.
+        \item Technical measures such as DRM may not be used to control or obstruct distribution or editing of the document.
+    \end{itemize}
+\end{tcolorbox}
+
+\tableofcontents
+
+\chapter{Introduction to data mining}
+\section{Finding a definition of data mining}
+While no unique definition exists yet, it is possible to view data mining as the use of efficient techniques for the analysis of very large collection of data and the extraction of useful and possibly unexpected patterns in data in order to make decisions across various areas.
+\begin{examplebox}[\textbf{Example: }Descriptive and predictive data mining]
+    Descriptive data mining aims to identify patterns and relationships within data using unsupervised learning techniques that can be applied to recommendation systems, such as Netflix or Spotify's engines, to analyse patterns in user behaviour. \newline
+    By contrast, predictive data mining focuses on using past observations to predict a target variable through supervised learning techniques. \newline
+    For instance, CERN's \textit{A Large Ion Collided Experiment} analyses heavy-ion collision data to investigate the properties of quark-gluon plasma.
+\end{examplebox}
+\section{Understanding data types}
+Since data can come in different forms, it is necessary to organize it in order to extract meaningful information or patterns. \newline
+In particular, data can be classified into three main types:
+\begin{itemize}
+    \item \textbf{Structured data: }Data is organized according to well-enforced schema that is enforced during storage.
+    \item \textbf{Semi-structured data: }Data can be organized according to a structural schema, although the organization is not enforced during storage.
+    \item \textbf{Unstructured data: }Data does not follow a pre-defined structure, requiring a data cleaning procedure to store it as (semi-)structured data before use.
+\end{itemize}
+\begin{examplebox}[\textbf{Example: }Different data types]
+    Examples of data organization can be seen on the Infostud platform, which enforces strict organization through dedicated constraints on certain types of data, and medical records, which follow some structural patterns but might contain errors or anomalous data. \newline
+    By contrast, social media platforms, such as Twitter or Reddit, provide clear examples of unstructured data that do not follow an organizational structure.
+\end{examplebox}
+
+\end{document}
