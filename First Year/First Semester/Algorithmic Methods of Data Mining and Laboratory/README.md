@@ -4,7 +4,7 @@
 * **Credits:** 9 CFU.
 * **Semester:** First Year, First Semester.
 * **Exam Modality:** The exam can be carried out in two possible ways:
-  1. A take-home homework and an end-of-semester hackaton, followed by a 1-hour written exam.
+  1. A take-home homework, which will not be evaluated, followed by an end-of-semester hackathon, which is worth up to 10 points, and a 1-hour written exam, which is worth up to 20 points.
   2. A 2-hour extended written exam.
 * **Lecture Schedule:**
     * **Mondays:** 14:00-16:00 at Aula 2L, Via del Castro Laurenziano 7A.
@@ -20,7 +20,7 @@
 
 | Date | Topic |
 | :---: | :---: |
-| September 24 | TBD |
+| September 24 | Introduction to the course. |
 
 </details>
 
