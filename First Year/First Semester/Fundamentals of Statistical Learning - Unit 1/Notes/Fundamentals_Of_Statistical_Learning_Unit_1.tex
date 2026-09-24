@@ -196,7 +196,7 @@ According to this definition, a probability measure function $\displaystyle \mat
     Knowing that, for any randomly chosen point $\displaystyle x_0$, evaluating $\displaystyle F(x_0)$ and $\displaystyle G(x_0)$ requires $\displaystyle O(d)$ time, it is possible to cut down complexity using a randomized algorithm:
     \begin{algorithm}[H]
         \caption{Randomized Algorithm for Polynomial Identities.}
-        \KwData{$\displaystyle F(x), G(X)$}
+        \KwData{$\displaystyle F(x), G(x)$}
         \KwResult{Whether $\displaystyle F(x) \equiv G(x)$.}
 
         Generate $\displaystyle r$ uniformly at random from a set $\displaystyle \mathcal{I} = \{1, \dots, 100d\}$\;
@@ -211,7 +211,7 @@ According to this definition, a probability measure function $\displaystyle \mat
     In fact, while $\displaystyle F(x) \equiv G(x)$ results in $\displaystyle F(r) = G(r) \text{ } \forall r$, it might be the case that, for some $\displaystyle r$, $\displaystyle F(r) = G(r)$ even if $\displaystyle F(x) \not\equiv G(x)$: this implies that the algorithm has one-sided error as it can make mistakes only when deciding that $\displaystyle F(x) \equiv G(x)$. \newline
     Therefore, define the event
     \[E = \{F(r) = G(r) \text{ but } F(x) \not\equiv G(x)\}\]
-    This event occurs if and only if $\displaystyle r$ is a root of the polynomial $\displaystyle H(x) = F(x) - G(x)$: since $\displaystyle H(x)$ will always have degree at most $\displaystyle d$, it will have at most $\displaystyle d$ roots, allowing to compute the error probability as follows:
+    This event occurs if and only if $\displaystyle r$ is a root of the polynomial $\displaystyle H(x) = F(x) - G(x)$: since $\displaystyle H(x)$ will always have degree at most $\displaystyle d$, it will have at most $\displaystyle d$ roots, allowing to bound the error probability as follows:
     \[\mathbb{P}(E) = \frac{|\{r \in \mathcal{I} : r \text{ is a root of } H(x)\}|}{|\mathcal{I}|} \leq \frac{d}{100d} = \frac{1}{100}\]
 \end{examplebox}
 \noindent As a consequence to Kolmogorov's axiomatic definition of probability, every probability space $\displaystyle (\Omega, \mathbb{P})$ satisfies the property that $\displaystyle \mathbb{P}(A^C) = 1 - \mathbb{P}(A) \text{ } \forall A \subseteq \Omega$.
