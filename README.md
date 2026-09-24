@@ -1,13 +1,15 @@
+<div align="center">
+
 # 🗺 Data Science Notes
 
-<p align="center">
+<div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
   <a href="https://t.me/toritosenso">
-    <img src="https://img.shields.io/badge/Telegram-26A69A?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
+    <img src="https://img.shields.io/badge/Telegram-26A69A?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram">
   </a>
   <a href="mailto:romano.2105539@studenti.uniroma1.it">
-    <img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+    <img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
   </a>
-</p>
+</div>
 
 </div>
 
