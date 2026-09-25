@@ -32,7 +32,7 @@
 </details>
 
 ## 🔗 Useful Links
-* Official Course Page: [Google Classroom](link)
+* Official Course Page: [Google Classroom](https://classroom.google.com/u/1/c/MjUzNzI0NDc4MjNa)
 * Reference Bibliography
   - M. P. Deisenroth, A. A. Faisal, C. S. Ong: [*Mathematics for Machine Learning*](https://mml-book.github.io/)
   - S. Prince: [*Understanding Deep Learning*](https://udlbook.github.io/udlbook/)
