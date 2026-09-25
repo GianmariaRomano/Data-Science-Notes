@@ -3,7 +3,12 @@
 * **Professor:** Professors Cinelli and Spinelli.
 * **Credits:** 9 CFU.
 * **Semester:** First Year, First Semester.
-* **Exam Modality:** TBD.
+* **Exam Modality:** The exam consists of:
+  1. A mid-term challenge followed by a group project, which is worth 33% of the grade.
+
+     Failing the project will result in having the grade be evaluated solely on the basis of the theory parts.
+  3. A written multiple-choice exam, which is worth 34% of the grade.
+  4. A network science exam, which is worth 33% of the grade.
 * **Lecture Schedule:**
     * **Mondays:** 10:00-13:00 at Aula 2L, Via del Castro Laurenziano 7A.
     * **Thursdays:** 16:00-19:00 at Aula Informatica 15, Via Tiburtina 205.
@@ -22,6 +27,7 @@
 | Date | Topic |
 | :---: | :---: |
 | ~~September 24~~ | This lecture was cancelled. |
+| September 25 | Introduction to the course. |
 
 </details>
 
