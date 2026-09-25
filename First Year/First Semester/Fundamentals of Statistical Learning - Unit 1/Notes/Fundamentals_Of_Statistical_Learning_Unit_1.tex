@@ -263,7 +263,7 @@ Given a sample space $\displaystyle \Omega$, the conditional probability that ev
     \item $\displaystyle \mathbb{P}(A|B) \in [0, 1] \text{ } \forall A \subseteq \Omega$.
     \item $\displaystyle \mathbb{P}(\Omega|B) = 1$.
     \item For any sequence of disjoint events $\displaystyle \{A_1, \dots A_n\}$, it is always the case that
-    \[\mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i|B\Bigg) = \sum_{i = 1}^n \mathbb{P}(A_i|B)\]
+    \[\mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i\Bigg|B\Bigg) = \sum_{i = 1}^n \mathbb{P}(A_i|B)\]
     As a consequence, it is always the case that $\displaystyle \mathbb{P}(A^C|B) = 1 - \mathbb{P}(A|B) \text{ } \forall A \subseteq \Omega$.
     \begin{proofbox}
         Let $\displaystyle B = B \cap \Omega$ on the partition $\displaystyle \Omega = A \cup A^C$.
@@ -290,7 +290,7 @@ In particular, repeatedly applying the multiplication rule to a sequence of even
 \section{Defining event independence}
 Two events $\displaystyle A$ and $\displaystyle B$ on a sample space $\displaystyle \Omega$ are said to be independent if knowing that $\displaystyle B$ occurred does not add information about the probability of $\displaystyle A$ occurring, resulting in
 \[A \bot B \Leftrightarrow \mathbb{P}(A|B) = \mathbb{P}(A) \text{ and } \mathbb{P}(B|A) = \mathbb{P}(B) \text{, resulting in $\mathbb{P}(A \cap B) = \mathbb{P}(A)\mathbb{P}(B)$.}\]
-Depending on the context, event independence can be assumed or verified, although it is always possible to show that, if $\displaystyle A$ and $\displaystyle B$ are events such that $\displaystyle \mathbb{P}(A), \mathbb{P}(B) > 0$ and $\displaystyle A \cap B = \emptyset$, then they events cannot be independent.
+Depending on the context, event independence can be assumed or verified, although it is always possible to show that, if $\displaystyle A$ and $\displaystyle B$ are events such that $\displaystyle \mathbb{P}(A), \mathbb{P}(B) > 0$ and $\displaystyle A \cap B = \emptyset$, then the events cannot be independent.
 \begin{proofbox}
     It is possible to notice that having $\displaystyle A \cap B = \emptyset$ and knowing that one of the two events occurred would violate the definition of event independence because
     \[\mathbb{P}(A)\mathbb{P}(B) > 0 \text{, but $\mathbb{P}(A \cap B) = \mathbb{P}(\emptyset) = 0$.}\]
@@ -332,11 +332,11 @@ Given a sample space $\displaystyle \Omega$, the law of total probability allows
     \begin{align*}
         \mathbb{P}(A)
             &= \mathbb{P}(A \cap \Omega) = \mathbb{P}(A \cap (B \cup B^C)) = \mathbb{P}((A \cap B) \cup (A \cap B^C)) \\
-            &= \mathbb{P}(A \cap B) + \mathbb{P}(A \cap B^C) \stackrel{\text{Multiplication rule}}{=} \mathbb{P}(A|B)\mathbb{P}(B) + \mathbb{P}(A|B^C)\mathbb{P}(B)
+            &= \mathbb{P}(A \cap B) + \mathbb{P}(A \cap B^C) \stackrel{\text{Multiplication rule}}{=} \mathbb{P}(A|B)\mathbb{P}(B) + \mathbb{P}(A|B^C)\mathbb{P}(B^C)
     \end{align*}
 \end{proofbox}
 \noindent Additionally, it is possible to generalize the law of total probability to explain the probability of an event $\displaystyle E$ with respect to a sequence of mutually exclusive hypotheses $\displaystyle \{H_1, \dots, H_n\}$ as
-\[\mathbb{P}(E) = \sum_{i = 1}^n \mathbb{P}(E|H_i) = \sum_{i = 1}^n \mathbb{P}(E|H_i)\mathbb{P}(H_i)\]
+\[\mathbb{P}(E) = \sum_{i = 1}^n \mathbb{P}(E \cap H_i) = \sum_{i = 1}^n \mathbb{P}(E|H_i)\mathbb{P}(H_i)\]
 \section{Bayes' theorem}
 Bayes' theorem allows to switch between conditional probabilities by setting
 \[\mathbb{P}(A|B) = \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(B)} = \frac{\mathbb{P}(B|A)\mathbb{P}(A)}{\mathbb{P}(B)} \text{ with $\mathbb{P}(B) > 0$.}\]
@@ -345,7 +345,7 @@ In particular, when considering a sequence of mutually exclusive hypotheses $\di
 In fact, the posterior probability of each hypothesis given the observed evidence will be computed in terms of the likelihood $\displaystyle \mathbb{P}(E|H_i)$, which describes the probability of seeing the evidence given that the hypothesis $\displaystyle H_i$ is true, the prior probability $\displaystyle \mathbb{P}(H_i)$, which describes the probability of $\displaystyle H_i$ being true, and the marginal probability $\displaystyle \mathbb{P}(E)$, which denotes the total probability of seeing the evidence under all possible hypotheses.
 \begin{examplebox}[\textbf{Example: }Iterated Bayes for medical diagnosis]
     Consider the events
-    \[T = \{\text{I test positive to a disease}\} \text{ and } D = \{\text{I actually have the disease}\}\]
+    \[P = \{\text{I test positive to a disease}\} \text{ and } D = \{\text{I actually have the disease}\}\]
     In particular, the disease affects $\displaystyle 0.1\%$ of the population and it is known that a dedicated test correctly detects $\displaystyle 99\%$ of disease case but produces a false positive result on $\displaystyle 1\%$ of occasions, which means that
     \[\mathbb{P}(D|P) = \frac{\mathbb{P}(P|D)\mathbb{P}(D)}{\mathbb{P}(P|D)\mathbb{P}(D) + \mathbb{P}(P|D^C)\mathbb{P}(D^C)} = \frac{0.99 \cdot 0.001}{(0.99 \cdot 0.001) + (0.01 \cdot 0.999)} = 9\%\]
     Since the posterior probability appears to be quite low, Bayes' rule is applied once again, using the posterior probability as the new prior probability, resulting in
@@ -354,5 +354,98 @@ In fact, the posterior probability of each hypothesis given the observed evidenc
 \subsection{The posterior odds of a hypothesis}
 When considering an event $\displaystyle E$ on a sequence of mutually exclusive hypotheses $\displaystyle \{H_1, \dots, H_n\}$, it is possible to compute the posterior odds of hypothesis $\displaystyle H_i$ given evidence $\displaystyle E$ as
 \[\mathcal{O}(H_i|E) = \frac{\mathbb{P}(H_i|E)}{\mathbb{P}(H_i^C|E)} = \frac{\frac{\mathbb{P}(E|H_i)\mathbb{P}(H_i)}{\mathbb{P}(E)}}{\frac{\mathbb{P}(E|H_i^C)\mathbb{P}(H_i^C)}{\mathbb{P}(E)}} = \frac{\mathbb{P}(E|H_i)\mathcal{O}(H_i)}{\mathbb{P}(E|H_i)}\]
+
+\chapter{Random variables}
+\section{Defining random variables}
+Given a probability space $\displaystyle (\Omega, \mathbb{P})$, a random variable is a (measurable) mapping $\displaystyle X: \Omega \to S_X \subseteq \mathbb{R}$ that maps every outcome $\displaystyle \omega \in \Omega$ onto a value $\displaystyle X(\omega) \in \mathbb{R}$, with the set set $\displaystyle S_X = \{X(\omega) : \omega \in \Omega\}$ forming the ``support`` of $\displaystyle X$. \newline
+This concept can be extended to define a random vector, also known as a $\displaystyle p-$variate random variable, as a (measurable) mapping $\displaystyle \mathbf{X}: \Omega \to \mathbb{R}^p$ that assigns a vector $\displaystyle \mathbf{X}(\omega) \in \mathbb{R}^p$ to each outcome $\displaystyle \omega \in \Omega$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/random_variables.png}
+    \caption{A visual idea of what is a random variable.}
+    \label{fig:random_variables}
+\end{figure}
+\noindent Since this mapping describes the probability of the random variable $\displaystyle X$ falling within a subset of $\displaystyle \mathbb{R}$, it is possible to define the pre-image of a set $\displaystyle E \subseteq \mathbb{R}$ as the set $\displaystyle X^{-1}(E) = \{\omega \in \Omega : X(\omega) \in E\} \subseteq \Omega$. \newline
+This definition allows to describe the probability distribution of a random variable $\displaystyle X$ as
+\[\mathbb{P}(X \in E) = \mathbb{P}(\{\omega \in \Omega : X(\omega) \in E\}) = \mathbb{P}(X^{-1}(E))\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/random_variables_pullback.png}
+    \caption{A visual idea of the pre-image of a random variable.}
+    \label{fig:placeholder}
+\end{figure}
+\noindent When defining the probability distribution of a random variable $\displaystyle X$, it should be noticed that $\displaystyle \mathbb{P}(X \in E)$ represents an induced distribution supported on $\displaystyle \mathbb{R}$ that is constructed based on the assumed distribution $\displaystyle \mathbb{P}(X^{-1}(E))$ supported on $\displaystyle \Omega$.
+\subsection{Discrete random variables}
+A random variable is said to be ``discrete`` if its support is a countable set, which means that the random variable can take at most a finite, or at least countable, number of values. \newline
+For this reason, a discrete random variable $\displaystyle X: \Omega \to S_X$ can be described using a probability mass function $\displaystyle p_X(x) = \mathbb{P}(X = x)$ that satisfies the following conditions:
+\begin{itemize}
+    \item $\displaystyle p_X(x) \ge 0 \text{ } \forall x \in \mathbb{R}$, with $\displaystyle p_X(x) > 0 \text{ } \forall x \in S_X$ specifically.
+    \item $\displaystyle \sum_{x \in S_X} p_X(x) = 1$.
+\end{itemize}
+\begin{examplebox}[\textbf{Example: }Repeated coin flips]
+    Consider $\displaystyle 5$ independent flips of a fair coin: since each flip can be seen as a repetition of a binary experiment with sample space $\displaystyle \Omega = \{Heads, Tails\}$, it is possible to define the overall outcome space as the Cartesian product $\displaystyle \Omega^{\otimes 5}$. \newline
+    Assuming symmetry and independence between coin flips, each outcome $\displaystyle \omega \in \Omega^{\otimes 5}$ is equally likely and has probability $\displaystyle \mathbb{P}(\omega) = \frac{1}{|\Omega^{\otimes 5}|} = \frac{1}{32}$. \newline
+    Define now the random variable $\displaystyle X = \{\text{Number of tails in $5$ independent coin flips}\}$: on its support $\displaystyle S_X = \{0, 1, 2, 3, 4, 5\}$, the probability definition of $\displaystyle X$ can be defined as
+    \[p_X(x) = \mathbb{P}(X = x) = \binom{5}{x}\bigg(\frac{1}{2}\bigg)^5 \text{, for $x \in S_X$.}\]
+\end{examplebox}
+\subsection{Continuous random variables}
+A random variable is said to be ``continuous`` if its support is an uncountable set. \newline
+Since, in this setting, $\displaystyle \mathbb{P}(X = x) \to 0 \text{ } \forall x \in \mathbb{R}$, a continuous random variable $\displaystyle X: \Omega \to S_X$ is described using a probability density function $\displaystyle f_X(x)$ that satisfies the following conditions:
+\begin{itemize}
+    \item $\displaystyle \mathbb{P}(a \leq X \leq b) = \mathbb{P}(X \in [a, b]) = \int_a^b f_X(x) \ dx$.
+    \item $\displaystyle f_X(x) \ge 0 \text{ } \forall x \in \mathbb{R}$, with $\displaystyle f_X(x) > 0 \text{ } \forall x \in S_X$ specifically.
+    \item $\displaystyle \int_{\mathbb{R}} f_X(x) = 1$.
+\end{itemize}
+In particular, all information about a continuous random variable $\displaystyle X$ can be retrieved from its cumulative distribution function $\displaystyle F_X: \mathbb{R} \to [0, 1]$, which can be defined as
+\[F_X(x) = \mathbb{P}(X \leq x) = \mathbb{P}(X \in (-\infty, x]) \text{ } \forall x \in \mathbb{R}\]
+More specifically, a function $\displaystyle F_X: \mathbb{R} \to [0, 1]$ acts as a cumulative distribution function on some probability measure $\displaystyle \mathbb{P}$ if and only if the following conditions are met:
+\begin{itemize}
+    \item $\displaystyle F_X(x)$ is non-decreasing, which means that $\displaystyle F_X(x_1) \leq F_X(x_2) \text{ } \forall x_1 < x_2$.
+    \item $\displaystyle F_X(x)$ is normalized, meaning that
+    \[\lim_{x \to -\infty} F_X(x) = 0 \quad\quad\quad \lim_{x \to +\infty} F_X(x) = 1\]
+    \item $\displaystyle F_X(x)$ is right-continuous, which means that
+    \[F_X(x) = F_X(x^+)= \lim_{t \to x^+} F_X(t)\]
+\end{itemize}
+Furthermore, the cumulative distribution function of a random variable $\displaystyle X$ always satisfies several properties:
+\begin{itemize}
+    \item $\displaystyle \mathbb{P}(x_1 < X \leq x_2) = \mathbb{P}(X \in (x_1, x_2]) = F(x_2) - F(x_1)$.
+    \item $\displaystyle \mathbb{P}(X > x) = \mathbb{P}(X \in (x, +\infty)) = 1 - F_X(x)$.
+    \item If $\displaystyle X$ is a continuous random variable with probability density function $\displaystyle f_X(x)$, then
+    \[F_X(x) = \int_{-\infty}^x f_X(t) \ dt \text{ and } f_X(x) = F'(x) \text{ wherever $F_X$ is differentiable.}\]
+    It should be noticed that this last property can also be formulated for discrete random variables. \newline
+    In fact, if $\displaystyle X$ is a discrete random variable with probability mass function $\displaystyle p_X(x)$, then its cumulative function is given by
+    \[F_X(x) =\sum_{x_i \leq x} p_X(x_i) = \mathbb{P}(X < x) + p_X(x) \text{, with $p_X(x) = F_X(x) - F_X(x^-)$.}\]
+\end{itemize}
+\begin{examplebox}[\textbf{Example: }Playing darts]
+    Suppose you throw a dart on a disc of radius $\displaystyle r$ at random. \newline
+    Define the random variable $\displaystyle X = \{\text{Distance of the hitting point from the center}\}$ and note that its support $\displaystyle [0, r]$ is an uncountable set.
+    \begin{align*}
+        \mathbb{P}(X \leq x) &= 0 \text{ } \forall x < 0 \text{ as distances are not negative.} \\
+        \mathbb{P}(X \leq x) &= 1 \text{ } \forall x > r \text{ as the dart did hit the disc.} \\
+        \mathbb{P}(X \leq x) &= \frac{\pi x^2}{\pi r^2} = \frac{x^2}{r^2} \text{ } \forall x \in [0, r]
+    \end{align*}
+    Therefore, it is possible to define the cumulative distribution function of $\displaystyle X$ as
+    \[F_X(x) = \begin{cases}
+        0 &\quad\text{if $x < 0$} \\
+        \frac{x^2}{r^2} &\quad\text{if $x \in [0, r]$} \\
+        1 &\quad\text{if $x > r$} \\
+    \end{cases}\]
+    This implies that the probability density function will be
+    \[f_X(x) = \begin{cases}
+        \frac{2x}{r^2} &\quad\text{if $x \in [0, r]$} \\
+        0 &\quad\text{otherwise} \\
+    \end{cases} \text{, or } f_X(x) = \frac{2x}{r^2}\mathbb{I}_{[0, r]}(x) \text{, with } \mathbb{I}_{[0, r]}(x) = \begin{cases}
+        1 &\quad\text{if $x \in [0, r]$} \\
+        0 &\quad\text{otherwise}
+    \end{cases}\]
+\end{examplebox}
+\section{The quantile function of a random variable}
+Let $\displaystyle X: \Omega \to S_X$ be a continuous random variable with cumulative distribution function $\displaystyle F_X(x)$: for a given level $\displaystyle p \in [0, 1]$, the quantile function is defined as
+\[q_p = \mathbb{Q}(p) = \inf\{x \in S_X: F_X(x) = p\}\]
+In particular, if $\displaystyle F_X(x)$ is strictly increasing in $\displaystyle \mathbb{R}$, then it is also invertible and it is possible to set
+\[q_p = \mathbb{Q}(p) = F_X^{-1}(p) \text{, with } p = F_X(q_p) \int_{-\infty}^{q_p} f_X(t) \ dt \text{ representing the quantile at level $p$.}\]
+However, since discrete random variables tend to have weakly monotonic cumulative distribution functions, a more general definition of quantile function is typically used. \newline
+In fact, given any random variable $\displaystyle X: \Omega \to S_X$ with cumulative distribution function $\displaystyle F_X(x)$, the quantile function for a given level $\displaystyle p \in [0, 1]$ is formulated as
+\[q_p = \mathbb{Q}(p) = \inf\{x \in S_X : F_X(x) \ge p\}\]
 
 \end{document}
