@@ -136,22 +136,96 @@
 \chapter{Introduction to data mining}
 \section{Finding a definition of data mining}
 While no unique definition exists yet, it is possible to view data mining as the use of efficient techniques for the analysis of very large collections of data and the extraction of useful and possibly unexpected patterns in data in order to make decisions across various areas.
-\begin{examplebox}[\textbf{Example: }Descriptive and predictive data mining]
+\begin{examplebox}[Descriptive and predictive data mining]
     Descriptive data mining aims to identify patterns and relationships within data using unsupervised learning techniques that can be applied to recommendation systems, such as Netflix or Spotify's engines, to analyse patterns in user behaviour. \newline
     On the other hand, predictive data mining focuses on using past observations to predict a target variable through supervised learning techniques. \newline
     For instance, CERN's \textit{A Large Ion Collided Experiment} analyses heavy-ion collision data to investigate the properties of quark-gluon plasma.
 \end{examplebox}
 \section{Understanding data types}
 Since data can come in different forms, it is necessary to organize it in order to extract meaningful information or patterns. \newline
-In particular, data can be classified into three main types:
+In particular, data can be seen as a collection of attributes that describe some objects and, depending on the organization paradigm, data can be classified into three main types:
 \begin{itemize}
     \item \textbf{Structured data: }Data is organized according to a well-defined schema that is enforced during storage.
     \item \textbf{Semi-structured data: }Data can be organized according to a structural schema, although this organization paradigm may not be enforced during storage.
     \item \textbf{Unstructured data: }Data does not follow a pre-defined structure, requiring a data cleaning procedure to store it as (semi-)structured data before use.
 \end{itemize}
-\begin{examplebox}[\textbf{Example: }Different data types]
-    Examples of data organization can be seen on the Infostud platform, which enforces strict organization through dedicated constraints on certain types of data, and medical records, which follow some structural patterns but might contain errors or anomalous data. \newline
+\begin{examplebox}[Different data types]
+    Examples of data organization can be seen on the InfoStud platform, which enforces strict organization through dedicated constraints on certain types of data, and medical records, which follow some structural patterns but might contain errors or anomalous data. \newline
     By contrast, social media platforms, such as Twitter or Reddit, provide clear examples of unstructured data that do not follow an organizational structure.
 \end{examplebox}
+\subsection{Numeric data}
+If each record has the same fixed set of numeric attribute, it can be seen as a point in a multi-dimensional space, meaning that the dataset can be treated as a matrix.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/numeric_data.png}
+    \caption{Example of numeric record data.}
+    \label{fig:numeric_data}
+\end{figure}
+\subsection{Categorical data}
+Categorical data consists of a collection of records with a fixed set of categorical variables.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/categorical_data.png}
+    \caption{Example of categorical record data.}
+    \label{fig:categorical_data}
+\end{figure}
+\subsection{Document data}
+Using the ``bag-of-words'' representation, a document can be represented using a text vector that indicates the occurrences of certain words of interest within the document.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/document_data.png}
+    \caption{Example of document data.}
+    \label{fig:document_data}
+\end{figure}
+\noindent However, text vectors are often vulnerable to the ``curse of dimensionality'', which denotes all the performance problems that arise when dealing with high-dimensional data. \newline
+For this reason, document data are often pre-processed using dimensionality reduction techniques or principal component analysis in order to focus on just the relevant information carried by the data.
+\subsection{Set data}
+Set data can be seen as an efficient way of representing collections through binary attributes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/set_data.png}
+    \caption{Example of set data.}
+    \label{fig:set_data}
+\end{figure}
+\noindent Note that this type of data is often used to compress document data into sets of words.
+\subsection{Ordered data}
+Ordered data consists of ordered sequences of values that come in handy for genomics or for time-series forecasting.
+\subsection{Graph data}
+Graph data allows to summarise web network data using a (directed) graph $\displaystyle G(V, E)$ whose nodes represent pages or users and whose edges denote connections, such as links or interactions, between pages or users.
+\section{Storing data}
+A computer typically features a processor that performs calculations on data that can be stored on its memory or on (external) hard disks. \newline
+Most of the time, however, data is stored using a cloud infrastructure that consists of clustered server racks that can store large amounts of data that might not fit on a normal computer.
+
+\chapter{Algorithms}
+\section{Defining algorithms}
+An algorithm can be seen as a set of instructions, to solve a given problem. \newline
+In particular, an algorithm is evaluated based on its correctness, which determines whether the algorithm works on every possible input or not, and its efficiency, which measures the time taken by the algorithm to find a solution to the given problem.
+\begin{examplebox}[The maximum value of an array]
+    Consider an algorithm that finds the maximum value in an array of $\displaystyle N$ elements:
+    \begin{algorithm}[H]
+        \caption{Finding the Maximum Value in an Array.}
+        \KwData{An array $A$ of size $\displaystyle n$}
+        \KwResult{$\displaystyle \max(A)$}
+    
+        $m \gets A[1]$\;
+        \For{$i \gets 1$ \KwTo $n$}{
+            \If{$A[i] > m$}{
+                $m \gets A[i]$\;
+            }
+        }
+        \Return{$m$}\;
+    \end{algorithm}
+    \noindent The correctness of this algorithm can be proved by induction on the number of steps.
+    \begin{itemize}
+        \item For the base case, given by $\displaystyle k = 1$, $\displaystyle A[k]$ is trivially the maximum value.
+        \item Assuming the algorithm is correct on an input of size $\displaystyle k$, the goal is to prove its correctness on an input of size $\displaystyle (k + 1)$ as well. \newline
+        Claim that, after $\displaystyle k$ steps, $\displaystyle m = \max_{i \in \{1, \dots, k\}}(A[i])$: it is possible to see that $\displaystyle m$ will be updated if and only if $\displaystyle A[k + 1] > m$.
+    \end{itemize}
+    Additionally, looking at the pseudocode allows to bound the running time of this algorithm to at most $\displaystyle 3n + 2$ moves on an input of size $\displaystyle n$.
+\end{examplebox}
+\noindent Generally speaking, an algorithm is written using pseudocode in order to provide a language-independent idea of the solution to the given problem.
+\section{Complexity analysis}
+While algorithm performance can depend on the code or machine that is used, it is sufficient to get an approximate idea of its efficiency. \newline
+For this reason, the running time of an algorithm is typically described using a function $\displaystyle T(n)$ that represents the number of steps done by algorithm on an input of size $\displaystyle n$.
 
 \end{document}

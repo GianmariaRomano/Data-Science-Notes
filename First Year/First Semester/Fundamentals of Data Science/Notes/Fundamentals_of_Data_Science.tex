@@ -1,0 +1,226 @@
+\documentclass{report}
+
+% Packages for images.
+\usepackage{graphicx}
+\usepackage{float}
+
+% Packages for mathematical formulae/symbols.
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% Packages for code snippets and algorithms.
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codegray}{RGB}{110,110,110}
+\definecolor{codepurple}{RGB}{163,21,21}
+\definecolor{codeblue}{RGB}{0,0,180}
+\definecolor{backwhite}{RGB}{255,255,255}
+\definecolor{backcolour}{RGB}{248,248,248}
+\lstdefinestyle{mypython}{
+    language=Python,
+    backgroundcolor=\color{backwhite},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    numbers=left,
+    numbersep=8pt,
+    frame=single,
+    rulecolor=\color{black!20},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    keepspaces=true
+}
+\lstset{style=mypython}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% Creating the Example boxes.
+\definecolor{exampleback}{RGB}{240, 248, 240}
+\definecolor{exampleframe}{RGB}{34, 112, 62}
+\usepackage[most]{tcolorbox}
+\newtcolorbox{examplebox}[1][]{
+    colback=exampleback,
+    colframe=exampleframe,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Example\ifblank{#1}{}{: #1}},
+    arc=2pt,
+    boxrule=1pt
+}
+
+% Packages for styling and layout.
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+% Packages for plotting graphs.
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Packages for compilation.
+\usepackage{microtype}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    % Subject Title.
+    {\Huge \bfseries Fundamentals of Data Science \par}
+    \vspace{1.5cm}
+    
+    % Master's Degree and Faculty.
+    {\Large Master's Degree in Data Science, Sapienza Università di Roma \par}
+    {\large Faculty of Information Engineering, Informatics and Statistics \par}
+    \vspace{0.5cm}
+    
+    % Department.
+    {\large Department of Computer Science \par}
+    \vspace{3cm}
+    
+    % Author.
+    {\Large \textbf{Author:} Gianmaria Romano \par}
+    \vspace{3cm}
+
+    % Reference Bibliography
+    {\Large Reference Bibliography \par}
+    {\large M. P. Deisenroth, A. A. Faisal, C. S. Ong: \href{https://mml-book.github.io/}{\textit{Mathematics for Machine Learning}} \\
+    S. Prince: \href{https://udlbook.github.io/udlbook/}{\textit{Understanding Deep Learning}} \\
+    J. Watt, R. Borhani, A. K. Katsaggelos: \href{https://github.com/neonwatty/machine-learning-refined/tree/main}{\textit{Machine Learning Refined}} \\}
+    \vfill
+    
+    % Academic Year.
+    {\large Academic Year 2026/2027 \par}
+    \vspace*{1cm}
+\end{titlepage}
+
+\clearpage
+
+%\maketitle
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=Disclaimer]
+    This document contains notes for the \textbf{Fundamentals of Data Science} course, given by \textbf{Professors Cinelli and Spinelli} as part of the Master’s Degree in Data Science at \textbf{Sapienza Università di Roma} during the \textbf{first} semester of Academic Year \textbf{2026/2027}.
+    
+    \smallskip
+    \textbf{Note: }These notes may not cover all details of each lecture, so it is highly suggested to consult the Professor's official resources and materials. 
+    
+    \smallskip
+    \textbf{Important: }These notes are free to share and use, but please remember to credit me as the author and do not try to hide/remove this page.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=Contacts]
+    For further information or requests, feel free to \href{https://t.me/toritosenso}{contact me privately} or reach out through my repository: \href{https://github.com/GianmariaRomano/Data-Science-Notes}{https://github.com/GianmariaRomano/Data-Science-Notes}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=gray!75!black, title=License]
+    These documents are distributed under the \href{https://www.gnu.org/licenses/gpl-3.0.en.html}{GNU General Public License 3.0}, a form of copyleft intended for use on a manual, textbook or other documents. Material licensed under the current version of the license can be used for any purpose, as long as the use meets certain conditions:
+    \begin{itemize}
+        \item All previous authors of the work must be attributed.
+        \item All changes to the work must be logged.
+        \item All derivative works must be licensed under the same license.
+        \item The full text of the license, unmodified invariant sections as defined by the author if any, and any other added warranty disclaimers (such as a general disclaimer alerting readers that the document may not be accurate for example) and copyright notices from previous versions must be maintained.
+        \item Technical measures such as DRM may not be used to control or obstruct distribution or editing of the document.
+    \end{itemize}
+\end{tcolorbox}
+
+\tableofcontents
+
+\chapter{Introduction to data science}
+\section{The lifecycle of data science}
+Data science can be seen as an interdisciplinary field that focuses on extracting actionable insights and knowledge from structured and unstructured data using techniques based on statistical and mathematical methods, as well as computer science algorithms and domain-specific knowledge. \newline
+Generally speaking, a data science pipeline starts with understanding the business objectives and translating them into machine learning objectives. \newline
+Next, after collecting and cleaning data, the pipeline focuses on selecting and training a model and evaluating the results for deployment, ultimately monitoring model efficacy and restarting the pipeline, either by collecting new data or re-training the model, whenever needed.
+\section{The role of machine learning in data science}
+Artificial intelligence is a sub-field of computer science that focuses on creating agents that can perform tasks requiring human intelligence and problem solving. \newline
+More specifically, Tom Mitchell defines machine learning as ``the study of algorithms that improve their performance $\displaystyle P$ at some task $\displaystyle T$ with experience $\displaystyle E$'', typically focusing on tasks that would be too complex to just hard-code.
+\begin{examplebox}[Playing checkers]
+    The task $\displaystyle \langle P, T, E \rangle$ to train an agent to play checkers can be defined using the following components:
+    \begin{itemize}
+        \item The agent's performance $\displaystyle P$ is evaluated as the proportion of matches it wins against an arbitrary opponent.
+        \item The task $\displaystyle T$ to perform is to train the model to make the correct moves during a match.
+        \item The experience $\displaystyle E$ used to train the agent comes from matches the agent plays against itself.
+    \end{itemize}
+\end{examplebox}
+\noindent While machine learning and statistics typically use the same instruments and algorithms to discover patterns within data, the two fields are normally considered to be different areas because statistics follows a more rigorous inference-based approach, while machine learning focuses on making predictions using scalable and autonomous techniques.
+\section{Supervised learning}
+In a supervised learning task, the model is given some input examples $\displaystyle (\mathbf{x}, y)$ with the aim of learning a function $\displaystyle \hat{y} = h(\mathbf{x})$ that will be used to predict the target variable based on new, unseen data. \newline
+In particular, a supervised learning task can be formulated as a classification problem, which focuses on prediction discrete classes based on a probability distribution, or as a regression problem, which aims to predict continuous values.
+\begin{examplebox}[Some supervised learning tasks]
+    Common classification tasks can include binary classification on the sentiment of a review or multi-class classification of which cat breed is featured in an image. \newline
+    On the other hand, regression tasks can include univariate prediction of house prices or bivariate prediction of the freezing and boiling points of a chemical.
+\end{examplebox}
+\section{Unsupervised learning}
+In an unsupervised task, a model uses some input data $\displaystyle \mathbf{x}$ to discover patterns and structural relationships or to generate new data samples.
+\begin{examplebox}[Generative models as unsupervised learning]
+    Generative models, such as generative adversarial networks or (variational) autoencoders, are considered to be an example of unsupervised learning because they learn how to create new data by sampling information from a distribution of unlabeled data.
+\end{examplebox}
+\section{Reinforcement learning}
+A reinforcement task is defined using a sequence of states, actions and rewards that the agent uses to find a policy that allows it to maximize its overall reward. \newline
+In this setting, the main challenges come from the stochastic nature of the task, which means that the environment might react differently to the same action, and the trade-off between exploitation and exploration as the agent needs to determine whether to stick to a known good policy or try out new actions in the hopes of obtaining a better reward.
+\begin{examplebox}[Chess as a reinforcement learning task]
+    It is possible to train an agent to play chess using reinforcement learning. \newline
+    In fact, the idea is to consider the task as a configuration $\displaystyle (S, A, R)$ in which $\displaystyle S$ represents the set of possible valid states and $\displaystyle A$ represents the set of possible legal moves, while the reward $\displaystyle R$ will be positive whenever the agent manages to take the opponent's pieces and negative whenever the agent loses its pieces.
+\end{examplebox}
+
+\chapter{Vectors}
+\section{Representing data using vectors}
+When dealing with supervised learning tasks, a dataset consists of measurements of some features of objects, which are used to predict a target variable. \newline
+However, while features can be represented as numerical, categorical or binary variables, most machine learning require numerical inputs. \newline
+For this reason, categorical variables are often transformed into numerical representations through one-hot encoding, which, in the case of mutually exclusive classes, represents each feature using a vector of type $\displaystyle \mathbf{e}_i = (0, \dots, 1, \dots, 0)^T$, where the position of the single non-zero entry identifies the class to which the observation belongs.
+\begin{examplebox}[The IRIS Dataset]
+    Fisher's IRIS Dataset is a toy example of a dataset that classifies each flower into one of three possible subspecies based on petal and sepal measurements.
+\end{examplebox}
+\noindent From a mathematical perspective, a dataset can be described as a set $\displaystyle \mathcal{D} = \{(\mathbf{x}^{(i)}, y^{(i)}\}_{i = 1}^n \subset (X \times Y)^n$, where $\displaystyle X \subseteq \mathbb{R}^p$ is known as the ``input space'' while $\displaystyle Y$ is known as the target space, or as a matrix whose rows represent single observations and whose columns denote specific features. \newline
+In particular, it is assumed that the dataset is generated from an unknown distribution $\displaystyle P_{X, Y}$ on $\displaystyle X \times Y$, which the model aims to (partially) learn, and that each observed sample $\displaystyle (\mathbf{x}^{(i)}, y^{(i)})$ is drawn independent and identically distributed from $\displaystyle P_{X, Y}$, which means that all samples are mutually independent and come from the same probability distribution.
+\section{Spanning sets and bases}
+Assuming a dataset has been mean-centered, each observed sample can be seen as a data point in the corresponding input vector space. \newline
+From a broader perspective, a collection of vectors is said to form a spanning set if combining the vectors using addition and scalar multiplication allows to create every vector in the corresponding vector space. \newline
+In particular, a basis is any minimal spanning set that, having no redundant vectors, satisfies the condition of linear independence.
+\begin{examplebox}[Spanning sets in $\displaystyle \mathbb{R}^2$]
+    In the vector space $\displaystyle \mathbb{R}^2$, a possible spanning set can be composed using the canonical vectors $\displaystyle \mathbf{e}_1 = (1, 0)^T$ and $\displaystyle \mathbf{e}_2 = (0, 1)^T$ as each point $\displaystyle (x, y) \in \mathbb{R}^2$ can be reformulated as $\displaystyle x\mathbf{e}_1 + y\mathbf{e}_2$. \newline
+    Additionally, it is possible to observe that this spanning set also works as a basis for $\displaystyle \mathbb{R}^2$ because its vectors are linearly independent.
+\end{examplebox}
+\noindent Generally speaking, a candidate basis $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_N \in \mathbb{R}^N$ is able to perfectly represent a dataset $\displaystyle \{\mathbf{x}_i\}_{p = 1}^P$ if it is possible to find some weights such that
+\[\sum_{n = 1}^N \mathbf{c}_nw_{n, p} = \mathbf{x}_p \text{ } \forall p \in \{1, \dots, P\}\]
+\subsection{Standard bases}
+The canonical vectors $\displaystyle \mathbf{e}_1, \dots, \mathbf{e}_N \in \mathbb{R}^N$ always form a standard basis such that
+\[\mathbf{e}_n^T\mathbf{e}_m = 0 \text{ } \forall n \neq m \text{ and } \lVert \mathbf{e}_n \rVert_2^2 = 1 \text{ } \forall n \in \{1, \dots, N\}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/standard_basis.png}
+    \caption{Example of a standard basis in $\mathbb{R}^2$.}
+    \label{fig:standard_basis}
+\end{figure}
+\noindent In this case, representing a vector $\displaystyle \mathbf{x}_p$ is a trivial task as the encoding weights will always be given by $\displaystyle \mathbf{w}_p = \mathbf{x}_p$. \newline
+It should be noticed that all these properties can also be expressed using the concatenated basis matrix $\displaystyle \mathbf{C}$: knowing that $\displaystyle \mathbf{C}^T\mathbf{C} = \mathbf{CC}^T = \mathbf{I}_{N \times N}$, it is in fact possible to find that
+\[\mathbf{w}_p = \mathbf{C}^T\mathbf{x}_p \text{ and } \mathbf{CC}^T\mathbf{x}_p = \mathbf{x}_p \text{ } \forall p \in \{1, \dots, P\}\]
+\subsection{Non-standard bases}
+When dealing with a non-standard basis, the new vector $\displaystyle \mathbf{w}_p$ acts as the new encoding of $\displaystyle \mathbf{x}_p$ in the transformed feature space whose coordinate axes are defined by the spanning set.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/non_standard_basis.png}
+    \caption{Example of a non-standard basis in $\mathbb{R}^2$.}
+    \label{fig:non_standard_basis}
+\end{figure}
+\noindent Therefore, using the concatenated basis matrix, the goal is to find the encoding that solves the linear system of equations
+\[\mathbf{C}^T\mathbf{Cw}_p = \mathbf{C}^T\mathbf{x}_p \text{ } \forall p \in \{1, \dots, P\} \text{, which is equivalent to solving}\]
+\[\min_{\mathbf{w}_1, \dots, \mathbf{w}_P} \frac{1}{P}\sum_{p = 1}^P \lVert \mathbf{Cw}_p - \mathbf{x}_p \rVert_2^2 \text{, which represents the average reconstruction error.}\]
+\begin{examplebox}[A non-standard basis in $\displaystyle \mathbb{R}^2$]
+    Consider a non-standard basis in $\displaystyle \mathbb{R}^2$ given by
+    \[\mathbf{c}_1 = \begin{bmatrix}
+        2 \\
+        1 \\
+    \end{bmatrix} \text{ and } \mathbf{c}_2 = \begin{bmatrix}
+        1 \\
+        2 \\
+    \end{bmatrix}\]
+    Expressing a vector using the equation $\displaystyle \mathbf{x}_p = w_{1, p}\mathbf{c}_1 + w_{2, p}\mathbf{c}_2$ reveals that this basis corresponds to a transformation that consists of a rotation followed by a vector shearing.
+\end{examplebox}
+
+\end{document}
