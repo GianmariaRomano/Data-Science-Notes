@@ -21,6 +21,7 @@
 | Date | Topic |
 | :---: | :---: |
 | September 24 | Introduction to the course. |
+| September 28 | Data types and introduction to algorithms. |
 
 </details>
 
