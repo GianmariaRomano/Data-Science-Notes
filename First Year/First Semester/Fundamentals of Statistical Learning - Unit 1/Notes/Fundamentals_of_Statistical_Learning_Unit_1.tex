@@ -53,7 +53,7 @@
     colframe=exampleframe,
     coltitle=white,
     fonttitle=\bfseries,
-    title={#1},
+    title={Example\ifblank{#1}{}{: #1}},
     arc=2pt,
     boxrule=1pt
 }
@@ -107,8 +107,8 @@
     % Reference Bibliography
     {\Large Reference Bibliography \par}
     {\large F. M. Dekking, C. Kraaikamp, H. P. Lopuhaa, L. E. Meester: \href{https://cis.temple.edu/~latecki/Courses/CIS2033-Spring13/Modern_intro_probability_statistics_Dekking05.pdf}{\textit{A Modern Introduction to Probability and Statistics}} \\
-    L. Wasserman: \href{https://egrcc.github.io/docs/math/all-of-statistics.pdf}{\textit{All of Statistics: A Concise Course in Statistical Inference}}} \\
-    N. Matloff: \href{https://events.psai.ph/2018/ac/downloads/trainings/T3/book_matloff.pdf}{\textit{The Art of R Programming}} \\
+    L. Wasserman: \href{https://egrcc.github.io/docs/math/all-of-statistics.pdf}{\textit{All of Statistics: A Concise Course in Statistical Inference}} \\
+    N. Matloff: \href{https://events.psai.ph/2018/ac/downloads/trainings/T3/book_matloff.pdf}{\textit{The Art of R Programming}} \\}
     \vfill
     
     % Academic Year.
@@ -150,14 +150,14 @@
 \section{Introducing a qualitative idea of probability}
 Probability is the field of mathematics that studies events and how likely they are to occur in order to describe relationships or patterns in existing models. \newline
 Starting from a model's data generation process, probability aims to investigate the properties of the observed outcomes, whereas inference makes use of the observed outcomes to study the underlying data generation process.
-\begin{examplebox}[\textbf{Example: }Diffusion models]
+\begin{examplebox}[Diffusion models]
     Diffusion models are a type of generative model that create new data by gradually reversing a noising process. \newline
     From a mathematical perspective, a diffusion model can be described using a \textit{Markovian Direct Acyclic Graph} whose nodes represent the observable or latent variables involved in the process and whose edges denote the transition probabilities of the model.
 \end{examplebox}
 \section{Formalizing probability using set theory}
 It is possible to formalize probabilistic experiments using set theory. \newline
 In fact, starting from a sample space $\displaystyle \Omega$, which represents the set of all possible outcomes, an event $\displaystyle A$ on $\displaystyle \Omega$ can be defined as the set of all favourable outcomes in which the event does occur.
-\begin{examplebox}[\textbf{Example: }Tossing a coin]
+\begin{examplebox}[Tossing a coin]
     Suppose you toss a coin: it is possible to construct a random experiment by defining the sample space $\displaystyle \Omega = \{Heads, Tails\}$ and considering the event $\displaystyle A = \{Heads\}$.
 \end{examplebox}
 \subsection{Set operations on probability spaces}
@@ -189,7 +189,7 @@ According to this definition, a probability measure function $\displaystyle \mat
     This last axiom can be generalized for a sequence of $\displaystyle n$ events through the inclusion-exclusion principle, which states that
     \[\mathbb{P}\Bigg(\bigcup_{i = 1}^n A_i\Bigg) = \sum_{k = 1}^n (-1)^{k + 1}\Bigg(\sum_{1 \leq i_1 < \dots < i_k \leq n} \mathbb{P}(A_{i_1} \cap \dots A_{i_k})\Bigg)\]
 \end{enumerate}
-\begin{examplebox}[\textbf{Example: }Checking polynomial identities using a randomized algorithm]
+\begin{examplebox}[Checking polynomial identities using a randomized algorithm]
     Consider two polynomials of degree $\displaystyle d$:
     \[F(x) = \prod_{i = 1}^d (x - a_i) \text{ and } G(x) = \sum_{i = 1}^d c_ix^i\]
     A simple way of checking whether $\displaystyle F(x) \equiv G(x)$ involves expanding $\displaystyle F(x)$ into its canonical form and compare the resulting coefficient with those of $\displaystyle G(x)$, although this algorithm would require performing $\displaystyle \Theta(d^2)$ operations. \newline
@@ -252,7 +252,7 @@ Boole's inequality states that, for every sequence of events $\displaystyle \{A_
 \section{Understanding conditional probability}
 Given a sample space $\displaystyle \Omega$, the conditional probability that event $\displaystyle A$ occurs knowing that event $\displaystyle B$ was observed can be defined as follows:
 \[\mathbb{P}(A|B) = \frac{\mathbb{P}(A \cap B)}{\mathbb{P}(B)} \text{, with $\mathbb{P}(B) > 0$.}\]
-\begin{examplebox}[\textbf{Example: }Measles and red spots]
+\begin{examplebox}[Measles and red spots]
     Consider the two events
     \[A = \{\text{I have measles}\} \text{ and } B = \{\text{I have red spots on my face}\}\]
     Knowing that red spots are a common symptom of measles, it will be the case that $\displaystyle \mathbb{P}(B|A) = 1$. \newline
@@ -303,7 +303,7 @@ A (countable) sequence of events $\displaystyle \{A_1, \dots, A_n\}$ is said to 
 Additionally, a (countable) sequence of events $\displaystyle \{A_1, \dots, A_n\}$ is said to be mutually independent if, for any group of $\displaystyle k$ events in the sequence, it is the case that
 \[\mathbb{P}\Bigg(\bigcap_{i = 1}^k A_{n_i}\Bigg) = \prod_{i = 1}^k \mathbb{P}(A_{n_i}) \text{, for $1 \leq k \leq n$ and $k \in \mathbb{N}$.}\]
 It should be noticed that, while mutual independence always implies pairwise independence, the converse statement is not true because a sequence of events can be pairwise independent but not mutually independent.
-\begin{examplebox}[\textbf{Example: }A special die]
+\begin{examplebox}[A special die]
     Given a balanced four-faced die, which has a red face, a green face, a blue face and a striped face with all three colours, define the events
     \[R = \{\text{I see red}\} \text{, } G = \{\text{I see green}\} \text{ and } B = \{\text{I see blue}\}\]
     It is possible to show that these events are pairwise independent as
@@ -318,7 +318,7 @@ It should be noticed that, while mutual independence always implies pairwise ind
 \subsection{Conditional independence}
 Two events $\displaystyle A$ and $\displaystyle B$ are said to be conditionally independent given an event $\displaystyle C$ if, knowing that $\displaystyle C$ occurred, observing event $\displaystyle B$ does not add information about the probability of $\displaystyle A$ occurring, resulting in
 \[\mathbb{P}(A \cap B|C) = \mathbb{P}(A|C)\mathbb{P}(B|C) \text{, with $\mathbb{P}(C) > 0$.}\]
-\begin{examplebox}[\textbf{Example: }University admissions]
+\begin{examplebox}[University admissions]
     For a student applying to a Master's Degree course, define the events
     \[DS = \{\text{Accepted to Data Science}\} \text{ and } ST = \{\text{Accepted to Statistics}\}\]
     Knowing that event $\displaystyle DS$ occurred can provide additional information about the likelihood of event $\displaystyle ST$ occurring, meaning that the two events are not independent. \newline
@@ -343,7 +343,7 @@ Bayes' theorem allows to switch between conditional probabilities by setting
 In particular, when considering a sequence of mutually exclusive hypotheses $\displaystyle \{H_1, \dots, H_n\}$ with known prior probabilities, Bayes' theorem allows to compute the posterior probability of hypothesis $\displaystyle H_i$ given the observed evidence $\displaystyle E$ as
 \[\mathbb{P}(H_i|E) = \frac{\mathbb{P}(E|H_i)\mathbb{P}(H_i)}{\mathbb{P}(E)} = \frac{\mathbb{P}(E|H_i)\mathbb{P}(H_i)}{\sum_{j = 1}^n \mathbb{P}(E|H_j)\mathbb{P}(H_j)}\]
 In fact, the posterior probability of each hypothesis given the observed evidence will be computed in terms of the likelihood $\displaystyle \mathbb{P}(E|H_i)$, which describes the probability of seeing the evidence given that the hypothesis $\displaystyle H_i$ is true, the prior probability $\displaystyle \mathbb{P}(H_i)$, which describes the probability of $\displaystyle H_i$ being true, and the marginal probability $\displaystyle \mathbb{P}(E)$, which denotes the total probability of seeing the evidence under all possible hypotheses.
-\begin{examplebox}[\textbf{Example: }Iterated Bayes for medical diagnosis]
+\begin{examplebox}[Iterated Bayes for medical diagnosis]
     Consider the events
     \[P = \{\text{I test positive to a disease}\} \text{ and } D = \{\text{I actually have the disease}\}\]
     In particular, the disease affects $\displaystyle 0.1\%$ of the population and it is known that a dedicated test correctly detects $\displaystyle 99\%$ of disease case but produces a false positive result on $\displaystyle 1\%$ of occasions, which means that
@@ -357,7 +357,7 @@ When considering an event $\displaystyle E$ on a sequence of mutually exclusive 
 
 \chapter{Random variables}
 \section{Defining random variables}
-Given a probability space $\displaystyle (\Omega, \mathbb{P})$, a random variable is a (measurable) mapping $\displaystyle X: \Omega \to S_X \subseteq \mathbb{R}$ that maps every outcome $\displaystyle \omega \in \Omega$ onto a value $\displaystyle X(\omega) \in \mathbb{R}$, with the set set $\displaystyle S_X = \{X(\omega) : \omega \in \Omega\}$ forming the ``support`` of $\displaystyle X$. \newline
+Given a probability space $\displaystyle (\Omega, \mathbb{P})$, a random variable is a (measurable) mapping $\displaystyle X: \Omega \to S_X \subseteq \mathbb{R}$ that maps every outcome $\displaystyle \omega \in \Omega$ onto a value $\displaystyle X(\omega) \in \mathbb{R}$, with the set set $\displaystyle S_X = \{X(\omega) : \omega \in \Omega\}$ forming the ``support'' of $\displaystyle X$. \newline
 This concept can be extended to define a random vector, also known as a $\displaystyle p-$variate random variable, as a (measurable) mapping $\displaystyle \mathbf{X}: \Omega \to \mathbb{R}^p$ that assigns a vector $\displaystyle \mathbf{X}(\omega) \in \mathbb{R}^p$ to each outcome $\displaystyle \omega \in \Omega$.
 \begin{figure}[H]
     \centering
@@ -376,20 +376,20 @@ This definition allows to describe the probability distribution of a random vari
 \end{figure}
 \noindent When defining the probability distribution of a random variable $\displaystyle X$, it should be noticed that $\displaystyle \mathbb{P}(X \in E)$ represents an induced distribution supported on $\displaystyle \mathbb{R}$ that is constructed based on the assumed distribution $\displaystyle \mathbb{P}(X^{-1}(E))$ supported on $\displaystyle \Omega$.
 \subsection{Discrete random variables}
-A random variable is said to be ``discrete`` if its support is a countable set, which means that the random variable can take at most a finite, or at least countable, number of values. \newline
+A random variable is said to be ``discrete'' if its support is a countable set, which means that the random variable can take at most a finite, or at least countable, number of values. \newline
 For this reason, a discrete random variable $\displaystyle X: \Omega \to S_X$ can be described using a probability mass function $\displaystyle p_X(x) = \mathbb{P}(X = x)$ that satisfies the following conditions:
 \begin{itemize}
     \item $\displaystyle p_X(x) \ge 0 \text{ } \forall x \in \mathbb{R}$, with $\displaystyle p_X(x) > 0 \text{ } \forall x \in S_X$ specifically.
     \item $\displaystyle \sum_{x \in S_X} p_X(x) = 1$.
 \end{itemize}
-\begin{examplebox}[\textbf{Example: }Repeated coin flips]
+\begin{examplebox}[Repeated coin flips]
     Consider $\displaystyle 5$ independent flips of a fair coin: since each flip can be seen as a repetition of a binary experiment with sample space $\displaystyle \Omega = \{Heads, Tails\}$, it is possible to define the overall outcome space as the Cartesian product $\displaystyle \Omega^{\otimes 5}$. \newline
     Assuming symmetry and independence between coin flips, each outcome $\displaystyle \omega \in \Omega^{\otimes 5}$ is equally likely and has probability $\displaystyle \mathbb{P}(\omega) = \frac{1}{|\Omega^{\otimes 5}|} = \frac{1}{32}$. \newline
     Define now the random variable $\displaystyle X = \{\text{Number of tails in $5$ independent coin flips}\}$: on its support $\displaystyle S_X = \{0, 1, 2, 3, 4, 5\}$, the probability definition of $\displaystyle X$ can be defined as
     \[p_X(x) = \mathbb{P}(X = x) = \binom{5}{x}\bigg(\frac{1}{2}\bigg)^5 \text{, for $x \in S_X$.}\]
 \end{examplebox}
 \subsection{Continuous random variables}
-A random variable is said to be ``continuous`` if its support is an uncountable set. \newline
+A random variable is said to be ``continuous'' if its support is an uncountable set. \newline
 Since, in this setting, $\displaystyle \mathbb{P}(X = x) \to 0 \text{ } \forall x \in \mathbb{R}$, a continuous random variable $\displaystyle X: \Omega \to S_X$ is described using a probability density function $\displaystyle f_X(x)$ that satisfies the following conditions:
 \begin{itemize}
     \item $\displaystyle \mathbb{P}(a \leq X \leq b) = \mathbb{P}(X \in [a, b]) = \int_a^b f_X(x) \ dx$.
@@ -416,7 +416,7 @@ Furthermore, the cumulative distribution function of a random variable $\display
     In fact, if $\displaystyle X$ is a discrete random variable with probability mass function $\displaystyle p_X(x)$, then its cumulative function is given by
     \[F_X(x) =\sum_{x_i \leq x} p_X(x_i) = \mathbb{P}(X < x) + p_X(x) \text{, with $p_X(x) = F_X(x) - F_X(x^-)$.}\]
 \end{itemize}
-\begin{examplebox}[\textbf{Example: }Playing darts]
+\begin{examplebox}[Playing darts]
     Suppose you throw a dart on a disc of radius $\displaystyle r$ at random. \newline
     Define the random variable $\displaystyle X = \{\text{Distance of the hitting point from the center}\}$ and note that its support $\displaystyle [0, r]$ is an uncountable set.
     \begin{align*}
@@ -443,7 +443,7 @@ Furthermore, the cumulative distribution function of a random variable $\display
 Let $\displaystyle X: \Omega \to S_X$ be a continuous random variable with cumulative distribution function $\displaystyle F_X(x)$: for a given level $\displaystyle p \in [0, 1]$, the quantile function is defined as
 \[q_p = \mathbb{Q}(p) = \inf\{x \in S_X: F_X(x) = p\}\]
 In particular, if $\displaystyle F_X(x)$ is strictly increasing in $\displaystyle \mathbb{R}$, then it is also invertible and it is possible to set
-\[q_p = \mathbb{Q}(p) = F_X^{-1}(p) \text{, with } p = F_X(q_p) \int_{-\infty}^{q_p} f_X(t) \ dt \text{ representing the quantile at level $p$.}\]
+\[q_p = \mathbb{Q}(p) = F_X^{-1}(p) \text{ and } p = F_X(q_p) = \int_{-\infty}^{q_p} f_X(t) \ dt \text{.}\]
 However, since discrete random variables tend to have weakly monotonic cumulative distribution functions, a more general definition of quantile function is typically used. \newline
 In fact, given any random variable $\displaystyle X: \Omega \to S_X$ with cumulative distribution function $\displaystyle F_X(x)$, the quantile function for a given level $\displaystyle p \in [0, 1]$ is formulated as
 \[q_p = \mathbb{Q}(p) = \inf\{x \in S_X : F_X(x) \ge p\}\]
