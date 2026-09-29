@@ -201,10 +201,10 @@ Most of the time, however, data is stored using a cloud infrastructure that cons
 An algorithm can be seen as a set of instructions, to solve a given problem. \newline
 In particular, an algorithm is evaluated based on its correctness, which determines whether the algorithm works on every possible input or not, and its efficiency, which measures the time taken by the algorithm to find a solution to the given problem.
 \begin{examplebox}[The maximum value of an array]
-    Consider an algorithm that finds the maximum value in an array of $\displaystyle N$ elements:
+    Consider an algorithm that finds the maximum value in an array of $\displaystyle n$ elements:
     \begin{algorithm}[H]
         \caption{Finding the Maximum Value in an Array.}
-        \KwData{An array $A$ of size $\displaystyle n$}
+        \KwData{An array $\displaystyle A$ of size $\displaystyle n$}
         \KwResult{$\displaystyle \max(A)$}
     
         $m \gets A[1]$\;
@@ -225,7 +225,108 @@ In particular, an algorithm is evaluated based on its correctness, which determi
 \end{examplebox}
 \noindent Generally speaking, an algorithm is written using pseudocode in order to provide a language-independent idea of the solution to the given problem.
 \section{Complexity analysis}
-While algorithm performance can depend on the code or machine that is used, it is sufficient to get an approximate idea of its efficiency. \newline
-For this reason, the running time of an algorithm is typically described using a function $\displaystyle T(n)$ that represents the number of steps done by algorithm on an input of size $\displaystyle n$.
+The running time of an algorithm is a function $\displaystyle T(n)$ that describes the number of steps done by the algorithm to solve a problem on an input of size $\displaystyle n$. \newline
+Since algorithm efficiency often depends on the code or machine that is used, it is often sufficient to find an estimate of the running time of an algorithm through asymptotic analysis. \newline
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/complexities.png}
+    \caption{Visual comparison of common running time growth rates.}
+    \label{fig:complexity}
+\end{figure}
+\noindent Therefore, given a function $\displaystyle g: \mathbb{N} \to \mathbb{R}^+$, it is possible to define the following asymptotic bounds:
+\begin{itemize}
+    \item \textbf{Upper bound: }$\displaystyle T(n) = O(g(n))$ if it is possible to find $\displaystyle c > 0$ and $\displaystyle n_0 \ge 0$ such that
+    \[0 \leq T(n) \leq c \cdot g(n) \text{ } \forall n \ge n_0\]
+    \item \textbf{Lower bound: }$\displaystyle T(n) = \Omega(g(n))$ if it is possible to find $\displaystyle c > 0$ and $\displaystyle n_0 \ge 0$ such that
+    \[0 \leq c \cdot g(n) \leq T(n) \text{ } \forall n \ge n_0\]
+    \item \textbf{Tight bound: }$\displaystyle T(n) = \Theta(g(n))$ if it possible to find $\displaystyle c_1, c_2 > 0$ and $\displaystyle n \ge n_0$ such that
+    \[0 \leq c_1 \cdot g(n) \leq T(n) \leq c_2 \cdot g(n) \text{ } \forall n \ge n_0\]
+\end{itemize}
+\begin{examplebox}[The prefix sum problem] % DA FINIRE
+    The following algorithm computes the prefix sum for an array of $\displaystyle n$ elements:
+    \begin{algorithm}[H]
+        \caption{Computing the Prefix Sum of an Array.}
+        \KwData{An array $\displaystyle A$ of size $\displaystyle n$}
+        \KwResult{An array $\displaystyle S$ of size $\displaystyle n$ such that $S[i] = \sum_{k = 1}^i A[k]$}
+    
+        $n \gets len(A)$\;
+        \For{$i \gets 1$ \KwTo $n$}{
+            $S[i] \gets 0$\;
+            \For{$j = 1$ \KwTo $i$}{
+                $S[i] \gets S[i] + A[j]$\;
+            }
+        }
+        \Return{$S$}\;
+    \end{algorithm}
+    \noindent Since this solution computes $\displaystyle i \leq n$ operations at each iteration, its running time can be bounded as $\displaystyle T(n) = n^2 + 3n + 2 = O(n^2)$. \newline
+    However, since $\displaystyle T(n) = \Omega(n)$, there is a gap between the lower and upper running time bounds, requiring further investigation to find a better or tighter bound. \newline
+    For this reason, one can opt for an alternative algorithm that re-uses a previously computed prefix $\displaystyle S[i - 1]$ to compute $\displaystyle S[i]$ in constant time.
+    \begin{algorithm}[H]
+        \caption{Alternative Algorithm for the Prefix Sum of an Array.}
+        \KwData{An array $\displaystyle A$ of size $\displaystyle n$}
+        \KwResult{An array $\displaystyle S$ of size $\displaystyle n$ such that $S[i] = \sum_{k = 1}^i A[k]$}
+    
+        $n \gets len(A)$\;
+        $S[1] \gets A[1]$\;
+        \For{$i \gets 2$ \KwTo $n$}{
+            $S[i] \gets S[i - 1] + A[i]$\;
+        }
+        \Return{$S$}\;
+    \end{algorithm}
+    \noindent In fact, this strategy allows to reduce the overall time complexity to the optimal value of $\displaystyle T(n) = \Theta(n)$.
+\end{examplebox}
+\subsection{The ``gap problem'' in asymptotic analysis}
+The gap problem is a situation in which the lower and upper running time bounds of an algorithm do not match, meaning that no tight bound for the algorithm's complexity can be defined.
+\begin{examplebox}[Matrix multiplication]
+    Suppose you want to compute the product between two matrices of size $\displaystyle n \times n$: the running time of the standard algorithm has a lower bound of $\displaystyle \Omega(n^2)$, which comes from the need to read and write each element in the product matrix, and an upper bound of $\displaystyle O(n^3)$, which denotes the overall computational cost. \newline
+    Since the lower and upper bounds do not match, it is not possible to define a tight running time bound for the matrix multiplication algorithm.
+\end{examplebox}
+\section{Recursive algorithms}
+In some cases, it is possible to solve a problem using a recursive algorithm, which makes use of a function that (cyclically) calls itself to solve smaller pieces of a complex problem.
+\begin{examplebox}[The Fibonacci sequence]
+    It is possible to compute a generic term of the Fibonacci sequence using a recursive algorithm.
+    \begin{algorithm}[H]
+        \caption{Recursive Fibonacci.}
+        \KwData{A non-negative integer $\displaystyle n$}
+        \KwResult{The $\displaystyle n^{th}$ element of the Fibonacci sequence}
+        
+        \If{$n \leq 1$}{
+            \Return{$1$}\;
+        }
+        $f_1 \gets Fibonacci(n - 1)$\;
+        $f_2 \gets Fibonacci(n - 2)$\;
+        \Return{$f_1 + f_2$}\;
+    \end{algorithm}
+    \noindent In particular, the running time of this algorithm can be formulated as
+    \[T(n) = \begin{cases}
+        2 &\quad\text{if $n = 0$ or $n = 1$} \\
+        T(n - 1) + T(n - 2) + 3 &\quad\text{if $n \ge 2$} \\
+    \end{cases}\]
+    Unrolling this formulation reveals that
+    \begin{align*}
+        T(n)
+            &= T(n - 1) + T(n - 2) + 3 \ge T(n - 2) + T(n - 2) = 2T(n - 2) \\
+            &\ge 2 \cdot 2T(n - 4) = 4T(n - 4) \ge \dots \ge 2^iT(n - 2i) \ge \dots \\
+            &\ge 2^{\frac{n}{2}}T\bigg(n - 2\bigg(\frac{n}{2}\bigg)\bigg) = 2^{\frac{n}{2}}T(0) = 2^{\frac{n}{2} + 1} = O(2^{\frac{n}{2}})
+    \end{align*}
+    Since the recursive solution runs in exponential time, it can be more convenient to opt for a trivial constant-time algorithm based on Binet's formula or for a linear-time iterative algorithm.
+    \begin{algorithm}[H]
+        \caption{Iterative Fibonacci.}
+        \KwData{A non-negative integer $\displaystyle n$}
+        \KwResult{The $\displaystyle n^{th}$ element of the Fibonacci sequence}
+        
+        \If{$n \leq 1$}{
+            \Return{$1$}\;
+        }
+        $previous \gets0$\;
+        $current \gets 1$\;
+        \For{$i \gets 2$ \KwTo $n$}{
+            $new \gets previous + current$\;
+            $previous \gets current$\;
+            $current \gets new$\;
+        }
+        \Return{$current$}\;
+    \end{algorithm}
+\end{examplebox}
 
 \end{document}
