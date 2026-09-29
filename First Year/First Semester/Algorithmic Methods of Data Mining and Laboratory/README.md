@@ -31,7 +31,7 @@
   - C. Aggarwal: [*Data Mining: The Textbook*](https://www.charuaggarwal.net/Data-Mining.htm)
   - R. Zafarani, M. A. Abbasi, and H. Liu: [*Social Media Mining: An Introduction*](https://dmml.asu.edu/smm/)
   - J. Leskovec, A. Rajaraman, and J. Ullman: [*Mining of Massive Datasets*](http://www.mmds.org/)
-  • C. D. Manning, P. Raghavan, and H. Schütze: [*Introduction to Information Retrieval*](https://www-nlp.stanford.edu/IR-book/)
-  • J. Janssens: [*Data Science at the Command Line*](https://github.com/jeroenjanssens/data-science-at-the-command-line)
+  - C. D. Manning, P. Raghavan, and H. Schütze: [*Introduction to Information Retrieval*](https://www-nlp.stanford.edu/IR-book/)
+  - J. Janssens: [*Data Science at the Command Line*](https://github.com/jeroenjanssens/data-science-at-the-command-line)
 
 ---
