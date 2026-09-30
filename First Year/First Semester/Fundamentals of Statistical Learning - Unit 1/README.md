@@ -23,6 +23,7 @@
 | September 23 | Introduction to the course and recap of basic probability. |
 | September 24 | Introduction to the R programming language. |
 | September 25 | Random variables. |
+| September 30 | Quantile functions and common distributions: Bernoulli, Binomial, Uniform. |
 
 </details>
 
