@@ -444,8 +444,90 @@ Let $\displaystyle X: \Omega \to S_X$ be a continuous random variable with cumul
 \[q_p = \mathbb{Q}(p) = \inf\{x \in S_X: F_X(x) = p\}\]
 In particular, if $\displaystyle F_X(x)$ is strictly increasing in $\displaystyle \mathbb{R}$, then it is also invertible and it is possible to set
 \[q_p = \mathbb{Q}(p) = F_X^{-1}(p) \text{ and } p = F_X(q_p) = \int_{-\infty}^{q_p} f_X(t) \ dt \text{.}\]
-However, since discrete random variables tend to have weakly monotonic cumulative distribution functions, a more general definition of quantile function is typically used. \newline
+\begin{examplebox}[The median of a Pareto distribution]
+    A continuous random variable $\displaystyle X$ is said to follow a Pareto distribution with parameter $\displaystyle \alpha > 0$ if its cumulative distribution function is defined as
+    \[F_X(x) = \begin{cases}
+        0 &\quad\text{if $x < 1$} \\
+        1 - \frac{1}{x^\alpha} &\quad\text{if $x \ge 1$} \\
+    \end{cases}\]
+    Assuming $\displaystyle \alpha = 0.5$, suppose you want to find the median of the distribution: since $\displaystyle F_X(x)$ is strictly increasing in $\displaystyle [1, +\infty)$, it is possible to find
+    \[F(q_p) = 1 - \frac{1}{\sqrt{q_p}} = \frac{\sqrt{q_p} - 1}{\sqrt{q_p}} = 0.5 \Rightarrow 0.5\sqrt{q_p} = \sqrt{q_p} - 1 \Rightarrow 0.5\sqrt{q_p} = 1 \Rightarrow q_p = 4\]
+\end{examplebox}
+\noindent However, since discrete random variables tend to have weakly monotonic cumulative distribution functions, a more general definition of quantile function is typically used. \newline
 In fact, given any random variable $\displaystyle X: \Omega \to S_X$ with cumulative distribution function $\displaystyle F_X(x)$, the quantile function for a given level $\displaystyle p \in [0, 1]$ is formulated as
 \[q_p = \mathbb{Q}(p) = \inf\{x \in S_X : F_X(x) \ge p\}\]
+\begin{examplebox}[The median of a discrete distribution]
+    Let $\displaystyle X$ be a discrete random variable whose probability distribution is given by
+    \[p_X(x) = \begin{cases}
+        \frac{2}{5} &\quad\text{if $x = -1$} \\
+        \frac{1}{5} &\quad\text{if $x = 0$} \\
+        \frac{2}{5} &\quad\text{if $x = 1$} \\
+    \end{cases} \quad\quad\quad F_X(x) = \begin{cases}
+        0 &\quad\text{if $x < -1$} \\
+        \frac{2}{5} &\quad\text{if $x \in [-1, 0)$} \\
+        \frac{3}{5} &\quad\text{if $x \in [0, 1)$} \\
+        1 &\quad\text{if $x \ge 1$} \\
+    \end{cases}\]
+    Suppose you want to find the median of the distribution: since $\displaystyle F_X(x)$ is not strictly increasing, it is necessary to use the general definition of quantile function to find
+    \[q_p = \inf\{x \in S_X : F_X(x) \ge 0.5\} = 0\]
+\end{examplebox}
+\section{Common univariate distributions}
+Sometimes, the behaviour of a random variable can be described by some known theoretical probability distribution.
+\subsection{The Bernoulli distribution}
+A discrete random variable $\displaystyle X$ is said to follow a Bernoulli distribution with parameter $\displaystyle p \in [0, 1]$, which is written as $\displaystyle X \sim Ber(p)$, if its probability mass function is defined as
+\[p_X(x) = p^x(1 - p)^{1 - x} \text{, for $x \in \{0, 1\}$.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/bernoulli.png}
+    \caption{PMF and CDF for a random variable $\displaystyle X \sim Ber(0.7)$.}
+    \label{fig:bernoulli}
+\end{figure}
+\noindent For this reason, Bernoulli random variables come in handy to model binary experiments whose only possible outcomes are success, which is denoted by $\displaystyle X = 1$, and failure, which is denoted by $\displaystyle X = 0$.
+\begin{examplebox}[Logistic regression]
+    Logistic regression is a classification model that aims to predict a binary label $\displaystyle y$ based on a feature vector $\displaystyle \mathbf{x}$. \newline
+    For this reason, it is possible to model a conditional probability $\displaystyle \mathbb{P}(y|\mathbf{x}) \sim Ber(p(\mathbf{x}))$ whose success probability is computed using the logistic function
+    \[\ln\bigg(\frac{p(\mathbf{x})}{1 - p(\mathbf{x})}\bigg) = \alpha + \mathbf{\beta}^T\mathbf{x} \Rightarrow p(\mathbf{x}) = \frac{e^{\alpha + \mathbf{\beta}^T\mathbf{x}}}{1 + e^{\alpha + \mathbf{\beta}^T\mathbf{x}}}\]
+\end{examplebox}
+\noindent Moreover, if $\displaystyle X$ is a random variable with probability density function $\displaystyle f_X(x)$, or probability mass function $\displaystyle p_X(x)$, then, for some event $\displaystyle A$, it holds that $\displaystyle Y = r(X) = \mathbb{I}_A(X) \sim Ber(p)$, with
+\[p = \int_A f_X(x) \ dx\]
+\subsection{The binomial distribution}
+A discrete random variable $\displaystyle X$ is said to follow a binomial distribution with parameters $\displaystyle n \in \mathbb{N}_0$ and $\displaystyle p \in [0, 1]$, which is written as $\displaystyle X \sim Bin(n, p)$, if its probability mass function is defined as
+\[p_X(x) = \binom{n}{x}p^x(1 - p)^{n - x} \text{, for $x \in \{0, \dots, n\}$.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/binomial.png}
+    \caption{PMF and CDF for a random variable $\displaystyle X \sim Bin(20, 0.7)$.}
+    \label{fig:binomial}
+\end{figure}
+\noindent Since binomial random variables are often used to model experiments counting the number of successful attempts out of $\displaystyle n$ independent and identically distributed Bernoulli trials with success probability $\displaystyle p$, it is also possible to define a random variable $\displaystyle X \sim Bin(n, p)$ as
+\[X = \sum_{i = 1}^n X_i \text{, with $X_i \sim Ber(p) \text{ } \forall i \in \{1, \dots, n\}$.}\]
+\begin{examplebox}[Guessing card symbols]
+    A man who claims to be a psychic is asked to guess the symbols drawn on $\displaystyle 25$ cards. \newline
+    Since the man guesses at random with success probability $\displaystyle p = 0.7$ at each round, define the random variable $\displaystyle X_i = \{\text{The $i^{th}$ guess is correct}\}$ and note that $\displaystyle X_i \sim Ber(p) \text{ } \forall i \in \{1, \dots, 25\}$. \newline
+    For this reason, the random variable $\displaystyle X = \{\text{Total correct guesses}\}$ can be formulated as
+    \[X = \sum_{i = 1}^{25} X_i \Rightarrow X \sim Bin(25, 0.7) \Rightarrow p_X(x) = \binom{25}{x}(0.7)^x(0.3)^{25 - x} \text{, for $x \in \{0, \dots, 25\}$.}\]
+    This means that the probability that the man correctly guesses each symbol will be
+    \[p_X(25) = \binom{25}{25}(0.7)^{25}(0.3)^{25 - 25} = (0.7)^{25} \approx 1.34 \cdot 10^{-4}\]
+\end{examplebox}
+\subsection{The uniform distribution}
+A continuous random variable $\displaystyle X$ is said to follow a uniform distribution with parameters $\displaystyle a < b \in \mathbb{R}$, which is written as $\displaystyle X \sim Unif(0, 1)$, if its probability density function and cumulative distribution function are defined as
+\[f_X(x) = \frac{1}{b - a}\mathbb{I}_{[a, b]}(x) \quad\quad\quad F_X(x) = \begin{cases}
+    0 &\quad\text{if $x < a$} \\
+    \frac{x - a}{b - a} &\quad\text{if $x \in [a, b]$} \\
+    1 &\quad\text{if $x > b$} \\
+\end{cases}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/uniform.png}
+    \caption{PDF and CDF for a random variable $\displaystyle X \sim Unif(0, 1)$.}
+    \label{fig:uniform}
+\end{figure}
+\noindent An important application of the uniform distribution consists of generating random variables for simulation modelling. \newline
+Given a random variable $\displaystyle U \sim Unif(0, 1)$, let $\displaystyle F$ be a cumulative distribution function with quantile function $\displaystyle \mathbb{Q}$: the ``quantile transform'' $\displaystyle Y = \mathbb{Q}(U)$ will be a random variable with cumulative distribution function $\displaystyle F_Y(y) = F$.
+\begin{proofbox}
+    Assuming $\displaystyle F$ is continuous and strictly increasing, it is possible to exploit the fact that $\displaystyle \mathbb{Q} = F^{-1}$ to let
+    \[F_Y(y) = \mathbb{P}(Y \leq y) = \mathbb{P}(F^{-1}(U) \leq y) = \mathbb{P}(U \leq F(y)) = F(y) \text{, being $U \sim Unif(0, 1)$.}\]
+    It should be noticed that this result is also valid whenever $\displaystyle F$ is only weakly monotonic, although the proof is more cumbersome.
+\end{proofbox}
 
 \end{document}
