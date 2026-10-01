@@ -23,6 +23,7 @@
 | September 24 | Introduction to the course. |
 | September 28 | Data types and introduction to algorithms. |
 | September 29 | Asymptotic notation. |
+| October 1 | Binary search and NP-completeness. |
 
 </details>
 
