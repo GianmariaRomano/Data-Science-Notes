@@ -328,5 +328,14 @@ In some cases, it is possible to solve a problem using a recursive algorithm, wh
         \Return{$current$}\;
     \end{algorithm}
 \end{examplebox}
+\section{$\mathbf{NP}$-completeness}
+When studying algorithms and computational complexity, (decision) problems can be classified depending on how hard they are to solve. \newline
+For this reason, it is possible to define the complexity classes $\displaystyle \mathbf{P}$, which includes all decision problems that can be solved in polynomial time using a deterministic algorithm, and $\displaystyle \mathbf{NP}$, which includes all decision problems for which a proposed solution can be verified in polynomial time. \newline
+While it is trivially known that $\displaystyle \mathbf{P} \subseteq \mathbf{NP}$, the question on whether $\displaystyle \mathbf{P} = \mathbf{NP}$ remains open. \newline
+In this setting, a problem $\displaystyle \mathbf{X}$ is said to be ``$\displaystyle \mathbf{NP}$-complete'' if $\displaystyle \mathbf{X} \in \mathbf{NP}$ and $\displaystyle \mathbf{X}$ is $\displaystyle \mathbf{NP}$-hard, which means that every problem $\displaystyle \mathbf{Y} \in \mathbf{NP}$ can be reduced to $\displaystyle \mathbf{X}$ in polynomial time.
+\begin{examplebox}[The travelling salesman problem]
+    When formulated as a decision problem, the travelling salesman problem aims to determine whether a graph $\displaystyle G = (V, E)$ contains a path that visits all node in the graph while maintaining an overall cost of at most $\displaystyle c$. \newline
+    Using some polynomial time reductions, it is possible to prove that this problem is $\displaystyle \mathbf{NP}$-complete.
+\end{examplebox}
 
 \end{document}

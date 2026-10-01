@@ -93,7 +93,9 @@
     {\Large Reference Bibliography \par}
     {\large M. P. Deisenroth, A. A. Faisal, C. S. Ong: \href{https://mml-book.github.io/}{\textit{Mathematics for Machine Learning}} \\
     S. Prince: \href{https://udlbook.github.io/udlbook/}{\textit{Understanding Deep Learning}} \\
-    J. Watt, R. Borhani, A. K. Katsaggelos: \href{https://github.com/neonwatty/machine-learning-refined/tree/main}{\textit{Machine Learning Refined}} \\}
+    J. Watt, R. Borhani, A. K. Katsaggelos: \href{https://github.com/neonwatty/machine-learning-refined/tree/main}{\textit{Machine Learning Refined}} \\
+    W. McKinney: \href{https://wesmckinney.com/book/preliminaries}{\textit{Python for Data Analysis}} \\
+    M. E. J. Newman: \href{https://math.bme.hu/~gabor/oktatas/SztoM/Newman_Networks.pdf}{\textit{Networks: An Introduction}} \\}
     \vfill
     
     % Academic Year.
@@ -222,5 +224,100 @@ When dealing with a non-standard basis, the new vector $\displaystyle \mathbf{w}
     \end{bmatrix}\]
     Expressing a vector using the equation $\displaystyle \mathbf{x}_p = w_{1, p}\mathbf{c}_1 + w_{2, p}\mathbf{c}_2$ reveals that this basis corresponds to a transformation that consists of a rotation followed by a vector shearing.
 \end{examplebox}
+
+\part{Network Science}
+\chapter{Understanding networks}
+\section{The purpose of network science}
+A network is a complex system whose components interact according to three main properties:
+\begin{enumerate}
+    \item \textbf{Adaptation: }The components of the system mutate and self-organize in order to maintain certain properties.
+    \item \textbf{Non-linearity: }A change in the input is not proportional to a change in the output.
+    \item \textbf{Emergence: }The system as a whole shows some properties that the individual components do not possess.
+\end{enumerate}
+\begin{examplebox}[Schelling's segregation model]
+    In Schelling's segregation model, agents wish that a fraction $\displaystyle B_a$ of their neighbourhood, which consists of the neighbouring agents, is from the same group. \newline
+    At each round, every agent checks the fraction of matching agents $\displaystyle B$ and, if $\displaystyle B < B_a$, it can relocate to a vacant spot, going on until every agent is satisfied.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\linewidth]{images/schelling_model.png}
+        \caption{Example of Schelling's segregation model.}
+        \label{fig:schelling_model}
+    \end{figure}
+    \noindent In particular, Schelling discovered a threshold $\displaystyle B_{seg}$ such that choosing $\displaystyle B_a < B_{seg}$ leads to a random population configuration, whereas choosing $\displaystyle B_a \ge B_{seg}$ would result in segregation.
+\end{examplebox}
+\noindent Overall, network science is useful for modelling complex systems by transforming high-dimensional data into feature representations that can be used for inference and pattern discovery.
+\section{A formal definition of networks}
+A network can be formally represented as a graph $\displaystyle G = (V, E)$ that is described using a set of nodes $\displaystyle V$ and a set of edges $\displaystyle E$ that connect pairs of vertices.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{images/bowtie_graph.png}
+    \caption{Example of a graph.}
+    \label{fig:bowtie_graph}
+\end{figure}
+\noindent A graph is said to be ``undirected'' if its edges represent unordered pairs, which means that
+\[E = \{\{u, v\}: u, v \in V, u \neq v\} \text{ and } \{u, v\} \in E \Leftrightarrow \{v, u\} \in E\]
+By contrast, a graph is said to be ``directed'' if its edges indicate ordered pairs, which means that
+\[E = \{(u, v): u, v \in V, u \neq v\} \text{ and } (u, v) \in E \not\Rightarrow (v, u) \in E\]
+\subsection{Visualizing a network using an edge list}
+A network can be represented using an edge list in which each tuple represents a connection between two endpoints in the graph.
+\begin{lstlisting}[
+  language=Python,
+  captionpos=b,
+  caption={Creating a graph from an edge list, which requires $\displaystyle O(|V|)$ memory.},
+  label={lst:edge_list}
+]
+    edges = [(0,1), (0,2), (1,2), (2,3), (3,4), (3,5), (4,5)]
+    g_py = ig.Graph(edges=edges, directed=False)
+\end{lstlisting}
+\noindent Alternatively, a network can be represented as a dataframe in which each row corresponds to an edge and identifies its source and target nodes.
+\begin{lstlisting}[
+  language=Python,
+  captionpos=b,
+  caption={Creating a graph from a dataframe.},
+  label={lst:df_edge_list}
+]
+    edge_list_py = pd.DataFrame({
+        "source": [0, 0, 1, 2, 3, 3, 4],
+        "target": [1, 2, 2, 3, 4, 5, 5]
+    })
+    g_py = ig.Graph.DataFrame(edge_list_py, directed=False)
+\end{lstlisting}
+\subsection{Visualizing a network using an adjacency matrix}
+It is possible to represent the connections in a network using an adjacency matrix in which $\displaystyle A_{i, j} = 1$ if and only if $\displaystyle (i, j) \in E$ and $\displaystyle A_{ii} = 0 \text{ } \forall i$.
+\begin{lstlisting}[
+  language=Python,
+  captionpos=b,
+  caption={Creating a graph from an adjacency matrix, which requires $\displaystyle O(|V|^2)$ memory.},
+  label={lst:adjacency_matrix}
+]
+    adj_matrix = [
+        [0, 1, 1, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0],
+        [1, 1, 0, 1, 0, 0],
+        [0, 0, 1, 0, 1, 1],
+        [0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 1, 0]
+    ]
+    g_from_matrix = ig.Graph.Adjacency(adj_matrix, mode=ig.ADJ_UNDIRECTED)
+\end{lstlisting}
+\noindent Additionally, by considering at the definition of an adjacency matrix, it is possible to state that a graph $\displaystyle G = (V, E)$ is undirected if and only if its adjacency matrix is symmetric, meaning that $\displaystyle A^T = A$.
+\subsection{Visualizing a network using an adjacency list}
+It is possible to summarize the connections in a network using an adjacency list that, for each vertex in the graph, stores a list of its direct neighbours.
+\begin{lstlisting}[
+  language=Python,
+  captionpos=b,
+  caption={Representing a graph using an adjacency list, which requires $\displaystyle O(|V| + |E|)$ memory.},
+  label={lst:adjacency_list}
+]
+    adj_list = [
+        [1, 2],
+        [0, 2],
+        [0, 1, 3],
+        [2, 4, 5],
+        [3, 5],
+        [3, 4]
+    ]
+\end{lstlisting}
+\noindent It should be noticed that adjacency lists are not compatible with the \texttt{igraph} library, meaning that a conversion into an edge list or an adjacency matrix is required in order to plot a graph.
 
 \end{document}
