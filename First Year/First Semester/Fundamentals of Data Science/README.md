@@ -29,6 +29,7 @@
 | ~~September 24~~ | This lecture was cancelled. |
 | September 25 | Introduction to the course. |
 | September 28 | Defining machine learning tasks and recap of vector algebra. |
+| October 1 | Introduction to network science and graphs. |
 
 </details>
 
