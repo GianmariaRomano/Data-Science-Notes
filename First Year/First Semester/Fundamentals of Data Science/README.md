@@ -38,5 +38,7 @@
   - M. P. Deisenroth, A. A. Faisal, C. S. Ong: [*Mathematics for Machine Learning*](https://mml-book.github.io/)
   - S. Prince: [*Understanding Deep Learning*](https://udlbook.github.io/udlbook/)
   - J. Watt, R. Borhani, A. K. Katsaggelos: [*Machine Learning Refined*](https://github.com/neonwatty/machine-learning-refined/tree/main)
+  - W. McKinney: [*Python for Data Analysis*](https://wesmckinney.com/book/preliminaries)
+  - M. E. J. Newman: [*Networks: An Introduction*](https://math.bme.hu/~gabor/oktatas/SztoM/Newman_Networks.pdf)
 
 ---
