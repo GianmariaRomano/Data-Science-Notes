@@ -24,6 +24,7 @@
 | September 24 | Introduction to the R programming language. |
 | September 25 | Random variables. |
 | September 30 | Quantile functions and common distributions: Bernoulli, Binomial, Uniform. |
+| October 1 | Stochastic simulations: Pseudorandom number generation. |
 
 </details>
 
