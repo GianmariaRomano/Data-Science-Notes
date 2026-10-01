@@ -3,6 +3,7 @@
 % Packages for images.
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{caption}
 
 % Packages for mathematical formulae/symbols.
 \usepackage{amsmath}
@@ -48,6 +49,7 @@
 \definecolor{proofback}{RGB}{240, 244, 250}
 \definecolor{proofframe}{RGB}{25, 80, 150}
 \usepackage[most]{tcolorbox}
+\tcbuselibrary{listings}
 \newtcolorbox{examplebox}[1][]{
     colback=exampleback,
     colframe=exampleframe,
@@ -529,5 +531,44 @@ Given a random variable $\displaystyle U \sim Unif(0, 1)$, let $\displaystyle F$
     \[F_Y(y) = \mathbb{P}(Y \leq y) = \mathbb{P}(F^{-1}(U) \leq y) = \mathbb{P}(U \leq F(y)) = F(y) \text{, being $U \sim Unif(0, 1)$.}\]
     It should be noticed that this result is also valid whenever $\displaystyle F$ is only weakly monotonic, although the proof is more cumbersome.
 \end{proofbox}
+
+\chapter{Stochastic simulations}
+\section{Defining simulations}
+A stochastic simulation allows to study complex probabilistic models by generating values for a random variable that will be used into the model, providing an approximation of a random system. \newline
+Simulations come in handy to investigate the typical behaviour of a system and its fluctuations, although more advanced techniques can be integrated to study exceptional cases as well.
+\begin{examplebox}[A physical simulation]
+    Suppose you want to create a simulation of a balanced coin flip based on the result seen by tossing a fair die: a possible strategy could consist of having the coin show heads when the die shows an odd result, or tails when the die shows an even result. \newline
+    Alternatively, it is possible to simulate the result shown by the die by (repeatedly) tossing the coin and associating each sequence of outcomes to a certain value.
+\end{examplebox}
+\section{Random samples}
+Let $\displaystyle \{X_1, \dots, X_n\}$ be a sequence of independent random variables: if the variables are (mutually) independent and have the same marginal cumulative distribution function $\displaystyle F_X$, then they are said to be independent and identically distributed, which can be written as $\displaystyle X_1, \dots, X_n \sim F_X$, and form a random sample of size $\displaystyle n$ from $\displaystyle F_X$.
+\section{Pseudorandom number generators}
+A pseudorandom number generator is a deterministic algorithm that, starting from an initial ``seed'' $\displaystyle u_0$, produces a sequence of numbers that resembles a random sequence. \newline
+For this reason, a pseudorandom number generator can be modelled as a function $\displaystyle \mathbf{f}: (0, 1) \to (0, 1)$ such that, for any seed $\displaystyle u_0$, the resulting sequence
+\[\{u_0, \mathbf{f}(u_0), \dots, \mathbf{f}^n(u_0)\} \text{ behaves like a $Unif(0, 1)$ independent and identically distributed sequence.}\]
+A common method for pseudorandom number generation is the linear congruential generator, which, on the set $\displaystyle \{1, \dots, M\}$, is defined as
+\[\mathbf{f}(x) = (\alpha + \beta x) \bmod M\]
+\begin{lstlisting}[
+  language=R,
+  captionpos=b,
+  caption={R implementation of a linear congruential generator.},
+  label={lst:lcg}
+]
+    lcg <- function(u0, n=1000, a=69069069, b=12345, M=2^32){
+      x_out <- rep(NA, n)
+      x_out[1] <- u0
+      for (i in 2:n) {
+        x_out[i] <- (a + (b * x_out[i - 1])) %% M
+      }
+      return(x_out / (M + 1))
+    }
+\end{lstlisting}
+\begin{examplebox}[A simple linear congruential generator]
+    Consider the linear congruential generator
+    \[\mathbf{f}(x) = (69069069x + 12345) \bmod 2^{32}\]
+    For a given $\displaystyle u_0$, the function generates the sequence
+    \[518974515, 2498053016, 1113825472, 1109377984, \dots \text{, which can be scaled to}\]
+    \[0.1208332, 0.5816233, 0.2593327, 0.2592972, \dots\]
+\end{examplebox}
 
 \end{document}
