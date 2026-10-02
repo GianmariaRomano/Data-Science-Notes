@@ -188,7 +188,7 @@ In particular, a basis is any minimal spanning set that, having no redundant vec
     In the vector space $\displaystyle \mathbb{R}^2$, a possible spanning set can be composed using the canonical vectors $\displaystyle \mathbf{e}_1 = (1, 0)^T$ and $\displaystyle \mathbf{e}_2 = (0, 1)^T$ as each point $\displaystyle (x, y) \in \mathbb{R}^2$ can be reformulated as $\displaystyle x\mathbf{e}_1 + y\mathbf{e}_2$. \newline
     Additionally, it is possible to observe that this spanning set also works as a basis for $\displaystyle \mathbb{R}^2$ because its vectors are linearly independent.
 \end{examplebox}
-\noindent Generally speaking, a candidate basis $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_N \in \mathbb{R}^N$ is able to perfectly represent a dataset $\displaystyle \{\mathbf{x}_i\}_{p = 1}^P$ if it is possible to find some weights such that
+\noindent Generally speaking, a candidate basis $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_N \in \mathbb{R}^N$ is able to perfectly represent a dataset $\displaystyle \{\mathbf{x}_i\}_{p = 1}^P \in \mathbb{R}^N$ if it is possible to find some weights such that
 \[\sum_{n = 1}^N \mathbf{c}_nw_{n, p} = \mathbf{x}_p \text{ } \forall p \in \{1, \dots, P\}\]
 \subsection{Standard bases}
 The canonical vectors $\displaystyle \mathbf{e}_1, \dots, \mathbf{e}_N \in \mathbb{R}^N$ always form a standard basis such that
@@ -215,15 +215,57 @@ When dealing with a non-standard basis, the new vector $\displaystyle \mathbf{w}
 \[\min_{\mathbf{w}_1, \dots, \mathbf{w}_P} \frac{1}{P}\sum_{p = 1}^P \lVert \mathbf{Cw}_p - \mathbf{x}_p \rVert_2^2 \text{, which represents the average reconstruction error.}\]
 \begin{examplebox}[A non-standard basis in $\displaystyle \mathbb{R}^2$]
     Consider a non-standard basis in $\displaystyle \mathbb{R}^2$ given by
-    \[\mathbf{c}_1 = \begin{bmatrix}
+    \[\mathbf{c}_1 = \begin{pmatrix}
         2 \\
         1 \\
-    \end{bmatrix} \text{ and } \mathbf{c}_2 = \begin{bmatrix}
+    \end{pmatrix} \text{ and } \mathbf{c}_2 = \begin{pmatrix}
         1 \\
         2 \\
-    \end{bmatrix}\]
+    \end{pmatrix}\]
     Expressing a vector using the equation $\displaystyle \mathbf{x}_p = w_{1, p}\mathbf{c}_1 + w_{2, p}\mathbf{c}_2$ reveals that this basis corresponds to a transformation that consists of a rotation followed by a vector shearing.
 \end{examplebox}
+\section{Vector subspaces}
+When representing $\displaystyle N$-dimensional data points $\displaystyle \{\mathbf{x}_p\}_p^P \in \mathbb{R}^N$ using $\displaystyle K \leq N$ basis vectors, the representation incurs in a loss of information because the data points are projected onto a lower-dimensional subspace.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/subspace_projections.png}
+    \caption{Projecting data points from $\mathbb{R}^3$ onto 1D and 2D subspaces.}
+    \label{fig:subspace_projection}
+\end{figure}
+\noindent In order to minimize the reconstruction error, each data point is projected orthogonally onto the subspace spanned by the basis vectors, meaning that the encoding weights will be computed by solving the linear system of equations
+\[\mathbf{C}^T\mathbf{Cw}_p = \mathbf{C}^T\mathbf{x}_p \text{, where $\displaystyle \mathbf{C} \in \mathbb{R}^{N \times K}$.}\]
+In fact, this strategy ensures that, during decoding, the projected point provides the best possible approximation of the starting data point within the subspace.
+\begin{examplebox}[Projecting a vector from $\displaystyle \mathbb{R}^2$ onto a line]
+    Suppose you want to project the vector $\displaystyle \mathbf{x}_p = (3, 1)^T$ onto the one-dimensional subspace spanned by the basis vector $\displaystyle \mathbf{c} ? (1, 1)^T$. \newline
+    Since the basis vector is not a unit vector, the encoding weight must be computed as
+    \begin{align*}
+        \mathbf{c}^T\mathbf{c}w = \mathbf{c}^T\mathbf{x} &\Rightarrow \begin{pmatrix}
+            1 & 1 \\
+        \end{pmatrix}\begin{pmatrix}
+            1 \\
+            1 \\
+        \end{pmatrix}w = \begin{pmatrix}
+            1 & 1 \\
+        \end{pmatrix}\begin{pmatrix}
+            3 \\
+            1 \\
+        \end{pmatrix} \\
+        &\Rightarrow 2w = 4 \Rightarrow w = 2
+    \end{align*}
+    Therefore, the reconstructed projection will be given by $\displaystyle w\mathbf{c} = (2, 2)^T$, resulting in a residual reconstruction error of
+    \[r = \lVert\mathbf{x} - w\mathbf{c}\rVert_2 = \bigg\lVert \begin{pmatrix}
+        3 \\
+        1 \\
+    \end{pmatrix} - \begin{pmatrix}
+        2 \\
+        2 \\
+    \end{pmatrix}\bigg\rVert_2 = \bigg\lVert\begin{pmatrix}
+        1 \\
+        -1 \\
+    \end{pmatrix}\bigg\rVert_2 = \sqrt{2}\]
+\end{examplebox}
+\noindent Whenever the chosen basis is orthonormal, the weight encodings can be computed using
+\[\mathbf{w}_p = \mathbf{C}^T\mathbf{x}_p \text{ and } \mathbf{CC}^T\mathbf{x}_p \approx \mathbf{x}_p \text{ } \forall p \in \{1, \dots, P\}\]
 
 \part{Network Science}
 \chapter{Understanding networks}
