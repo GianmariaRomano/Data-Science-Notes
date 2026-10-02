@@ -25,6 +25,7 @@
 | September 25 | Random variables. |
 | September 30 | Quantile functions and common distributions: Bernoulli, Binomial, Uniform. |
 | October 1 | Stochastic simulations: Pseudorandom number generation. |
+| October 2 | Properties of linear congruential generators for pseudorandom number generation. |
 
 </details>
 
