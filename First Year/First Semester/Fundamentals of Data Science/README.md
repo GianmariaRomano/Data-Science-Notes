@@ -30,6 +30,7 @@
 | September 25 | Introduction to the course. |
 | September 28 | Defining machine learning tasks and recap of vector algebra. |
 | October 1 | Introduction to network science and graphs. |
+| October 2 | Vector subspaces and visualization of vectors and dataframes. |
 
 </details>
 
