@@ -24,8 +24,8 @@
 | September 24 | Introduction to the R programming language. |
 | September 25 | Random variables. |
 | September 30 | Quantile functions and common distributions: Bernoulli, Binomial, Uniform. |
-| October 1 | Stochastic simulations: Pseudorandom number generation. |
-| October 2 | Properties of linear congruential generators for pseudorandom number generation. |
+| October 1 | Stochastic simulations: Pseudorandom Number Generation. |
+| October 2 | Stochastic simulations: Linear Congruential Generators for PRNG, Population Generators. |
 
 </details>
 
