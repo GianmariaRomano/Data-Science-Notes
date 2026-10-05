@@ -38,16 +38,28 @@
 \lstset{style=mypython}
 \usepackage[ruled,vlined]{algorithm2e}
 
-% Creating the Example boxes.
+% Creating the Example and Proof boxes.
 \definecolor{exampleback}{RGB}{240, 248, 240}
 \definecolor{exampleframe}{RGB}{34, 112, 62}
+\definecolor{proofback}{RGB}{240, 244, 250}
+\definecolor{proofframe}{RGB}{25, 80, 150}
 \usepackage[most]{tcolorbox}
+\tcbuselibrary{listings}
 \newtcolorbox{examplebox}[1][]{
     colback=exampleback,
     colframe=exampleframe,
     coltitle=white,
     fonttitle=\bfseries,
     title={Example\ifblank{#1}{}{: #1}},
+    arc=2pt,
+    boxrule=1pt
+}
+\newtcolorbox{proofbox}[1][]{
+    colback=proofback,
+    colframe=proofframe,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Proof: #1},
     arc=2pt,
     boxrule=1pt
 }
@@ -173,7 +185,7 @@ In this setting, the main challenges come from the stochastic nature of the task
 \chapter{Vectors}
 \section{Representing data using vectors}
 When dealing with supervised learning tasks, a dataset consists of measurements of some features of objects, which are used to predict a target variable. \newline
-However, while features can be represented as numerical, categorical or binary variables, most machine learning require numerical inputs. \newline
+However, while features can be represented as numerical, categorical or binary variables, most machine learning algorithms require numerical inputs. \newline
 For this reason, categorical variables are often transformed into numerical representations through one-hot encoding, which, in the case of mutually exclusive classes, represents each feature using a vector of type $\displaystyle \mathbf{e}_i = (0, \dots, 1, \dots, 0)^T$, where the position of the single non-zero entry identifies the class to which the observation belongs.
 \begin{examplebox}[The IRIS Dataset]
     Fisher's IRIS Dataset is a toy example of a dataset that classifies each flower into one of three possible subspecies based on petal and sepal measurements.
@@ -236,7 +248,7 @@ When representing $\displaystyle N$-dimensional data points $\displaystyle \{\ma
 \[\mathbf{C}^T\mathbf{Cw}_p = \mathbf{C}^T\mathbf{x}_p \text{, where $\displaystyle \mathbf{C} \in \mathbb{R}^{N \times K}$.}\]
 In fact, this strategy ensures that, during decoding, the projected point provides the best possible approximation of the starting data point within the subspace.
 \begin{examplebox}[Projecting a vector from $\displaystyle \mathbb{R}^2$ onto a line]
-    Suppose you want to project the vector $\displaystyle \mathbf{x}_p = (3, 1)^T$ onto the one-dimensional subspace spanned by the basis vector $\displaystyle \mathbf{c} ? (1, 1)^T$. \newline
+    Suppose you want to project the vector $\displaystyle \mathbf{x} = (3, 1)^T$ onto the one-dimensional subspace spanned by the basis vector $\displaystyle \mathbf{c} = (1, 1)^T$. \newline
     Since the basis vector is not a unit vector, the encoding weight must be computed as
     \begin{align*}
         \mathbf{c}^T\mathbf{c}w = \mathbf{c}^T\mathbf{x} &\Rightarrow \begin{pmatrix}
@@ -267,7 +279,149 @@ In fact, this strategy ensures that, during decoding, the projected point provid
 \noindent Whenever the chosen basis is orthonormal, the weight encodings can be computed using
 \[\mathbf{w}_p = \mathbf{C}^T\mathbf{x}_p \text{ and } \mathbf{CC}^T\mathbf{x}_p \approx \mathbf{x}_p \text{ } \forall p \in \{1, \dots, P\}\]
 
+\chapter{Optimization methods}
+\section{The goal of optimization}
+Given an objective function $\displaystyle g(\mathbf{w})$, optimization deals with finding the value $\displaystyle \mathbf{w}^*$ that minimizes or maximizes the function, which means that
+\[\mathbf{w}^* = \arg\min_{\mathbf{w}} g(\mathbf{w}) \text{ or } \mathbf{w}^* = \arg\max_{\mathbf{w}} g(\mathbf{w})\]
+Additionally, maximizing an objective function $\displaystyle g(\mathbf{w})$ is always equivalent to minimizing $\displaystyle -g(\mathbf{w})$.
+\subsection{Zero-order optimization}
+Since zero-order optimization simply involves analysing the values taken by the objective function, it is possible to distinguish two types of solution:
+\begin{itemize}
+    \item \textbf{Global optimum: }A point $\displaystyle \mathbf{w}^*$ is a global optimum if it represents a global maximum/minimum among every possible value of $\displaystyle \mathbf{w}$.
+    \item \textbf{Local optimum: }A point $\displaystyle \mathbf{w}^*$ is a local optimum if it acts as a local maximum/minimum within some neighbourhood, but not necessarily among every possible value of $\displaystyle \mathbf{w}$.
+\end{itemize}
+\begin{examplebox}[Zero-order optimization on a sinusoidal function]
+    Consider the scalar function $\displaystyle g(w) = \sin(w)$: since this function has period equal to $\displaystyle 2\pi$, it is possible to observe that it has infinitely many global maxima and global minima. \newline
+    More specifically the points $\displaystyle w^* = \frac{3\pi}{2} + 2k\pi$, with $\displaystyle k \in \mathbb{Z}$, act as global minima for the function, whereas the points $\displaystyle w^* = \frac{\pi}{2} + 2k\pi$, with $\displaystyle k \in \mathbb{Z}$, act as global maxima for the function.
+\end{examplebox}
+\subsection{First-order optimization}
+First-order optimization involves using (partial) derivatives to find candidate optima by exploiting the fact that, at an extremum of a differentiable function, it is always the case that
+\[g'(w^*) = 0 \text{ or, for a multivariate function, } \nabla g(\mathbf{w}^*) = \mathbf{0}_{n \times 1}\]
+\begin{examplebox}[First-order optimization on a sinusoidal function]
+    Consider the scalar function $\displaystyle g(w) = \sin(w)$: solving $\displaystyle g'(w) = \cos(w) = 0$ reveals that the points $\displaystyle w^* = \frac{\pi}{2} + k\pi$, with $\displaystyle k \in \mathbb{Z}$, act as extrema for the function. \newline
+    Using the second derivative $\displaystyle g''(w) = -\sin(w)$ reveals that the points $\displaystyle w^* = \frac{3\pi}{2} + 2k\pi$ act as global minima for the function, whereas the points $\displaystyle w^* = \frac{\pi}{2} + 2k\pi$ act as global maxima for the function.
+\end{examplebox}
+\section{Hyperplanes}
+A hyperplane can be seen as a $\displaystyle N$-dimensional generalization of a line that can be defined as
+\[h(\mathbf{w}) = a + \mathbf{b}^T\mathbf{w}\]
+Since any point $\displaystyle \mathbf{w}_0$ admits infinitely many direction vectors $\displaystyle \mathbf{d}$, it is possible to find the direction of maximum increase or decrease by evaluating
+\[h(\mathbf{w}_0 + \mathbf{d}) = a + \mathbf{b}^T(\mathbf{w}_0 + \mathbf{d}) = a + \mathbf{b}^T\mathbf{w}_0 + \mathbf{b}^T\mathbf{d} \text{, which means that}\]
+\[\max_{\mathbf{d}} h(\mathbf{w}_0 + \mathbf{d}) \text{ subject to } \lVert \mathbf{d} \rVert_2^2 = 1 \equiv \max_d \mathbf{b}^T\mathbf{d} = \max_d \lVert \mathbf{b} \rVert_2^2\lVert \mathbf{d} \rVert_2^2 \cos(\theta) \stackrel{\lVert \mathbf{d} \rVert = 1}{=} \max_{\theta} \cos(\theta)\]
+Solving this problem reveals that the maximum increase happens whenever $\displaystyle \theta = 0$, which corresponds to the direction vector $\displaystyle \mathbf{d} = \frac{\mathbf{b}}{\lVert \mathbf{b} \rVert_2^2}$, whereas the maximum decrease happens whenever $\displaystyle \theta = \pi$, which corresponds to the direction vector $\displaystyle \mathbf{d} = -\frac{\mathbf{b}}{\lVert \mathbf{b} \rVert_2^2}$.
+
+\part{Machine Learning}
+
+\chapter{Principal component analysis}
+\section{Linear transformations}
+Given a matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{m \times n}$, a linear transformation $\displaystyle \mathbf{y} = \mathbf{Ax}$ maps a vector $\displaystyle \mathbf{x} \in \mathbb{R}^n$ to a vector $\displaystyle \mathbf{y} \in \mathbb{R}^m$.
+\begin{itemize}
+    \item \textbf{Scaling: }If $\displaystyle \mathbf{A}$ is a diagonal matrix, then the transformation $\displaystyle \mathbf{y} = \mathbf{Ax}$ simply stretches or shrinks each axis by the corresponding factor.
+    \item \textbf{Rotation: }If $\displaystyle \mathbf{A}$ is an orthonormal matrix, meaning that $\displaystyle \mathbf{A}^T\mathbf{A} = \mathbf{I}$, then the transformation $\displaystyle \mathbf{y} = \mathbf{Ax}$ represents a rotation or a reflection.
+    \item \textbf{Shearing: }If $\displaystyle \mathbf{A}$ features some off-diagonal entries, then the transformation $\displaystyle \mathbf{y} = \mathbf{Ax}$ typically results in a slanted vector.
+    \item \textbf{Projection: }If $\displaystyle \mathbf{A}$ has rank $\displaystyle k < n$, then the transformation $\displaystyle \mathbf{y} = \mathbf{Ax}$ always results in a loss of information because the vectors collapse into a lower-dimensional space.
+\end{itemize}
+\section{Learning the projection basis}
+Rather than finding the encoding weights for a given basis, principal component analysis aims to learn both the encoding weights $\displaystyle \mathbf{w}_1, \dots, \mathbf{w}_p$ and the basis matrix $\displaystyle \mathbf{C}$ that minimize the mean reconstruction error
+\[g(\mathbf{w}_1, \dots, \mathbf{w}_p, \mathbf{C}) = \frac{1}{P}\sum_{p = 1}^P \lVert \mathbf{Cw}_p - \mathbf{x}_p \lVert_2^2 \text{, for a dataset $\{\mathbf{x}_p\}_{p = 1}^P$.}\]
+However, if $\displaystyle \mathbf{C}$ is assumed to be orthonormal, it is possible to directly compute $\displaystyle \mathbf{w}_p = \mathbf{C}^T\mathbf{x}_p$ and simplify the objective function as
+\[g(\mathbf{C}) = \frac{1}{P}\sum_{p = 1}^P \lVert \mathbf{CC}^T\mathbf{x}_p - \mathbf{x}_p \rVert_2^2\]
+\begin{proofbox}
+    Assuming $\displaystyle \mathbf{C}$ is orthonormal, meaning that $\displaystyle \mathbf{C}^T\mathbf{C} = \mathbf{I}$, the cost function can be formulated as
+    \begin{align*}
+        \lVert \mathbf{CC}^T\mathbf{x}_p - \mathbf{x}_p \rVert_2^2
+            &= \mathbf{x}_p^T\mathbf{C}^T\mathbf{CCC}^T\mathbf{x}_p -2\mathbf{x}_p^T\mathbf{CC}^T\mathbf{x}_p + \mathbf{x}_p^T\mathbf{x}_p \\
+            &\stackrel{\mathbf{C}^T\mathbf{C} = \mathbf{I}}{=} -\mathbf{x}_p^T\mathbf{CC}^T\mathbf{x}_p + \mathbf{x}_p^T\mathbf{x}_p = \lVert \mathbf{C}^T\mathbf{x}_p \rVert_2^2 + \lVert \mathbf{x}_p \rVert_2^2
+    \end{align*}
+    Since $\displaystyle \mathbf{x}_p$ is fixed with respect to the optimization over the basis matrix, minimizing the mean reconstruction error is equivalent to maximizing $\displaystyle \lVert \mathbf{C}^T\mathbf{x}_p \rVert$.
+\end{proofbox}
+\noindent In particular, the assumption that the basis is orthonormal allows to learn each vector independently as the objective function decouples into
+\[g(\mathbf{C}) = -\frac{1}{P}\sum_{p = 1}^P\sum_{k = 1}^K (\mathbf{c}_k^T\mathbf{x}_p)^2\]
+\section{Optimizing a single basis vector}
+Assuming the dataset has been mean-centered and that the basis vector $\displaystyle \mathbf{c}_1$ has unit norm, the quantity
+\[h(\mathbf{c}_1) = \frac{1}{P}\sum_{p = 1}^P (\mathbf{c}_1^T\mathbf{x}_p)^2 \text{ represents the sample variance along direction $\mathbf{c}_1$.}\]
+By stacking the data points into a matrix $\displaystyle \mathbf{X} = [\mathbf{x}_1, \dots, \mathbf{x}_p] \in \mathbb{R}^{N \times P}$, one can reformulate this quantity as
+\[h(\mathbf{c}_1) = \frac{1}{P}\mathbf{c}_1^T\mathbf{XX}^T\mathbf{c}_1 = \mathbf{c}_1^T\Bigg(\frac{1}{P}\mathbf{XX}^T\Bigg)\mathbf{c}_1 = \mathbf{c}_1^T\mathbf{\Sigma c}_1\]
+In this setting, $\displaystyle \mathbf{\Sigma}$ is known as the ``empirical covariance matrix'' and, by describing how features vary together, it provides information about the shape of the data cloud through the eigenvectors, which indicate the principal directions in which data spreads the most, and the eigenvalues, which explain the variance along these directions.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{images/pca_rotation.png}
+    \caption{Principal component analysis as a dataset rotation.}
+    \label{fig:pca_rotation}
+\end{figure}
+\noindent Therefore, $\displaystyle h(\mathbf{c}_1)$ will be maximized when $\displaystyle \mathbf{c}_1 = \mathbf{v}_1$ is the eigenvector associated to the largest eigenvalue $\displaystyle \lambda_1$ of the covariance matrix. \newline
+More specifically, the scaled eigenvector is known as the ``first principal component'' of the dataset and it explains a proportion of the variance equal to
+\[EVR_1 = \frac{\lambda_1}{\sum_{n = 1}^N \lambda_n}\]
+\begin{examplebox}[Example of principal component analysis in $\displaystyle \mathbb{R}^2$]
+    Consider the following dataset:
+    \[\mathbf{x}_1 = \begin{pmatrix}
+        2 \\
+        1 \\
+    \end{pmatrix} \quad\quad \mathbf{x}_2 = \begin{pmatrix}
+        0 \\
+        0 \\
+    \end{pmatrix} \quad\quad \mathbf{x}_3 = \begin{pmatrix}
+        1 \\
+        -1 \\
+    \end{pmatrix}\]
+    Start by computing the sample mean $\displaystyle \overline{\mathbf{x}}$ to obtain the mean-centered data points $\displaystyle \mathbf{c}_p = \mathbf{x}_p - \overline{\mathbf{x}}$:
+    \[\overline{\mathbf{x}} = \begin{pmatrix}
+        1 \\
+        0 \\
+    \end{pmatrix} \Rightarrow \mathbf{c}_1 = \begin{pmatrix}
+        1 \\
+        1 \\
+    \end{pmatrix} \quad\quad \mathbf{c}_2 = \begin{pmatrix}
+        -1 \\
+        0 \\
+    \end{pmatrix} \quad\quad \mathbf{c}_3 = \begin{pmatrix}
+        0 \\
+        -1 \\
+    \end{pmatrix}\]
+    This means that the empirical covariance matrix will be given by
+    \[\mathbf{\Sigma} = \frac{1}{3}\sum_{p = 1}^3 \mathbf{c}_p\mathbf{c}_p^T = \begin{pmatrix}
+        \frac{2}{3} & \frac{1}{3} \\
+        \frac{1}{3} & \frac{2}{3} \\
+    \end{pmatrix}\]
+    In particular, the eigenvalues of the covariance matrix can be found by solving
+    \begin{align*}
+        det(\mathbf{\Sigma} - \lambda\mathbf{I})
+            &= det\begin{pmatrix}
+                \frac{2}{3} - \lambda & \frac{1}{3} \\
+                \frac{1}{3} & \frac{2}{3} - \lambda \\
+            \end{pmatrix} \\
+            &= \Bigg(\frac{2}{3} - \lambda\Bigg)^2 - \frac{1}{9} = \frac{4}{9} - \frac{4\lambda}{3} + \lambda^2 - \frac{1}{9} = \lambda^2 - \frac{4\lambda}{3} + \frac{1}{3} = 0 \\
+    \end{align*}
+    \[\Delta = \frac{4}{9} > 0 \Rightarrow \lambda_{1, 2} = \frac{\frac{4}{3} \pm \frac{2}{3}}{2} \Rightarrow \lambda_1 = 1, \quad \lambda_2 = \frac{1}{3}\]
+    Using these eigenvalues, solving $\displaystyle (\mathbf{\Sigma} - \lambda\mathbf{I})\mathbf{X} = 0$ allows to find the following eigenvectors:
+    \begin{align*}
+        \mathbf{v}_1
+            &= \begin{pmatrix}
+                1 \\
+                1 \\
+            \end{pmatrix} \text{, which corresponds to principal component } \mathbf{v}_1 = \begin{pmatrix}
+                \frac{\sqrt{2}}{2} \\
+                \frac{\sqrt{2}}{2} \\
+            \end{pmatrix} \\
+            \mathbf{v}_2 &= \begin{pmatrix}
+                1 \\
+                -1 \\
+            \end{pmatrix} \text{, which corresponds to principal component } \mathbf{v}_2 = \begin{pmatrix}
+                \frac{\sqrt{2}}{2} \\
+                -\frac{\sqrt{2}}{2} \\
+            \end{pmatrix}
+    \end{align*}
+    In particular, the proportion of data variance explained by the two components will be
+    \[EVR_1 = \frac{\lambda_1}{\lambda_1 + \lambda_2} = 0.75 \text{ and } EVR_2 = \frac{\lambda_2}{\lambda_1 + \lambda_2} = 0.25\]
+\end{examplebox}
+\noindent It should be noticed that the same reasoning can be applied to the other basis vectors when analysing the other principal components.
+\subsection{Eigenvalue decompositions}
+For a real-valued and symmetric covariance matrix $\mathbf{\Sigma}$, one can compute an orthonormal matrix $\displaystyle \mathbf{V} = [\mathbf{v}_1, \dots, \mathbf{v}_d]$, which is obtained by stacking the eigenvectors of the covariance matrix, and a diagonal matrix $\displaystyle \mathbf{\Lambda}$, which contains the eigenvalues of the covariance matrix, to formulate
+\[\mathbf{\Sigma} = \mathbf{V\Lambda V}^T \text{, implying that $\mathbf{\Sigma}$ is always positive semi-definite.}\]
+\section{Applications of principal component analysis}
+Principal component analysis can be used as an unsupervised learning algorithm that allows to compress high-dimensional data onto a lower-dimensional space, such as a linear manifold, by using the $\displaystyle k << d$ most relevant components to create uncorrelated features that can be exploited to simplify learning tasks or discover data patterns.
+
 \part{Network Science}
+
 \chapter{Understanding networks}
 \section{The purpose of network science}
 A network is a complex system whose components interact according to three main properties:

@@ -198,7 +198,7 @@ Most of the time, however, data is stored using a cloud infrastructure that cons
 
 \chapter{Algorithms}
 \section{Defining algorithms}
-An algorithm can be seen as a set of instructions, to solve a given problem. \newline
+An algorithm can be seen as a set of instructions to solve a given problem. \newline
 In particular, an algorithm is evaluated based on its correctness, which determines whether the algorithm works on every possible input or not, and its efficiency, which measures the time taken by the algorithm to find a solution to the given problem.
 \begin{examplebox}[The maximum value of an array]
     Consider an algorithm that finds the maximum value in an array of $\displaystyle n$ elements:
@@ -336,6 +336,15 @@ In this setting, a problem $\displaystyle \mathbf{X}$ is said to be ``$\displays
 \begin{examplebox}[The travelling salesman problem]
     When formulated as a decision problem, the travelling salesman problem aims to determine whether a graph $\displaystyle G = (V, E)$ contains a path that visits all node in the graph while maintaining an overall cost of at most $\displaystyle c$. \newline
     Using some polynomial time reductions, it is possible to prove that this problem is $\displaystyle \mathbf{NP}$-complete.
+\end{examplebox}
+\noindent To prove that a problem $\displaystyle \mathbf{X}$ is $\displaystyle \mathbf{NP}$-complete, it is typically sufficient to show that $\displaystyle \mathbf{X} \in \mathbf{NP}$ and that some problem $\displaystyle \mathbf{Y} \in \mathbf{NP}$ can be reduced in polynomial time to $\displaystyle \mathbf{X}$.
+\subsection{Solving $\mathbf{NP}$-complete problems via heuristics}
+Heuristics provide a problem-specific rule to solve a $\displaystyle \mathbf{NP}$-complete problem. \newline
+While heuristics are easy to implement and can provide acceptable solutions in reasonable time, they do not guarantee optimality and might struggle to generalize on different instances of the problem.
+\subsection{Solving $\mathbf{NP}$-complete problems via approximation algorithms}
+In the context of optimization problems, a $\displaystyle c$-approximation algorithm is an algorithm that is guaranteed to return a solution within a factor $\displaystyle c$ of the optimal solution in polynomial time.
+\begin{examplebox}[Approximating the travelling salesman problem]
+    While the travelling salesman problem cannot be solved in polynomial time, there are some approximation algorithms that, for a cost function that satisfies the triangle inequality, are guaranteed to find a solution whose value is at most two times the optimal value.
 \end{examplebox}
 
 \end{document}
