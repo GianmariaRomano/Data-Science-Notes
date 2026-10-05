@@ -24,6 +24,7 @@
 | September 28 | Data types and introduction to algorithms. |
 | September 29 | Asymptotic notation. |
 | October 1 | Binary search and NP-completeness. |
+| October 5 | Known NP-complete problems and approximation strategies. |
 
 </details>
 
