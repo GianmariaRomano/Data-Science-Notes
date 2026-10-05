@@ -31,6 +31,7 @@
 | September 28 | Defining machine learning tasks and recap of vector algebra. |
 | October 1 | Introduction to network science and graphs. |
 | October 2 | Vector subspaces and visualization of vectors and dataframes. |
+| October 5 | Principal component analysis and introduction to optimization methods. |
 
 </details>
 
