@@ -512,7 +512,7 @@ A discrete random variable $\displaystyle X$ is said to follow a binomial distri
     \[p_X(25) = \binom{25}{25}(0.7)^{25}(0.3)^{25 - 25} = (0.7)^{25} \approx 1.34 \cdot 10^{-4}\]
 \end{examplebox}
 \subsection{The uniform distribution}
-A continuous random variable $\displaystyle X$ is said to follow a uniform distribution with parameters $\displaystyle a < b \in \mathbb{R}$, which is written as $\displaystyle X \sim Unif(0, 1)$, if its probability density function and cumulative distribution function are defined as
+A continuous random variable $\displaystyle X$ is said to follow a uniform distribution with parameters $\displaystyle a < b \in \mathbb{R}$, which is written as $\displaystyle X \sim Unif(a, b)$, if its probability density function and cumulative distribution function are defined as
 \[f_X(x) = \frac{1}{b - a}\mathbb{I}_{[a, b]}(x) \quad\quad\quad F_X(x) = \begin{cases}
     0 &\quad\text{if $x < a$} \\
     \frac{x - a}{b - a} &\quad\text{if $x \in [a, b]$} \\
@@ -532,6 +532,120 @@ Given a random variable $\displaystyle U \sim Unif(0, 1)$, let $\displaystyle F$
     It should be noticed that this result is also valid whenever $\displaystyle F$ is only weakly monotonic, although the proof is more cumbersome.
 \end{proofbox}
 
+\chapter{Random vectors}
+\section{Defining random vectors}
+Given a probability space $\displaystyle (\Omega, \mathbb{P})$, a random vector, also known as a $\displaystyle p$-variate random variable, is a (measurable) mapping $\displaystyle \mathbf{X}: \Omega \to \mathbb{R}^p$ that maps every outcome $\displaystyle \omega \in \Omega$ onto a vector $\displaystyle \mathbf{X}(\omega) \in \mathbb{R}^p$. \newline
+Generally speaking, the behaviour of a random vector, whose components can be studied individually through univariate analysis or jointly by analysing dependencies between single variables, is defined by its joint distribution, which is normally represented as a contingency table or tensor. \newline
+Furthermore, the joint distribution of a random vector can be used to derive the marginal distributions, which describe the behaviour of a single variable, and to model conditional distributions, which describe the behaviour of a variable conditioned to a given event. \newline
+Overall, random vectors can be seen as a generalization of random variables and, while they are mainly used to study bivariate distributions, their behaviour and properties can be extended to analyse $\displaystyle p > 2$ variables as well.
+\section{Fully discrete random vectors}
+A random vector is said to be ``fully discrete'' if all its components are discrete random variables. \newline
+For a bivariate distribution $\displaystyle \mathbf{Z}$, the behaviour of a random vector is described using a joint probability mass function
+\[p_{\mathbf{Z}}(\mathbf{z}) = p_{X, Y}(x, y) = \mathbb{P}(\{X = x\} \cap \{Y = y\}) \text{ } \forall (x, y) \in S_X \times S_Y\]
+Starting from the joint distribution, it is possible to retreive the marginal distribution of a single variable by computing
+\begin{align*}
+    p_X(x) &= \mathbb{P}\Bigg(\{X = x\} \cap \Bigg(\bigcup_{y \in S_Y} \{Y = y\}\Bigg)\Bigg) = \bigcup_{y \in S_Y} \mathbb{P}(\{X = x\} \cap \{Y = y\}) = \sum_{y \in S_Y} p_{X, Y}(x, y) \\
+    p_Y(y) &= \mathbb{P}\Bigg(\Bigg(\bigcup_{x \in S_X} \{X = x\}\Bigg) \cap \{Y = y\}\Bigg) = \bigcup_{x \in S_X} \mathbb{P}(\{X = x\} \cap \{Y = y\}) = \sum_{x \in S_X} p_{X, Y}(x, y)
+\end{align*}
+Furthermore, assuming a certain event has occurred, it is possible to model the conditional distribution of each variable as
+\begin{align*}
+    p_{X|Y}(x|y) &= \mathbb{P}(X = x|Y = y) = \frac{\mathbb{P}(\{X = x\} \cap \{Y = y\})}{\mathbb{P}(Y = y)} = \frac{p_{X, Y}(x, y)}{p_Y(y)} \text{ } \forall x \in S_X \\
+    p_{Y|X}(y|x) &= \mathbb{P}(Y = y|X = x) = \frac{\mathbb{P}(\{X = x\} \cap \{Y = y\})}{\mathbb{P}(X = x)} = \frac{p_{X, Y}(x, y)}{p_X(x)} \text{ } \forall y \in S_Y
+\end{align*}
+\begin{examplebox}[The relationship between exam results and class attendance]
+    Consider the random variables $\displaystyle X = \{\text{I pass the exam}\}$, whose support set is $\displaystyle S_X = \{0, 1\}$, and $\displaystyle Y = \{\text{I attend classes}\}$, whose support set is $\displaystyle S_Y = \{N, S, A\}$: on the set $\displaystyle S_X \times S_Y$, their joint distribution is defined as
+    
+    {\centering
+    \vspace{0.5em}
+    \begin{tabular}{|l|c c c|r|}
+        \hline
+        & \multicolumn{3}{c|}{$Y$} & \\
+        \hline
+        $X$ & $N$ & $S$ & $A$ & \textbf{Total} \\
+        \hline
+        $0$ & $0.6$ & $0.05$ & $0.05$ & $0.7$ \\
+        $1$ & $0.2$ & $0.01$ & $0.09$ & $0.3$ \\
+        \hline
+        \textbf{Total} & $0.8$ & $0.06$ & $0.14$ & $1.0$ \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}\par}
+    
+    \noindent Looking at the contingency table, it is possible to recover the joint distributions
+    \begin{align*}
+        p_X(x) &= \sum_{y \in S_Y} p_{X, Y}(x, y) = \begin{cases}
+            0.7 &\quad\text{if $x = 0$} \\
+            0.3 &\quad\text{if $x = 1$} \\
+        \end{cases} \\
+        p_Y(y) &= \sum_{x \in S_X} p_{X, Y}(x, y) = \begin{cases}
+            0.8 &\quad\text{if $y = N$} \\
+            0.06 &\quad\text{if $y = S$} \\
+            0.14 &\quad\text{if $y = A$} \\
+        \end{cases}
+    \end{align*}
+    Furthermore, it is possible to define the conditional distribution of $\displaystyle X$ given the event $\displaystyle \{Y = y\}$, with $\displaystyle y \in S_Y$, as
+    \begin{align*}
+        p_{X|Y}(x|Y = N) &= \mathbb{P}(X = x|Y = N) = \begin{cases}
+            0.75 &\quad\text{if $x = 0$} \\
+            0.25 &\quad\text{if $x = 1$}
+        \end{cases} \\
+        p_{X|Y}(x|Y = S) &= \mathbb{P}(X = x|Y = S) = \begin{cases}
+            0.83 &\quad\text{if $x = 0$} \\
+            0.17 &\quad\text{if $x = 1$}
+        \end{cases} \\
+        p_{X|Y}(x|Y = A) &= \mathbb{P}(X = x|Y = A) = \begin{cases}
+            0.36 &\quad\text{if $x = 0$} \\
+            0.64 &\quad\text{if $x = 1$}
+        \end{cases}
+    \end{align*}
+\end{examplebox}
+\subsection{Defining independence for discrete random variables}
+When working with (bivariate) random vectors, two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their joint probability mass function factorises to the product of their marginal probability mass functions, meaning that
+\[p_{X, Y}(x, y) = p_X(x)p_Y(y) \text{ } \forall (x, y) \in S_X \times S_Y\]
+Alternatively, it is possible to state that two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their conditional distributions correspond to the marginal distributions, meaning that
+\[p_{X|Y}(x|y) = p_X(x) \quad\quad p_{Y|X}(y|x) = p_Y(y) \]
+\begin{examplebox}[Exam results and class attendance as independent random variables]
+    Consider the random variables $\displaystyle X = \{\text{I pass the exam}\}$, whose support set is $\displaystyle S_X = \{0, 1\}$, and $\displaystyle Y = \{\text{I attend classes}\}$, whose support set is $\displaystyle S_Y = \{N, S, A\}$: assuming the two random variables are independent, their joint distribution becomes
+    
+    {\centering
+    \vspace{0.5em}
+    \begin{tabular}{|l|c c c|r|}
+        \hline
+        & \multicolumn{3}{c|}{$Y$} & \\
+        \hline
+        $X$ & $N$ & $S$ & $A$ & \textbf{Total} \\
+        \hline
+        $0$ & $0.56$ & $0.042$ & $0.098$ & $0.7$ \\
+        $1$ & $0.24$ & $0.018$ & $0.042$ & $0.3$ \\
+        \hline
+        \textbf{Total} & $0.8$ & $0.06$ & $0.14$ & $1.0$ \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}\par}
+    
+    \noindent Generally speaking, it is possible to check how much two random variables are far from independence by evaluating the distance between their joint distribution $\displaystyle p_{X, Y}$ and the factorised distribution $\displaystyle \tilde{p}$.
+\end{examplebox}
+\section{Fully continuous random vectors}
+A random vector is said to be ``fully continuous'' if all its components are continuous random variables.
+\section{The cumulative distribution function of a joint distribution}
+Generally speaking, the joint cumulative distribution function of any bivariate random vector is defined as
+\[F_{X, Y}(x, y) = \mathbb{P}(\{X \leq x\} \cap \{Y \leq y\}) \text{ } \forall (x, y) \in S_X \times S_Y\]
+In this case, it is possible to retrieve the marginal cumulative distribution functions by computing
+\begin{align*}
+    F_X(x) &= \lim_{y \to +\infty} F_{X, Y}(x, y) \text{ } \forall x \in S_X \\
+    F_Y(y) &= \lim_{x \to +\infty} F_{X, Y}(x, y) \text{ } \forall y \in S_Y
+\end{align*}
+Furthermore, whenever two random variables $\displaystyle X$ and $\displaystyle Y$ are independent, it is the case that
+\[F_{X, Y}(x, y) = F_X(x)F_Y(y) \text{ } \forall (x, y) \in S_X \times S_Y\]
+\subsection{Building independent and identically distributed random samples}
+A random sample $\displaystyle \mathcal{D}_n = \{X_1, \dots, X_n\}$ is said to be ``independent and identically distributed'' if all the sampled random variables are independent and come from the same population model $\displaystyle F_X$, allowing to define their joint distribution as
+\[\mathbb{P}(\mathcal{D}_n) = F(x_1, \dots, x_n) = \mathbb{P}(X_1 \leq x_1, \dots, X_n \leq x_n) = \prod_{i = 1}^n \mathbb{P}(X_i \leq x_i) = \prod_{i = 1}^n F(x_i)\]
+\begin{examplebox}[Maximum likelihood estimation]
+    Consider a machine learning model that aims to learn an unknown population model $\displaystyle F_X$ from a random sample $\displaystyle \mathcal{D}_n$: using the likelihood function leads the model to learn the empirical cumulative distribution function associated to a distribution that places the same mass to each data point, meaning that
+    \[\hat{F} = \arg\max_{F_X \text{ CDF}} L(F_X) = \arg\max_{F_X \text{ CDF}} \prod_{i = 1}^n F_X(x_i)\]
+\end{examplebox}
+\noindent This concept can be generalized to create random samples of random vectors as well.
+
 \chapter{Stochastic simulations}
 \section{Defining simulations}
 A stochastic simulation allows to study complex probabilistic models by generating values for a random variable that will be used into the model, providing an approximation of a random system. \newline
@@ -540,8 +654,6 @@ Simulations come in handy to investigate the typical behaviour of a system and i
     Suppose you want to create a simulation of a balanced coin flip based on the result seen by tossing a fair die: a possible strategy could consist of having the coin show heads when the die shows an odd result, or tails when the die shows an even result. \newline
     Alternatively, it is possible to simulate the result shown by the die by (repeatedly) tossing the coin and associating each sequence of outcomes to a certain value.
 \end{examplebox}
-\section{Random samples}
-Let $\displaystyle \{X_1, \dots, X_n\}$ be a sequence of independent random variables: if the variables are (mutually) independent and have the same marginal cumulative distribution function $\displaystyle F_X$, then they are said to be independent and identically distributed, which can be written as $\displaystyle X_1, \dots, X_n \sim F_X$, and form a random sample of size $\displaystyle n$ from $\displaystyle F_X$.
 \section{Pseudorandom number generators}
 A pseudorandom number generator is a deterministic algorithm that, starting from an initial ``seed'' $\displaystyle u_0$, produces a sequence of numbers that resembles a random sequence. \newline
 For this reason, a pseudorandom number generator can be modelled as a function $\displaystyle \mathbf{f}: (0, 1) \to (0, 1)$ such that, for any seed $\displaystyle u_0$, the resulting sequence
@@ -563,6 +675,7 @@ A common method for pseudorandom number generation is the linear congruential ge
       return(x_out / (M + 1))
     }
 \end{lstlisting}
+\noindent In fact, this function acts as a generator on $ \displaystyle (0, 1)$ when scaled by $\displaystyle (M + 1)$.
 \begin{examplebox}[A simple linear congruential generator]
     Consider the linear congruential generator
     \[\mathbf{f}(x) = (69069069x + 12345) \bmod 2^{32}\]
@@ -574,7 +687,7 @@ A common method for pseudorandom number generation is the linear congruential ge
 \[D(f_u, \hat{f}) = \max_{u \in \mathbb{R}} |f_u(u) - \hat{f}(u)|\]
 Ideally, a well-performing linear congruent generator should achieve consistent convergence, which means that, for any data sequence, the maximum loss approaches $\displaystyle 0$ as the sequence grows infinitely large, meaning that
 \[\max_{\text{all data}} D(f_u, \hat{f}) \xrightarrow{n \to +\infty} 0\]
-Most of the time, however, it is sufficient to have the average error to reach vanish for a linear congruential generator to be good.
+Most of the time, however, it is sufficient to have the average error to vanish for a linear congruential generator to be good.
 \subsection{The period of a linear congruential generator}
 For certain choices of $\displaystyle \alpha$ and $\displaystyle \beta$, a linear congruential generator has a period equal to $\displaystyle M$ and, when scaled by $\displaystyle (M + 1)$, it can act as a generator on $\displaystyle (0, 1)$. \newline
 More specifically, a linear congruential generator has a period equal to $\displaystyle M$ for any starting seed $\displaystyle u_0$ if and only if:
@@ -590,8 +703,6 @@ Since each generated sample $\displaystyle u_n$ is a deterministic function of t
 To simulate independent samples, a linear congruential generator must be $\displaystyle k$-dimensionally equidistributed, with $\displaystyle k$ being chosen as a large value, which means that every subsequence of length $\displaystyle k$ occurs with equal frequency.
 \section{Using quantile transforms to generate populations}
 From a broader perspective, it is possible to use the quantile transform to create random variables starting from a $\displaystyle Unif(0, 1)$ generator.
-\subsection{Generating continuous random variables}
-A continuous random variable can be generated by simply using the quantile transform method on a $\displaystyle Unif(0, 1)$ generator.
 \begin{examplebox}[Generating a continuous random variable]
     Let $\displaystyle X$ be a continuous random variable for which
     \[f_X(x) = 3x^2\mathbb{I}_{[0, 1]}(x) \text{ and } F_X(x) = \begin{cases}
@@ -603,11 +714,11 @@ A continuous random variable can be generated by simply using the quantile trans
     Therefore, if $\displaystyle U \sim Unif(0, 1)$, the random variable $\displaystyle \sqrt[3]{U}$ follows the same distribution as $\displaystyle X$.
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.2\linewidth]{images/population_generation_continuous.png}
+        \includegraphics[width=0.35\linewidth]{images/population_generation_continuous.png}
         \caption{The distribution of $\displaystyle \sqrt[3]{U}$, with $\displaystyle U \sim Unif(0, 1)$.}
         \label{fig:population_continuous}
     \end{figure}
 \end{examplebox}
-\noindent While easy to implement, this algorithm tends to fail when applied to some distributions, such as the Normal distribution, or when working with random vectors.
+\noindent While easy to implement, this algorithm tends to fail when applied to some distributions, such as the Gaussian distribution, or when working with random vectors.
 
 \end{document}
