@@ -540,7 +540,7 @@ Furthermore, the joint distribution of a random vector can be used to derive the
 Overall, random vectors can be seen as a generalization of random variables and, while they are mainly used to study bivariate distributions, their behaviour and properties can be extended to analyse $\displaystyle p > 2$ variables as well.
 \section{Fully discrete random vectors}
 A random vector is said to be ``fully discrete'' if all its components are discrete random variables. \newline
-For a bivariate distribution $\displaystyle \mathbf{Z}$, the behaviour of a random vector is described using a joint probability mass function
+For a bivariate distribution, the behaviour of a random vector $\displaystyle \mathbf{Z}$ is described using a joint probability mass function
 \[p_{\mathbf{Z}}(\mathbf{z}) = p_{X, Y}(x, y) = \mathbb{P}(\{X = x\} \cap \{Y = y\}) \text{ } \forall (x, y) \in S_X \times S_Y\]
 Starting from the joint distribution, it is possible to retreive the marginal distribution of a single variable by computing
 \begin{align*}
@@ -636,7 +636,7 @@ In this case, it is possible to retrieve the marginal cumulative distribution fu
     F_Y(y) &= \lim_{x \to +\infty} F_{X, Y}(x, y) \text{ } \forall y \in S_Y
 \end{align*}
 Furthermore, whenever two random variables $\displaystyle X$ and $\displaystyle Y$ are independent, it is the case that
-\[F_{X, Y}(x, y) = F_X(x)F_Y(y) \text{ } \forall (x, y) \in S_X \times S_Y\]
+\[F_{X, Y}(x, y) = F_X(x)F_Y(y) \text{ } \forall (x, y) \in \mathbb{R}^2\]
 \subsection{Building independent and identically distributed random samples}
 A random sample $\displaystyle \mathcal{D}_n = \{X_1, \dots, X_n\}$ is said to be ``independent and identically distributed'' if all the sampled random variables are independent and come from the same population model $\displaystyle F_X$, allowing to define their joint distribution as
 \[\mathbb{P}(\mathcal{D}_n) = F(x_1, \dots, x_n) = \mathbb{P}(X_1 \leq x_1, \dots, X_n \leq x_n) = \prod_{i = 1}^n \mathbb{P}(X_i \leq x_i) = \prod_{i = 1}^n F(x_i)\]
@@ -701,8 +701,10 @@ Generally speaking, it is possible to assess whether the generated random variab
 \subsection{Simulating independence in a linear congruential generator}
 Since each generated sample $\displaystyle u_n$ is a deterministic function of the previous value $\displaystyle u_{n - 1}$, linear congruential generators tend to create dependent sequences. \newline
 To simulate independent samples, a linear congruential generator must be $\displaystyle k$-dimensionally equidistributed, with $\displaystyle k$ being chosen as a large value, which means that every subsequence of length $\displaystyle k$ occurs with equal frequency.
-\section{Using quantile transforms to generate populations}
-From a broader perspective, it is possible to use the quantile transform to create random variables starting from a $\displaystyle Unif(0, 1)$ generator.
+\section{Transformations of random variables}
+It is possible to simulate (continuous) ransom variables through specific transformations.
+\subsection{Using quantile transforms to generate populations}
+The quantile transform can be used to create random variables starting from a $\displaystyle Unif(0, 1)$ generator.
 \begin{examplebox}[Generating a continuous random variable]
     Let $\displaystyle X$ be a continuous random variable for which
     \[f_X(x) = 3x^2\mathbb{I}_{[0, 1]}(x) \text{ and } F_X(x) = \begin{cases}
@@ -719,6 +721,24 @@ From a broader perspective, it is possible to use the quantile transform to crea
         \label{fig:population_continuous}
     \end{figure}
 \end{examplebox}
-\noindent While easy to implement, this algorithm tends to fail when applied to some distributions, such as the Gaussian distribution, or when working with random vectors.
+\noindent While easy to implement, this algorithm becomes more cumbersome when generating discrete random variables.
+\subsection{General transformation of random variables}
+Starting from a continuous random variable $\displaystyle X$ that, on a support set $\displaystyle S_X$, has probability density function $\displaystyle f_X(x)$ and cumulative distribution $\displaystyle F_X(x)$, it is possible to study the random variable $\displaystyle Y = r(X)$ by defining the set $\displaystyle A_y = \{x \in S_X : r(x) \leq y\}$ and using it to compute
+\begin{align*}
+    F_Y(y) &= \mathbb{P}(Y \leq y) = \mathbb{P}(r(X) \leq y) = \mathbb{P}(\{x \in S_X : r(x) \leq y\}) = \int_{A_y} f_X(x) \ dx \\
+    f_Y(y) &= F_Y'(y)\mathbb{I}_{S_Y}(y) \\
+    S_Y &= \{r(x) : x \in S_X\}
+\end{align*}
+\begin{examplebox}[Transforming a uniformly distributed random variable]
+    Given a random variable $\displaystyle X \sim Unif(-1, 1)$, define the random variable $\displaystyle Y = X^2$, whose cumulative distribution function is defined as
+    \[F_Y(y) = \mathbb{P}(Y \leq y) = \mathbb{P}(X^2 \leq y) = \mathbb{P}(-\sqrt{y} \leq X \leq \sqrt{y}) = \int_{-\sqrt{y}}^{\sqrt{y}} \frac{1}{2} \ dx = \frac{x}{2}\Bigg|_{-\sqrt{y}}^{\sqrt{y}} = \sqrt{y}\]
+    This means that, on the support $\displaystyle S_Y = \{x^2 : x \in S_X\} = [0, 1]$, the probability density function of $\displaystyle Y$ will be given by
+    \[f_Y(y) = F_y'(y) = \frac{1}{2\sqrt{y}}\mathbb{I}_{(0, 1]}(y)\]
+\end{examplebox}
+\noindent However, if the function $\displaystyle r(x)$ is known to be invertible in $\displaystyle S_X$, with $\displaystyle s(y) = r^{-1}(x)$, it is possible to directly compute
+\begin{align*}
+    F_Y(y) &= \mathbb{P}(r(X) \leq y) = \mathbb{P}(X \leq s(y)) = F_X(s(y)) \\
+    f_Y(y) &= F_Y'(y) = f_X(s(y)) \cdot s'(y)
+\end{align*}
 
 \end{document}
