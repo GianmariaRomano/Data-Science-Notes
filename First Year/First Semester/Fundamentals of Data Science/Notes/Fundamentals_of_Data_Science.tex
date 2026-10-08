@@ -323,14 +323,14 @@ Given a matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{m \times n}$, a linear 
 \section{Learning the projection basis}
 Rather than finding the encoding weights for a given basis, principal component analysis aims to learn both the encoding weights $\displaystyle \mathbf{w}_1, \dots, \mathbf{w}_p$ and the basis matrix $\displaystyle \mathbf{C}$ that minimize the mean reconstruction error
 \[g(\mathbf{w}_1, \dots, \mathbf{w}_p, \mathbf{C}) = \frac{1}{P}\sum_{p = 1}^P \lVert \mathbf{Cw}_p - \mathbf{x}_p \lVert_2^2 \text{, for a dataset $\{\mathbf{x}_p\}_{p = 1}^P$.}\]
-However, if $\displaystyle \mathbf{C}$ is assumed to be orthonormal, it is possible to directly compute $\displaystyle \mathbf{w}_p = \mathbf{C}^T\mathbf{x}_p$ and simplify the objective function as
+However, if $\displaystyle \mathbf{C}$ is assumed to be orthonormal, it is possible to directly compute $\displaystyle \mathbf{w}_p = \mathbf{C}^T\mathbf{x}_p$ and simplify the objective function to
 \[g(\mathbf{C}) = \frac{1}{P}\sum_{p = 1}^P \lVert \mathbf{CC}^T\mathbf{x}_p - \mathbf{x}_p \rVert_2^2\]
 \begin{proofbox}
     Assuming $\displaystyle \mathbf{C}$ is orthonormal, meaning that $\displaystyle \mathbf{C}^T\mathbf{C} = \mathbf{I}$, the cost function can be formulated as
     \begin{align*}
         \lVert \mathbf{CC}^T\mathbf{x}_p - \mathbf{x}_p \rVert_2^2
             &= \mathbf{x}_p^T\mathbf{C}^T\mathbf{CCC}^T\mathbf{x}_p -2\mathbf{x}_p^T\mathbf{CC}^T\mathbf{x}_p + \mathbf{x}_p^T\mathbf{x}_p \\
-            &\stackrel{\mathbf{C}^T\mathbf{C} = \mathbf{I}}{=} -\mathbf{x}_p^T\mathbf{CC}^T\mathbf{x}_p + \mathbf{x}_p^T\mathbf{x}_p = \lVert \mathbf{C}^T\mathbf{x}_p \rVert_2^2 + \lVert \mathbf{x}_p \rVert_2^2
+            &\stackrel{\mathbf{C}^T\mathbf{C} = \mathbf{I}}{=} -\mathbf{x}_p^T\mathbf{CC}^T\mathbf{x}_p + \mathbf{x}_p^T\mathbf{x}_p = -\lVert \mathbf{C}^T\mathbf{x}_p \rVert_2^2 + \lVert \mathbf{x}_p \rVert_2^2
     \end{align*}
     Since $\displaystyle \mathbf{x}_p$ is fixed with respect to the optimization over the basis matrix, minimizing the mean reconstruction error is equivalent to maximizing $\displaystyle \lVert \mathbf{C}^T\mathbf{x}_p \rVert$.
 \end{proofbox}
@@ -459,7 +459,7 @@ A network can be represented using an edge list in which each tuple represents a
 \begin{lstlisting}[
   language=Python,
   captionpos=b,
-  caption={Creating a graph from an edge list, which requires $\displaystyle O(|V|)$ memory.},
+  caption={Creating a graph from an edge list, which requires $\displaystyle O(|E|)$ memory.},
   label={lst:edge_list}
 ]
     edges = [(0,1), (0,2), (1,2), (2,3), (3,4), (3,5), (4,5)]
@@ -515,5 +515,84 @@ It is possible to summarize the connections in a network using an adjacency list
     ]
 \end{lstlisting}
 \noindent It should be noticed that adjacency lists are not compatible with the \texttt{igraph} library, meaning that a conversion into an edge list or an adjacency matrix is required in order to plot a graph.
+\section{Neighbourhoods and subgraphs}
+On a graph $\displaystyle G = (V, E)$, an adjacent vertex of a node $\displaystyle v \in V$ is any vertex that is connected to $\displaystyle v$ by an edge in the graph. \newline
+In particular, the neighbourhood of a vertex $\displaystyle v$ is a subgraph composed of all the vertices adjacent to $\displaystyle v$, sometimes including $\displaystyle v$ as well, and all the edges connecting these nodes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{images/bowtie_graph_neighbourhood.png}
+    \caption{Example of a closed neighbourhood within a graph.}
+    \label{fig:bowtie_graph_neighbourhood}
+\end{figure}
+\noindent From a broader perspective, let $\displaystyle G = (V, E)$ be any graph: for a set $\displaystyle S \subseteq V$, the induced subgraph $\displaystyle G[S]$ is a graph whose vertex set is $\displaystyle S$ and whose edge set consists of all the edges with both endpoints in $\displaystyle S$.
+\section{Network measures}
+Network measures come in handy to describe and investigate the structural properties of a network, such as connectedness or centrality. \newline
+For simplicity, it is typically assumed that networks are simple, which means that they contain neither self-loops nor multiple edges connecting the same pair of endpoints.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{images/non_simple_graph.png}
+    \caption{Example of a graph that is not simple.}
+    \label{fig:non_simple_graph}
+\end{figure}
+\noindent Whenever a network is not simple, the \texttt{simplify} function can be used to turn it into a simple network by removing all redundant elements.
+\subsection{Network density}
+Network density provides a measure of the number of connections in a graph compared to the maximum possible number of edges. \newline
+If $\displaystyle G = (V, E)$ is an undirected graph, its density is given by
+\[\delta = \frac{|E|}{|E_{\max}|} = \frac{|E|}{\binom{|V|}{2}} = \frac{2|E|}{|V|(|V| - 1)}\]
+On the other hand, if $\displaystyle G = (V, E)$ is a directed graph, its density is defined as
+\[\delta = \frac{|E|}{|E_{\max}|} = \frac{|E|}{|V|(|V| - 1)}\]
+Overall, real networks tend to be sparse because, even though they consist of many nodes, they feature a very small number of edges that are typically concentrated near some hubs.
+\subsection{The degree of a node}
+The degree of a node denotes the number of connections that are incident to it.
+\begin{itemize}
+    \item If $\displaystyle G = (V, E)$ is an undirected graph, the degree of a node is simply defined as
+    \[k_i = \sum_j A_{ij} \text{, with } \sum_i k_i = 2|E|\]
+    For this reason, the mean degree in an undirected network will be given by
+    \[\overline{k} = \frac{1}{|V|}\sum_i k_i = \frac{2|E|}{|V|}\]
+    \item If $\displaystyle G = (V, E)$ is a directed graph, it is necessary to make a distinction between a node's in-degree, which denotes the number of incoming connections, and its out-degree, which denotes the number of outgoing connections.
+    \begin{align*}
+        k_i^{in} &= \sum_j A_{ji} \text{ and } k_i^{out} = \sum_j A_{ij} \text{, with } \sum_i k_i^{in} = \sum_i k_i^{out} = |E| \\
+        k_i^{tot} &= k_i^{in} + k_i^{out} \text{, with } \sum_i k_i^{tot} = 2|E|
+    \end{align*}
+    Therefore, the mean degree in a directed network will be given by
+    \[\overline{k^{in}} = \frac{1}{|V|}\sum_i k_i^{in} = \frac{|E|}{|V|} = \frac{1}{|V|}\sum_i k_i^{out} = \overline{k^{out}}\]
+\end{itemize}
+\section{Weighted networks}
+A weighted network is defined as a graph $\displaystyle G = (V, E, w)$, where the function $\displaystyle w: E \to \mathbb{R}^+$ assigns a (positive) weight to each edge in the network.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\linewidth]{images/weighted_graph.png}
+    \caption{Example of a weighted graph.}
+    \label{fig:weighted_bowtie_graph}
+\end{figure}
+\noindent For this reason, the adjacency matrix of a weighted network can be defined as
+\[W_{ij} = \begin{cases}
+    w_{ij} &\quad\text{if $(i, j) \in E$} \\
+    0 &\quad\text{otherwise} \\
+\end{cases}\]
+In particular, if a weighted network is undirected, its adjacency matrix is guaranteed to be symmetric, although, if a weighted network is directed, its adjacency matrix may or may not be symmetric.
+\subsection{The strength of a node}
+The strength of a node can be seen as a generalization of the concept of degree for weighted networks. \newline
+In particular, if $\displaystyle G = (V, E, w)$ is an undirected graph, the strength of a node is simply defined as
+\[s_i = \sum_j w_{ij}\]
+On the other hand, if $\displaystyle G = (V, E, w)$ is a directed graph, it is necessary to make a distinction between a node's in-strength and out-strength.
+\[s_i^{in} = \sum_j w_{ji} \text{ and } s_i^{out} = \sum_j w_{ij}\]
+\section{The degree distribution of a network}
+For an undirected and unweighted graph, the degree distribution describes the frequency of node degrees within the network. \newline
+Since this distribution is typically discrete, it can be defined using raw frequencies or by normalizing frequencies into a probability mass function, which describes the probability that a node in the network has a given degree.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/degree_pmf.png}
+    \caption{Frequencies and PMF for the degree distribution of the ``Zachary Karate Club'' network.}
+    \label{fig:graph_pmf}
+\end{figure}
+\noindent Alternatively, it is possible to study the degree distribution of a graph through its cumulative distribution function, which denotes the tail probability of the degree distribution.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/degree_cdf.png}
+    \caption{CDF and CCDF for the degree distribution of the ``Zachary Karate Club'' network.}
+    \label{fig:graph_cdf}
+\end{figure}
+\noindent In fact, using the (complementary) cumulative distribution function reveals that many real-world networks follow a power law distribution.
 
 \end{document}

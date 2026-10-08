@@ -347,4 +347,44 @@ In the context of optimization problems, a $\displaystyle c$-approximation algor
     While the travelling salesman problem cannot be solved in polynomial time, there are some approximation algorithms that, for a cost function that satisfies the triangle inequality, are guaranteed to find a solution whose value is at most two times the optimal value.
 \end{examplebox}
 
+\chapter{Data relationships}
+\section{Distance functions}
+Since most data mining problems focus on describing relationships between objects wthin a ``universe'' $\mathcal{U}$, object discrepancies are measured using a distance function $\displaystyle d: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
+\begin{enumerate}
+    \item The function is non-negative, meaning that $\displaystyle d(x, y) \ge 0 \text{ } \forall (x, y) \in \mathcal{U} \times \mathcal{U}$, with $\displaystyle d(x, y) = 0$ if and only if $\displaystyle x = y$.
+    \item The function is symmetric, meaning that $\displaystyle d(x, y) = d(y, x) \text{ } \forall (x, y) \in \mathcal{U} \times \mathcal{U}$.
+    \item The function obeys the triangle inequality, meaning that $\displaystyle d(x, y) \leq d(x, z) + d(z, y) \text{ } \forall x, y, z \in \mathcal{U}$.
+\end{enumerate}
+\subsection{The $L^p$ distance family}
+If $\displaystyle \mathcal{U} = \mathbb{R}^m$, the distance between two $\displaystyle m$-dimensional vectors can be measured using the $\displaystyle L^p$ distance function, which, for an arbitrary $\displaystyle p \in \mathbb{N}$, is defined as
+\[d_p(\mathbf{x}, \mathbf{y}) = \Bigg(\sum_{j = 1}^m |\mathbf{x}_j - \mathbf{y}_j|^p\Bigg)^{\frac{1}{p}} = \lVert \mathbf{x} - \mathbf{y} \rVert_p\]
+As $\displaystyle p \to +\infty$, the $\displaystyle L^p$ distance function becomes the Chebyshev distance, which is defined as
+\[d_{\infty}(\mathbf{x}, \mathbf{y}) = \lim_{p \to +\infty} d_p(\mathbf{x}, \mathbf{y}) = \max_{1 \leq j \leq m}\{|\mathbf{x}_j - \mathbf{y}_j|\} = \lVert \mathbf{x} - \mathbf{y} \rVert_{\infty}\]
+\begin{examplebox}[Common distances between two vectors]
+    Consider the vectors $\displaystyle \mathbf{x} = \begin{pmatrix}
+        3 & 7 & 0 & 2 & 1 \\
+    \end{pmatrix}$ and $\displaystyle \mathbf{y} = \begin{pmatrix}
+        4 & 5 & 10 & 7 & 3 \\
+    \end{pmatrix}$: using some common distances from the $\displaystyle L^p$ family results in
+    \begin{align*}
+        d_1(\mathbf{x}, \mathbf{y}) &= 1 + 2 + 10 + 5 + 2 = 20 \\
+        d_2(\mathbf{x}, \mathbf{y}) &= 1 + 4 + 100 + 25 + 4 = \sqrt{134} \approx 11.57 \\
+        d_{\infty}(\mathbf{x}, \mathbf{y}) &= 10
+    \end{align*}
+\end{examplebox}
+\noindent Furthermore, choosing $\displaystyle p = 0$ causes the $\displaystyle L^p$ distance to become
+\[d_0(\mathbf{x}, \mathbf{y}) = |\{i : \mathbf{x}_i \neq \mathbf{y}_i\}|\]
+\section{Similarity functions}
+Object similarities can be described using a similarity function $\displaystyle s: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
+\begin{enumerate}
+    \item The function is non-negative, meaning that $\displaystyle s(x, y) \ge 0 \text{ } \forall (x, y) \in \mathcal{U} \times \mathcal{U}$, and takes maximum value when $\displaystyle x = y$.
+    \item The function is symmetric, meaning that $\displaystyle s(x, y) = s(y, x) \text{ } \forall (x, y) \in \mathcal{U} \times \mathcal{U}$.
+\end{enumerate}
+Additionally, since similarity functions are often normalized, they can be turned into distance functions by setting $\displaystyle d(x, y) = 1 - s(x, y)$.
+\subsection{The Jaccard index}
+When working with set data, the Jaccard index can be used to measure the similarity between the elements of two sets $\displaystyle A$ and $\displaystyle B$ by computing
+\[s(A, B) = \frac{|A \cap B|}{|A \cup B|}\]
+In particular, the Jaccard index can be expressed as a distance by setting
+\[d(A, B) = 1 - s(A, B) = 1 - \frac{|A \cap B|}{|A \cup B|} = \frac{|A \cup B| - |A \cap B|}{|A \cup B|} = \frac{|A| + |B| - 2|A \cap B|}{|A \cup B|}\]
+
 \end{document}
