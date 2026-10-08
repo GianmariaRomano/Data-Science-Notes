@@ -26,6 +26,7 @@
 | October 1 | Binary search and NP-completeness. |
 | October 5 | Known NP-complete problems and approximation strategies. |
 | October 6 | Introduction to Pandas and Matplotlib for data exploration and visualization. |
+| October 8 | Distance and similarity measures. |
 
 </details>
 
