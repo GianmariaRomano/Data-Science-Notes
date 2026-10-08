@@ -32,6 +32,7 @@
 | October 1 | Introduction to network science and graphs. |
 | October 2 | Vector subspaces and visualization of vectors and dataframes. |
 | October 5 | Principal component analysis and introduction to optimization methods. |
+| October 8 | Neighbourhoods and subgraphs, network desnity and node degree, weighted graphs and real-world degree distributions. |
 
 </details>
 
