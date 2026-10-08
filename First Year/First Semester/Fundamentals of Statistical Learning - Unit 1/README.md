@@ -27,6 +27,7 @@
 | October 1 | Stochastic simulations: Pseudorandom Number Generation. |
 | October 2 | Stochastic simulations: Linear Congruential Generators for PRNG, Population Generators. |
 | October 7 | Random vectors. |
+| October 8 | Deterministic transformations of continuous random variables. |
 
 </details>
 
