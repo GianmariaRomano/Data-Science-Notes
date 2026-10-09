@@ -308,6 +308,99 @@ Since any point $\displaystyle \mathbf{w}_0$ admits infinitely many direction ve
 \[h(\mathbf{w}_0 + \mathbf{d}) = a + \mathbf{b}^T(\mathbf{w}_0 + \mathbf{d}) = a + \mathbf{b}^T\mathbf{w}_0 + \mathbf{b}^T\mathbf{d} \text{, which means that}\]
 \[\max_{\mathbf{d}} h(\mathbf{w}_0 + \mathbf{d}) \text{ subject to } \lVert \mathbf{d} \rVert_2^2 = 1 \equiv \max_d \mathbf{b}^T\mathbf{d} = \max_d \lVert \mathbf{b} \rVert_2^2\lVert \mathbf{d} \rVert_2^2 \cos(\theta) \stackrel{\lVert \mathbf{d} \rVert = 1}{=} \max_{\theta} \cos(\theta)\]
 Solving this problem reveals that the maximum increase happens whenever $\displaystyle \theta = 0$, which corresponds to the direction vector $\displaystyle \mathbf{d} = \frac{\mathbf{b}}{\lVert \mathbf{b} \rVert_2^2}$, whereas the maximum decrease happens whenever $\displaystyle \theta = \pi$, which corresponds to the direction vector $\displaystyle \mathbf{d} = -\frac{\mathbf{b}}{\lVert \mathbf{b} \rVert_2^2}$.
+\section{Local linear approximation}
+The gradient of a multivariate function $\displaystyle g(\mathbf{w})$ is a vector $\displaystyle \nabla g(\mathbf{w})$ that contains all the partial derivatives of the function: this vector points towards the direction of maximum ascent, with its magnitude representing the rate of increase in this direction. \newline
+Since the gradient vector provides information about ascent and descent, it is possible to approximate the direction of steepest descent of a function $\displaystyle g$ at a point $\displaystyle \mathbf{w}_0$ using the tangent hyperplane
+\[g(\mathbf{w}) \approx h(\mathbf{w}) = g(\mathbf{w}_0) + \nabla g(\mathbf{w}_0)^T(\mathbf{w} - \mathbf{w}_0)\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/tangent_hyperplane.png}
+    \caption{Visualization of the tangent hyperplane of a function.}
+    \label{fig:tangent_hyperplane}
+\end{figure}
+\noindent It should be noticed that, whenever analytical differentiation is not feasible, derivatives can be approximated using the ``central difference'' method used in numerical differentiation, resulting in
+\[g'(w_0) = \frac{g(w_0 + \varepsilon) - g(w_0 - \varepsilon)}{2} \text{, for a small $\varepsilon > 0$.}\]
+\section{Automatic differentiation}
+A computation graph allows to simplify programmatic computations by decomposing a function $\displaystyle g(\mathbf{w})$ into a combination of elementary functions, which are easier to differentiate, and operations.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/computation_graph.png}
+    \caption{A computational graph for the function $\displaystyle g(w) = \tanh(w)\cos(w) + \log(w)$.}
+    \label{fig:computation_graph_1}
+\end{figure}
+\noindent Using ``forward mode'', the graph is traversed left-to-right and each node computes both its value and its gradient with respect to the starting input, providing a simple method for differentiation.
+\begin{examplebox}[Running the forward method in a computation graph.]
+    Given the function $\displaystyle g(w) = \tanh(w)\cos(w) + \log(w)$, define the following nodes:
+    \[a = \tanh(w) \quad b = \cos(w) \quad c = \log(w) \quad d = ab \quad e = c + d\]
+    For a starting value $\displaystyle w$, exploit $\displaystyle \frac{dw}{dw} = 1$ to compute the gradient of the child nodes:
+    \[\frac{da}{dw} = 1 - \tanh^2(w) \quad \frac{db}{dw} = -\sin(w) \quad \frac{dc}{dw} = \frac{1}{w}\]
+    Using this information, it is possible to compute the remaining gradients as well.
+    \begin{align*}
+        \frac{dd(a, b)}{dw}
+            &= \Bigg(\frac{\partial d(a, b)}{\partial a}\frac{da}{dw}\Bigg) + \Bigg(\frac{\partial d(a, b)}{\partial b}\frac{db}{dw}\Bigg) = \frac{da}{dw}b + a\frac{db}{dw} \\
+            &= (1 - \tanh^2(w)) - \tanh(w)\sin(w) \\
+        \frac{de(d(w), c(w))}{dw}
+            &= \Bigg(\frac{\partial e(d(w), c(w))}{\partial d}\frac{dd(w)}{dw}\Bigg)  + \Bigg(\frac{\partial e(d(w), c(w)}{\partial c}\frac{dc(w)}{dw}\Bigg)\\
+            &= ((1 - \tanh^2(w))\cos(w) - \tanh(w)\sin(w)) + \frac{1}{w}
+    \end{align*}
+\end{examplebox}
+\noindent The main issue of performing forward mode automatic differentiation lies in the fact that each node computes the gradient with respect to all inputs, leading to massive computational waste when working on large networks. \newline
+For this reason, it is more convenient to use ``reverse mode'' automatic differentiation, which consists of a forward pass, where each node uses the input value(s) to compute just the relevant partial derivatives, followed by a backward pass, where gradients are computed by recursively applying the chain rule from the output node.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/reverse_mode_computation_graph.png}
+    \caption{Reverse mode automatic differentiation of the function $\displaystyle g(w_1, w_2) = w_1^2 + w_2^2$.}
+    \label{fig:computation_graph_2}
+\end{figure}
+\noindent Overall, performing reverse mode automatic differentiation allows to significantly reduce computation times, making this strategy useful for developing machine learning models, although memory overhead needs to be considered.
+\section{Gradient descent}
+Gradient descent exploits the fact that the negative gradient always represents a descent direction to find the global minimum of a function $\displaystyle g(\mathbf{w})$ using the following sequence:
+\[\mathbf{w}_k = \mathbf{w}_{k - 1} - \alpha\nabla g(\mathbf{w}_{k - 1})\]
+This means that, for an appropriate learning rate $\displaystyle \alpha$, the model uses the current gradient to move towards the direction of steepest descent.
+\begin{examplebox}[Optimizing principal component analysis using gradient descent]
+    Principal component analysis is an unsupervised learning algorithm that is commonly used to compress high-dimensional data onto a lower-dimensional subspace while retaining data variability in order to preserve information. \newline
+    While the algorithm can be optimized by maximizing data variance, one can also apply gradient descent to minimize the loss function, resulting in
+    \begin{align*}
+        \min_{\mathbf{C}} L(\mathbf{C}) &= \lVert \mathbf{CC}^T\mathbf{X} - \mathbf{X} \rVert_2^2 \text{ subject to } \mathbf{C}^T\mathbf{C} = \mathbf{I} \\
+        \nabla_{\mathbf{C}}L(C) &= 2(\mathbf{CC}^T\mathbf{X} - \mathbf{X})\mathbf{X}^T\mathbf{C} \\
+        \mathbf{C}_k &= \mathbf{C}_{k - 1} -\alpha\nabla_{\mathbf{C}}L(\mathbf{C}) \text{, with $\mathbf{C}^T\mathbf{C} = \mathbf{I}$.}
+    \end{align*}
+\end{examplebox}
+\noindent While easy to implement, gradient descent is only guaranteed to find a global minimum if $\displaystyle g$ is a convex function as its local minima correspond to the global minima. \newline
+In fact, if $\displaystyle g$ is not a convex function, performance depends on the initialization step and learning rate because a small learning rate severely slows down computations, whereas a large learning rate might result in gradient divergence. \newline
+For this reason, it can be convenient to monitor gradient descent using a cost function history plot, which plots how the value of a function changes as the algorithm is executed, or by looking at the function's contours.
+\begin{examplebox}[Gradient descent on convex and non-convex functions]
+    For the convex function $\displaystyle g(w_1, w_2) = w_1^2 + w_2^2 + 2$, the gradient descent algorithm always converges to the global minimum, regardless of the initialization setting.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\linewidth]{images/gd_convex.png}
+        \caption{Visualization of gradient descent for the function $\displaystyle g(w_1, w_2) = w_1^2 + w_2^2 + 2$.}
+        \label{fig:gd_convex}
+    \end{figure}
+    \noindent By contrast, for the function $\displaystyle g(w) = \sin(3w) + 0.3w^2$, the algorithm's performance does depend on the initialization step because, for instance, choosing $\displaystyle w_0 = -1.5$ allows the algorithm to find a global minimum, whereas starting from $\displaystyle w_0 = 4.5$ causes the algorithm to stop at a local minimum.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\linewidth]{images/gd_non_convex.png}
+        \caption{Visualization of gradient descent for the function $\displaystyle g(w) = \sin(3w) + 0.3w^2$.}
+        \label{fig:gd_non_convex}
+    \end{figure}
+\end{examplebox}
+\noindent Overall, it is known that the gradient descent algorithm terminates near the stationary points of a function, where
+\[\mathbf{w}_k = \mathbf{w}_{k - 1} - \alpha\nabla g(\mathbf{w}_{k - 1}) \text{ results in } \mathbf{w}_k \approx \mathbf{w}_{k - 1} \Rightarrow \nabla g(\mathbf{w}_{k - 1}) \approx 0\]
+For this reason, it is possible to choose the halting criterion among the following options:
+\begin{enumerate}
+    \item \textbf{Gradient-based criterion: }$\displaystyle \lVert \nabla g(\mathbf{w}_{k - 1}) \rVert_2$ is sufficiently small to suggest that a stationary point has been reached.
+    \item \textbf{Step-based criterion: }No significant progress is observed between steps, meaning that, for some small $\displaystyle \varepsilon > 0$, it is the case that
+    \[\frac{1}{N}\lVert \mathbf{w}_k - \mathbf{w}_{k - 1} \rVert_2 \leq \varepsilon\]
+    \item \textbf{Function value criterion: }The cost function changes negligibly between steps, meaning that, for some small $\displaystyle \varepsilon > 0$, it is the case that
+    \[\frac{1}{N}\lVert g(\mathbf{w}_k) - g(\mathbf{w}_{k - 1}) \rVert_2 \leq \varepsilon\]
+    \item \textbf{Practical criterion: }The algorithm is terminated after a chosen number of iterations.
+\end{enumerate}
+\subsection{Zig-zagging gradients}
+Whenever the model enters a region where the contours of $\displaystyle g$ are (nearly) parallel, the gradient will start oscillating between steps, causing convergence to slow down.
+\subsection{Slow-crawling}
+Whenever the model gets close to a stationary point, the gradient descent procedure slows down because the updates are not significant anymore. \newline
+This situation becomes problematic whenever $\displaystyle g$ is not a convex function because the algorithm may terminate at a wrong point, such as a local minimum or a saddle point, instead of reaching the global minimum.
 
 \part{Machine Learning}
 

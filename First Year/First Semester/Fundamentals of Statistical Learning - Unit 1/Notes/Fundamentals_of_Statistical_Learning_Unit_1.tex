@@ -154,7 +154,7 @@ Probability is the field of mathematics that studies events and how likely they 
 Starting from a model's data generation process, probability aims to investigate the properties of the observed outcomes, whereas inference makes use of the observed outcomes to study the underlying data generation process.
 \begin{examplebox}[Diffusion models]
     Diffusion models are a type of generative model that create new data by gradually reversing a noising process. \newline
-    From a mathematical perspective, a diffusion model can be described using a \textit{Markovian Direct Acyclic Graph} whose nodes represent the observable or latent variables involved in the process and whose edges denote the transition probabilities of the model.
+    From a mathematical perspective, a diffusion model can be described using a Markovian Direct Acyclic Graph whose nodes represent the observable or latent variables involved in the process and whose edges denote the transition probabilities of the model.
 \end{examplebox}
 \section{Formalizing probability using set theory}
 It is possible to formalize probabilistic experiments using set theory. \newline
@@ -722,12 +722,16 @@ The quantile transform can be used to create random variables starting from a $\
     \end{figure}
 \end{examplebox}
 \noindent While easy to implement, this algorithm becomes more cumbersome when generating discrete random variables.
-\subsection{General transformation of random variables}
+\subsection{Deterministic transformations of random variables}
 Starting from a continuous random variable $\displaystyle X$ that, on a support set $\displaystyle S_X$, has probability density function $\displaystyle f_X(x)$ and cumulative distribution $\displaystyle F_X(x)$, it is possible to study the random variable $\displaystyle Y = r(X)$ by defining the set $\displaystyle A_y = \{x \in S_X : r(x) \leq y\}$ and using it to compute
 \begin{align*}
     F_Y(y) &= \mathbb{P}(Y \leq y) = \mathbb{P}(r(X) \leq y) = \mathbb{P}(\{x \in S_X : r(x) \leq y\}) = \int_{A_y} f_X(x) \ dx \\
-    f_Y(y) &= F_Y'(y)\mathbb{I}_{S_Y}(y) \\
-    S_Y &= \{r(x) : x \in S_X\}
+    f_Y(y) &= F_Y'(y)\mathbb{I}_{S_Y}(y) \text{, with $S_Y = \{r(x) : x \in S_X\}$.}
+\end{align*}
+However, if the function $\displaystyle r(x)$ is known to be invertible in $\displaystyle S_X$, with $\displaystyle s(y) = r^{-1}(x)$, it is possible to directly compute
+\begin{align*}
+    F_Y(y) &= \mathbb{P}(r(X) \leq y) = \mathbb{P}(X \leq s(y)) = F_X(s(y)) \\
+    f_Y(y) &= F_Y'(y) = f_X(s(y)) \cdot |s'(y)|
 \end{align*}
 \begin{examplebox}[Transforming a uniformly distributed random variable]
     Given a random variable $\displaystyle X \sim Unif(-1, 1)$, define the random variable $\displaystyle Y = X^2$, whose cumulative distribution function is defined as
@@ -735,10 +739,46 @@ Starting from a continuous random variable $\displaystyle X$ that, on a support 
     This means that, on the support $\displaystyle S_Y = \{x^2 : x \in S_X\} = [0, 1]$, the probability density function of $\displaystyle Y$ will be given by
     \[f_Y(y) = F_y'(y) = \frac{1}{2\sqrt{y}}\mathbb{I}_{(0, 1]}(y)\]
 \end{examplebox}
-\noindent However, if the function $\displaystyle r(x)$ is known to be invertible in $\displaystyle S_X$, with $\displaystyle s(y) = r^{-1}(x)$, it is possible to directly compute
-\begin{align*}
-    F_Y(y) &= \mathbb{P}(r(X) \leq y) = \mathbb{P}(X \leq s(y)) = F_X(s(y)) \\
-    f_Y(y) &= F_Y'(y) = f_X(s(y)) \cdot s'(y)
-\end{align*}
+
+\chapter{Exploratory data analysis}
+\section{Learning distributions through graphical summaries}
+Assuming a continuous random variable follows an unknown probability distribution, several strategies allow to learn this distribution starting from a data sample $\displaystyle \mathcal{D}_n = \{x_1, \dots, x_n\}$ and plotting its behaviour.
+\subsection{Empirical cumulative distribution functions and histograms}
+It is possible to learn the cumulative distribution function of an unknown distribution through the empirical cumulative distribution function, which represents the cumulative distribution of a discrete distribution that assigns the same mass to each data point. \newline
+For this reason, the empirical cumulative distribution function can be defined as
+\[\hat{F}_n(x) = \frac{1}{n}\sum_{i = 1}^n \mathbf{1}(x_i \leq x) \text{, where } \mathbf{1}(x_i \leq x) = \begin{cases}
+    1 &\quad\text{if $x_i \leq x$} \\
+    0 &\quad\text{otherwise} \\
+\end{cases}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/learn_ecdf.png}
+    \caption{Learning a distribution using the empirical cumulative distribution function.}
+    \label{fig:learn_ecdf}
+\end{figure}
+\noindent Alternatively, a model can learn the probability density function of the distribution using a histogram. \newline
+In fact, on a support $\displaystyle S_X$, a histogram makes use of $\displaystyle n$ bins $\displaystyle \{B_1, \dots, B_n\}$, each with a fixed size $\displaystyle h$, to estimate the probability density function within each bin as
+\[\hat{f}_X(x) = \frac{1}{n|B_j|}\sum_{i = 1}^n \mathbf{1}(x_i \in B_j) \text{, where } \mathbf{1}(x_i \in B_j) = \begin{cases}
+    1 &\quad\text{if $x_i \in B_j$} \\
+    0 &\quad\text{otherwise} \\
+\end{cases}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/learn_hist.png}
+    \caption{Learning a distribution using a histogram.}
+    \label{fig:learn_hist}
+\end{figure}
+\noindent While histograms can be generalized to learn multivariate distributions, their usage remains more limited because they provide good results only when the probability density function is assumed to be homogeneously smooth.
+\subsection{Kernel density estimation}
+One of the main issues of learning continuous distributions using an empirical cumulative distribution function or a histogram lies in the fact that a step function is used to represent a smooth probability density function. \newline
+For this reason, graphical exploratory data analysis is often conducted using kernel density estimation, which consists of applying a smoothing kernel $\displaystyle K$ that distributes the weight of each data point within a neighbourhood of that data point. \newline
+For this reason, performing kernel density estimation allows the model to estimate the probability density function as
+\[\hat{f}_X(x) = \frac{1}{nh}\sum_{i = 1}^n K\Bigg(\frac{x - x_i}{h}\Bigg) \text{, where $h$ is the bandwidth of the chosen kernel.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/learn_kde.png}
+    \caption{Learning a distribution using kernel density estimation.}
+    \label{fig:learn_kde}
+\end{figure}
 
 \end{document}
