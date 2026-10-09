@@ -33,6 +33,7 @@
 | October 2 | Vector subspaces and visualization of vectors and dataframes. |
 | October 5 | Principal component analysis and introduction to optimization methods. |
 | October 8 | Subgraphs, network metrics, weighted graphs and real-world degree distributions. |
+| October 9 | Gradient optimization techniques. |
 
 </details>
 
