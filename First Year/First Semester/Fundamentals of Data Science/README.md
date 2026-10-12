@@ -34,6 +34,7 @@
 | October 5 | Principal component analysis and introduction to optimization methods. |
 | October 8 | Subgraphs, network metrics, weighted graphs and real-world degree distributions. |
 | October 9 | Gradient optimization techniques. |
+| October 12 | Exercises on optimization methods and introduction to linear regression. |
 
 </details>
 
