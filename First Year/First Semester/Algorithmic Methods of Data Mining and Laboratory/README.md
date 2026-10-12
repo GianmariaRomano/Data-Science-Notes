@@ -27,6 +27,7 @@
 | October 5 | Known NP-complete problems and approximation strategies. |
 | October 6 | Introduction to Pandas and Matplotlib for data exploration and visualization. |
 | October 8 | Distance and similarity measures. |
+| October 12 | The edit distance between two strings. |
 
 </details>
 
