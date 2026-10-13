@@ -38,16 +38,28 @@
 \lstset{style=mypython}
 \usepackage[ruled,vlined]{algorithm2e}
 
-% Creating the Example boxes.
+% Creating the Example and Proof boxes.
 \definecolor{exampleback}{RGB}{240, 248, 240}
 \definecolor{exampleframe}{RGB}{34, 112, 62}
+\definecolor{proofback}{RGB}{240, 244, 250}
+\definecolor{proofframe}{RGB}{25, 80, 150}
 \usepackage[most]{tcolorbox}
+\tcbuselibrary{listings}
 \newtcolorbox{examplebox}[1][]{
     colback=exampleback,
     colframe=exampleframe,
     coltitle=white,
     fonttitle=\bfseries,
     title={Example\ifblank{#1}{}{: #1}},
+    arc=2pt,
+    boxrule=1pt
+}
+\newtcolorbox{proofbox}[1][]{
+    colback=proofback,
+    colframe=proofframe,
+    coltitle=white,
+    fonttitle=\bfseries,
+    title={Proof: #1},
     arc=2pt,
     boxrule=1pt
 }
@@ -339,7 +351,7 @@ In this setting, a problem $\displaystyle \mathbf{X}$ is said to be ``$\displays
 \end{examplebox}
 \noindent To prove that a problem $\displaystyle \mathbf{X}$ is $\displaystyle \mathbf{NP}$-complete, it is typically sufficient to show that $\displaystyle \mathbf{X} \in \mathbf{NP}$ and that some problem $\displaystyle \mathbf{Y} \in \mathbf{NP}$ can be reduced in polynomial time to $\displaystyle \mathbf{X}$.
 \subsection{Solving $\mathbf{NP}$-complete problems via heuristics}
-Heuristics provide a problem-specific rule to solve a $\displaystyle \mathbf{NP}$-complete problem. \newline
+Based on ``metaheuristics'', which represent high-level algorithmic frameworks for problem solving, heuristics provide a problem-specific rule to solve a $\displaystyle \mathbf{NP}$-complete problem. \newline
 While heuristics are easy to implement and can provide acceptable solutions in reasonable time, they do not guarantee optimality and might struggle to generalize on different instances of the problem.
 \subsection{Solving $\mathbf{NP}$-complete problems via approximation algorithms}
 In the context of optimization problems, a $\displaystyle c$-approximation algorithm is an algorithm that is guaranteed to return a solution within a factor $\displaystyle c$ of the optimal solution in polynomial time.
@@ -372,8 +384,31 @@ As $\displaystyle p \to +\infty$, the $\displaystyle L^p$ distance function beco
         d_{\infty}(\mathbf{x}, \mathbf{y}) &= 10
     \end{align*}
 \end{examplebox}
-\noindent Furthermore, choosing $\displaystyle p = 0$ causes the $\displaystyle L^p$ distance to become
-\[d_0(\mathbf{x}, \mathbf{y}) = |\{i : \mathbf{x}_i \neq \mathbf{y}_i\}|\]
+\noindent Furthermore, choosing $\displaystyle p = 0$ causes the $\displaystyle L^p$ distance to become the Hamming distance, which is defined as
+\[d_0(\mathbf{x}, \mathbf{y}) = |\{j : \mathbf{x}_j \neq \mathbf{y}_j\}|\]
+\subsection{The edit distance}
+A string can be seen as a sequence whose sub-sequence is any sequence that contains a subset of the characters, not necessarily consecutive, of the string: for two strings $\displaystyle S$ and $\displaystyle T$, a common sub-sequence is any sequence that is a sub-sequence for both $\displaystyle S$ and $\displaystyle T$. \newline
+Using this information, it is possible to define the edit distance between two strings $\displaystyle S$ and $\displaystyle T$ as the minimum number of insertions, deletions and, in some cases, substitutions that are needed to transform $\displaystyle S$ into $\displaystyle T$, resulting in
+\[ED(S, T) = |S| + |T| -2LCS \text{, where $LCS$ is the length of the longest common sub-sequence.}\]
+\begin{examplebox}[Computing the edit distance between two strings]
+    Assuming no substitution can be performed, compute the edit distance between the strings $\displaystyle S = CATGA$ and $\displaystyle T = ACTGC$:
+    \[S = CATGA \stackrel{del}{\to} ATGA \stackrel{ins}{\to} ACTGA \stackrel{ins}{\to} ACTGAC \stackrel{del}{\to} ACTGC = T\]
+    Since transforming $\displaystyle S$ into $\displaystyle T$ required four moves, it will be the case that $\displaystyle ED(S, T) = 4$.
+\end{examplebox}
+\noindent While computing the edit distance between two strings typically requires exponential time, it is possible to cut complexity down to polynomial time using a dynamic programming algorithm.
+\begin{proofbox}
+    Given two strings $\displaystyle S$ and $\displaystyle T$, of length $\displaystyle n$ and $\displaystyle m$ respectively, define $\displaystyle S^i$ as the sub-sequence containing the first $\displaystyle i$ characters of $\displaystyle S$ and $\displaystyle T^j$ as the sub-sequence containing the first $\displaystyle j$ characters of $\displaystyle T$: it is possible to prove by induction that the edit distance between $\displaystyle S^i$ and $\displaystyle T^j$ can be recursively computed as
+    \[ED(S^i, T^j) = \begin{cases}
+        i &\quad\text{if $j = 0$} \\
+        j &\quad\text{if $i = 0$} \\
+        ED(S^{i - 1}, T^{j - 1}) &\quad\text{if $i, j > 0$ and $S[i] = T[j]$} \\
+        1 + \min\{ED(S^{i - 1}, T^j), ED(S^i, T^{j - 1})\} &\quad\text{if $i, j > 0$ and $S[i] \neq T[j]$} \\
+    \end{cases}\]
+    Knowing that $\displaystyle T(i, j) = c + T(i - 1, j) + T(i, j - 1)$, let $\displaystyle N = i + j$ and write
+    \[T(i, j) = T(N) = 2T(N - 1) + c \ge 2T(N - 1) \ge 4T(N - 2) = \dots = 2^lT(N - l)\]
+    Since the recursive calls can go on until one of the strings becomes empty, which happens after $\displaystyle l \ge \min\{n, m\}$ steps, the recursive algorithm will require $\displaystyle T(n, m) = \Omega(2^{\min\{n, m\}})$ time. \newline
+    However, by looking at the recursive definition of $\displaystyle ED(S^i, T^j)$, one can implement the recursive call using a $\displaystyle (n + 1) \times (m + 1)$ table of optimal values, resulting in $\displaystyle O(nm)$ complexity.
+\end{proofbox}
 \section{Similarity functions}
 Object similarities can be described using a similarity function $\displaystyle s: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
 \begin{enumerate}
