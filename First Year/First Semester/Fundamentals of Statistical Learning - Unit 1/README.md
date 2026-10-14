@@ -26,9 +26,10 @@
 | September 30 | Quantile functions and common distributions: Bernoulli, Binomial, Uniform. |
 | October 1 | Stochastic simulations: Pseudorandom Number Generation. |
 | October 2 | Stochastic simulations: Linear Congruential Generators for PRNG, Population Generators. |
-| October 7 | Random vectors. |
+| October 7 | Fully discrete random vectors. |
 | October 8 | Deterministic transformations of continuous random variables. |
 | October 9 | Exercise session on deterministic transformations and histograms. |
+| October 14 | Fully continuous random vectors.
 
 </details>
 
