@@ -531,6 +531,23 @@ Given a random variable $\displaystyle U \sim Unif(0, 1)$, let $\displaystyle F$
     \[F_Y(y) = \mathbb{P}(Y \leq y) = \mathbb{P}(F^{-1}(U) \leq y) = \mathbb{P}(U \leq F(y)) = F(y) \text{, being $U \sim Unif(0, 1)$.}\]
     It should be noticed that this result is also valid whenever $\displaystyle F$ is only weakly monotonic, although the proof is more cumbersome.
 \end{proofbox}
+\subsection{The exponential distribution}
+A continuous random variable $\displaystyle X$ is said to follow an exponential distribution with parameter $\displaystyle \lambda \in \mathbb{R}^+$, which is written as $\displaystyle X \sim Exp(\lambda)$, if its probability density function and cumulative distribution function are defined as
+\[f_X(x) = \lambda e^{-\lambda x}\mathbb{I}_{\mathbb{R}^+}(x) \quad\quad\quad F_X(x) = (1 - e^{-\lambda x})\mathbb{I}_{[0, +\infty)}(x)\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/exponential.png}
+    \caption{PDF and CDF for a random variable $\displaystyle X \sim Exp(1.5)$.}
+    \label{fig:exponential}
+\end{figure}
+\noindent This distribution is often used to model survival and waiting times because, due to its memoryless behaviour, the elapsed time does not influence future outcomes, which means that
+\[\mathbb{P}(X > x + k|X > x) = \mathbb{P}(X > k) \text{ } \forall k > 0\]
+\begin{proofbox}
+    If $\displaystyle X \sim Exp(\lambda)$, then it is possible to observe that
+    \[\mathbb{P}(X > n) = 1 - \mathbb{P}(X \leq n) = 1 - F_X(n) = 1 - (1 - e^{-\lambda n}) = e^{-\lambda n} \text{ } \forall n > 0\]
+    Therefore, by applying the definition of conditional probability, it is possible to conclude that
+    \[\mathbb{P}(X > x + k|X > x) = \frac{\mathbb{P}(\{X > x + k\} \cap \{X > x\})}{\mathbb{P}(X > x)} = \frac{e^{-\lambda(x + k)}}{e^{-\lambda x}} = e^{-\lambda k} = \mathbb{P}(X > k)\]
+\end{proofbox}
 
 \chapter{Random vectors}
 \section{Defining random vectors}
@@ -600,7 +617,7 @@ Furthermore, assuming a certain event has occurred, it is possible to model the 
     \end{align*}
 \end{examplebox}
 \subsection{Defining independence for discrete random variables}
-When working with (bivariate) random vectors, two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their joint probability mass function factorises to the product of their marginal probability mass functions, meaning that
+When working with discrete random vectors, two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their joint probability mass function factorises to the product of their marginal probability mass functions, meaning that
 \[p_{X, Y}(x, y) = p_X(x)p_Y(y) \text{ } \forall (x, y) \in S_X \times S_Y\]
 Alternatively, it is possible to state that two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their conditional distributions correspond to the marginal distributions, meaning that
 \[p_{X|Y}(x|y) = p_X(x) \quad\quad p_{Y|X}(y|x) = p_Y(y) \]
@@ -626,9 +643,55 @@ Alternatively, it is possible to state that two random variables $\displaystyle 
     \noindent Generally speaking, it is possible to check how much two random variables are far from independence by evaluating the distance between their joint distribution $\displaystyle p_{X, Y}$ and the factorised distribution $\displaystyle \tilde{p}$.
 \end{examplebox}
 \section{Fully continuous random vectors}
-A random vector is said to be ``fully continuous'' if all its components are continuous random variables.
+A random vector is said to be ``fully continuous'' if all its components are continuous random variables. \newline
+For a bivariate distribution, the behaviour of a random vector $\displaystyle \mathbf{Z}$ is described using a joint probability density function such that
+\[\mathbb{P}((X, Y) \in A) = \int_A f_{X, Y}(x, y) \ dx \text{ } \forall A \subseteq S_X \times S_Y\]
+In practice, a joint probability density function is typically constructed by normalizing a non-negative ``kernel'' function $\displaystyle g(x, y)$, resulting in
+\[f_{X, Y}(x, y) = \frac{g(x, y)}{c} \text{, with } c = \int_{\mathbb{R}^2} g(x, y) \ dxdy < +\infty\]
+Starting from the joint distribution, it is possible to retrieve the marginal distribution of a single variable by computing
+\begin{align*}
+    f_X(x) &= \int_{S_Y} f_{X, Y}(x, y) \ dy \\
+    f_Y(y) &= \int_{S_X} f_{X, Y}(x, y) \ dx
+\end{align*}
+Furthermore, assuming a certain event has occurred, it is possible to model the conditional distribution of each variable as
+\begin{align*}
+    f_{X|Y}(x|y) &= \frac{f_{X, Y}(x, y)}{f_Y(y)} \text{ } \forall x \in S_X \\
+    f_{Y|X}(y|x) &= \frac{f_{X, Y}(x, y)}{f_X(x)} \text{ } \forall y \in S_Y
+\end{align*}
+Alternatively, one can study the behaviour of a fully continuous random vector through the relationship between the joint cumulative distribution function and the joint probability density function:
+\begin{align*}
+    F_{X, Y}(x, y) &= \mathbb{P}(\{X \leq x\} \cap \{Y \leq y\}) = \int_{-\infty}^y\int_{-\infty}^x f_{X, Y}(u, v) \ dudv \\
+    f_{X, Y}(x, y) &= \frac{\partial^2F_{X, Y}(x, y)}{\partial x \partial y} = \frac{\partial^2F_{X, Y}(x, y)}{\partial y \partial x}
+\end{align*}
+\begin{examplebox}[Deriving information from a fully continuous random vector]
+    For two parameters $\alpha, \beta > 0$, consider the following joint cumulative distribution function:
+    \[F_{X, Y}(x, y) = 1 - e^{-\alpha x} - e^{-\beta y} + e^{-(\alpha x + \beta y)} \text{, with $(x, y) \in \mathbb{R}^+ \times \mathbb{R}^+$.}\]
+    This means that the joint probability density function will be given by
+    \[f_{X, Y}(x, y) = \frac{\partial^2F_{X, Y}(x, y)}{\partial x \partial y} = \frac{\partial[\alpha e^{-\alpha x} - \alpha e^{-(\alpha x + \beta y)}]}{\partial y} = \alpha\beta e^{-(\alpha x + \beta y)}\mathbb{I}_{\mathbb{R}^+ \times \mathbb{R}^+}(x, y)\]
+    Starting from the joint probability density function, it is possible to recover the following marginal probability density functions:
+    \begin{align*}
+        f_X(x) &= \int_0^{+\infty} \alpha\beta e^{-(\alpha x + \beta y)} \ dy \stackrel{u = -\beta y}{=} \int_{-\infty}^0 \alpha e^{-\alpha x}(-e^u) \ du = \alpha e^{-\alpha x}\mathbb{I}_{\mathbb{R}^+}(x) \\
+        f_Y(y) &= \int_0^{+\infty} \alpha\beta e^{-(\alpha x + \beta y)} \ dy \stackrel{u = -\alpha x}{=} \int_{-\infty}^0 \beta e^{-\beta y}(-e^u) \ du = \beta e^{-\beta y}\mathbb{I}_{\mathbb{R}^+}(y)
+    \end{align*}
+    This means that $\displaystyle X \sim Exp(\alpha)$ and $\displaystyle Y \sim Exp(\beta)$.
+\end{examplebox}
+\subsection{Defining independence for continuous random variables}
+When working with continuous random vectors, two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their joint probability density function factorises to the product of their marginal probability density functions, meaning that
+\[f_{X, Y}(x, y) = f_X(x)f_Y(y) \text{ } \forall (x, y) \in S_X \times S_Y\]
+Alternatively, it is possible to state that two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their conditional distributions correspond to the marginal distributions, meaning that
+\[f_{X|Y}(x|y) = f_X(x) \quad\quad f_{Y|X}(y|x) = f_Y(x)\]
+\begin{examplebox}[The joint distribution of two independent exponential random variables]
+    For two parameters $\alpha, \beta > 0$, consider the following joint cumulative distribution function:
+    \[F_{X, Y}(x, y) = 1 - e^{-\alpha x} - e^{-\beta y} + e^{-(\alpha x + \beta y)} \text{, with $(x, y) \in \mathbb{R}^+ \times \mathbb{R}^+$.}\]
+    Knowing that $\displaystyle f_X(x) = \alpha e^{-\alpha x}\mathbb{I}_{\mathbb{R}^+}(x)$ and $\displaystyle f_Y(y) = \beta e^{-\beta y}\mathbb{I}_{\mathbb{R}^+}(y)$, observe that
+    \begin{align*}
+        f_{X, Y}(x, y)
+            &= \frac{\partial^2F_{X, Y}(x, y)}{\partial x \partial y} = \frac{\partial[\alpha e^{-\alpha x} - \alpha e^{-(\alpha x + \beta y)}]}{\partial y} = \alpha\beta e^{-(\alpha x + \beta y)}\mathbb{I}_{\mathbb{R}^+ \times \mathbb{R}^+}(x, y) \\
+            &= \alpha e^{-\alpha x}\mathbb{I}_{\mathbb{R}^+}(x)\beta e^{-\beta y}\mathbb{I}_{\mathbb{R}^+}(y) = f_X(x)f_Y(y) \text{ } \forall (x, y) \in \mathbb{R}^+ \times \mathbb{R}^+ \Rightarrow X \bot Y
+    \end{align*}
+\end{examplebox}
 \section{The cumulative distribution function of a joint distribution}
-Generally speaking, the joint cumulative distribution function of any bivariate random vector is defined as
+The joint cumulative distribution function of any bivariate random vector can be defined as
 \[F_{X, Y}(x, y) = \mathbb{P}(\{X \leq x\} \cap \{Y \leq y\}) \text{ } \forall (x, y) \in S_X \times S_Y\]
 In this case, it is possible to retrieve the marginal cumulative distribution functions by computing
 \begin{align*}
@@ -644,7 +707,6 @@ A random sample $\displaystyle \mathcal{D}_n = \{X_1, \dots, X_n\}$ is said to b
     Consider a machine learning model that aims to learn an unknown population model $\displaystyle F_X$ from a random sample $\displaystyle \mathcal{D}_n$: using the likelihood function leads the model to learn the empirical cumulative distribution function associated to a distribution that places the same mass to each data point, meaning that
     \[\hat{F} = \arg\max_{F_X \text{ CDF}} L(F_X) = \arg\max_{F_X \text{ CDF}} \prod_{i = 1}^n F_X(x_i)\]
 \end{examplebox}
-\noindent This concept can be generalized to create random samples of random vectors as well.
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
@@ -702,7 +764,7 @@ Generally speaking, it is possible to assess whether the generated random variab
 Since each generated sample $\displaystyle u_n$ is a deterministic function of the previous value $\displaystyle u_{n - 1}$, linear congruential generators tend to create dependent sequences. \newline
 To simulate independent samples, a linear congruential generator must be $\displaystyle k$-dimensionally equidistributed, with $\displaystyle k$ being chosen as a large value, which means that every subsequence of length $\displaystyle k$ occurs with equal frequency.
 \section{Transformations of random variables}
-It is possible to simulate (continuous) ransom variables through specific transformations.
+It is possible to simulate (continuous) random variables through specific transformations.
 \subsection{Using quantile transforms to generate populations}
 The quantile transform can be used to create random variables starting from a $\displaystyle Unif(0, 1)$ generator.
 \begin{examplebox}[Generating a continuous random variable]
@@ -772,7 +834,7 @@ In fact, on a support $\displaystyle S_X$, a histogram makes use of $\displaysty
 \subsection{Kernel density estimation}
 One of the main issues of learning continuous distributions using an empirical cumulative distribution function or a histogram lies in the fact that a step function is used to represent a smooth probability density function. \newline
 For this reason, graphical exploratory data analysis is often conducted using kernel density estimation, which consists of applying a smoothing kernel $\displaystyle K$ that distributes the weight of each data point within a neighbourhood of that data point. \newline
-For this reason, performing kernel density estimation allows the model to estimate the probability density function as
+Therefore, the estimated probability density function will be given by
 \[\hat{f}_X(x) = \frac{1}{nh}\sum_{i = 1}^n K\Bigg(\frac{x - x_i}{h}\Bigg) \text{, where $h$ is the bandwidth of the chosen kernel.}\]
 \begin{figure}[H]
     \centering
@@ -780,5 +842,6 @@ For this reason, performing kernel density estimation allows the model to estima
     \caption{Learning a distribution using kernel density estimation.}
     \label{fig:learn_kde}
 \end{figure}
+\noindent However, it should be noticed that, when performed on a distribution with a bounded support, kernel density estimation often results in the loss of information as some mass is placed outside of the support of the distribution.
 
 \end{document}
