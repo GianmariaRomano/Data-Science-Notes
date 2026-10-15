@@ -497,7 +497,7 @@ A discrete random variable $\displaystyle X$ is said to follow a binomial distri
 \[p_X(x) = \binom{n}{x}p^x(1 - p)^{n - x} \text{, for $x \in \{0, \dots, n\}$.}\]
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/binomial.png}
+    \includegraphics[width=0.45\linewidth]{images/binomial.png}
     \caption{PMF and CDF for a random variable $\displaystyle X \sim Bin(20, 0.7)$.}
     \label{fig:binomial}
 \end{figure}
@@ -511,6 +511,33 @@ A discrete random variable $\displaystyle X$ is said to follow a binomial distri
     This means that the probability that the man correctly guesses each symbol will be
     \[p_X(25) = \binom{25}{25}(0.7)^{25}(0.3)^{25 - 25} = (0.7)^{25} \approx 1.34 \cdot 10^{-4}\]
 \end{examplebox}
+\subsection{The geometric distribution}
+A discrete random variable $\displaystyle X$ is said to follow a geometric distribution with parameter $\displaystyle p \in (0, 1)$, which is written as $\displaystyle X \sim Geom(0.2)$, if its probability mass function is defined as
+\[p_X(x) = (1 - p)^{x - 1}p \text{, for $x \in \mathbb{N}$.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/geometric.png}
+    \caption{PMF and CDF for a random variable $\displaystyle X \sim Geom(0.2)$.}
+    \label{fig:geometric}
+\end{figure}
+\noindent This distribution is typically used to model the number of trials, or failures, until the first successful attempt of a Bernoulli experiment because, due to its memoryless behaviour, the previous failures do not influence future outcomes, which means that
+\[\mathbb{P}(X > x + k|X > x) = \mathbb{P}(X > k) \text{ } \forall k > 0\]
+\begin{proofbox}
+    If $\displaystyle X \sim Geom(p)$, then it is possible to observe that
+    \[\mathbb{P}(X > n) = \sum_{k = n + 1}^{+\infty} \mathbb{P}(X = k) = (1 - p)^n\Bigg(\sum_{i = 1}^{+\infty} (1 - p)^{i - 1}p\Bigg) \stackrel{\sum_{i = 1}^{+\infty} (1 - p)^{i - 1} = \frac{1}{p}}{=} (1 - p)^n\]
+    Therefore, by applying the definition of conditional probability, it is possible to conclude that
+    \[\mathbb{P}(X > x + k|X > x) = \frac{\mathbb{P}(\{X > x + k\} \cap \{X > x\})}{\mathbb{P}(X > x)} = \frac{(1 - p)^{x + k}}{(1 - p)^x} = (1 - p)^k = \mathbb{P}(X > k)\]
+\end{proofbox}
+\subsection{The Poisson distribution}
+A discrete random variable $\displaystyle X$ is said to follow a Poisson distribution with parameter $\displaystyle \mu \in \mathbb{R}^+$, which is written as $\displaystyle X \sim Pois(\mu)$, if its probability mass function is defined as
+\[p_X(x) = \frac{e^{-\mu}\mu^x}{x!} \text{, for $x \in \mathbb{N}_0$.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/poisson.png}
+    \caption{PMF and CDF for a random variable $\displaystyle X \sim Pois(3)$.}
+    \label{fig:poisson}
+\end{figure}
+\noindent Since this distribution is typically used to analyse the distribution of rare events within a short amount of time, a random variable $\displaystyle X \sim Binom(n, p)$ can be approximated using a Poisson distribution with parameter $\displaystyle \mu = np$ whenever $\displaystyle n$ is sufficiently large and $\displaystyle p$ is sufficiently small.
 \subsection{The uniform distribution}
 A continuous random variable $\displaystyle X$ is said to follow a uniform distribution with parameters $\displaystyle a < b \in \mathbb{R}$, which is written as $\displaystyle X \sim Unif(a, b)$, if its probability density function and cumulative distribution function are defined as
 \[f_X(x) = \frac{1}{b - a}\mathbb{I}_{[a, b]}(x) \quad\quad\quad F_X(x) = \begin{cases}
@@ -520,7 +547,7 @@ A continuous random variable $\displaystyle X$ is said to follow a uniform distr
 \end{cases}\]
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/uniform.png}
+    \includegraphics[width=0.45\linewidth]{images/uniform.png}
     \caption{PDF and CDF for a random variable $\displaystyle X \sim Unif(0, 1)$.}
     \label{fig:uniform}
 \end{figure}
@@ -536,7 +563,7 @@ A continuous random variable $\displaystyle X$ is said to follow an exponential 
 \[f_X(x) = \lambda e^{-\lambda x}\mathbb{I}_{\mathbb{R}^+}(x) \quad\quad\quad F_X(x) = (1 - e^{-\lambda x})\mathbb{I}_{[0, +\infty)}(x)\]
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/exponential.png}
+    \includegraphics[width=0.45\linewidth]{images/exponential.png}
     \caption{PDF and CDF for a random variable $\displaystyle X \sim Exp(1.5)$.}
     \label{fig:exponential}
 \end{figure}
@@ -548,6 +575,19 @@ A continuous random variable $\displaystyle X$ is said to follow an exponential 
     Therefore, by applying the definition of conditional probability, it is possible to conclude that
     \[\mathbb{P}(X > x + k|X > x) = \frac{\mathbb{P}(\{X > x + k\} \cap \{X > x\})}{\mathbb{P}(X > x)} = \frac{e^{-\lambda(x + k)}}{e^{-\lambda x}} = e^{-\lambda k} = \mathbb{P}(X > k)\]
 \end{proofbox}
+\subsection{The Beta distribution}
+A continuous random variable $\displaystyle X$ is said to follow a Beta distribution with parameters $\displaystyle \alpha, \beta > 0$, which is written as $\displaystyle X \sim Beta(\alpha, \beta)$, if its probability density function and cumulative distribution function are defined as
+\begin{align*}
+    f_X(x) &= \frac{1}{Beta(\alpha, \beta)}x^{\alpha - 1}(1 - x)^{\beta - 1}\mathbb{I}_{[0, 1]}(x) \quad\quad\quad F_X(x) = \frac{Beta(x; \alpha, \beta)}{Beta(\alpha, \beta)} \\
+    Beta(\alpha, \beta) &= \int_0^1 t^{\alpha - 1}(1 - t)^{\beta - 1} \ dt = \frac{(\alpha - 1)!(\beta - 1)!}{(\alpha + \beta - 1)!} \quad\quad\quad Beta(x; \alpha, \beta) = \int_0^x t^{\alpha - 1}(1 - t)^{\beta - 1} \ dt
+\end{align*}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/beta.png}
+    \caption{PDF and CDF for a random variable $\displaystyle X \sim Beta(\alpha, \beta)$ for some choices of $\displaystyle \alpha$ and $\displaystyle \beta$.}
+    \label{fig:beta}
+\end{figure}
+\noindent An important application of this distribution lies in the conjugate Bayesian analysis of the Bernoulli and binomial models.
 
 \chapter{Random vectors}
 \section{Defining random vectors}
@@ -645,7 +685,7 @@ Alternatively, it is possible to state that two random variables $\displaystyle 
 \section{Fully continuous random vectors}
 A random vector is said to be ``fully continuous'' if all its components are continuous random variables. \newline
 For a bivariate distribution, the behaviour of a random vector $\displaystyle \mathbf{Z}$ is described using a joint probability density function such that
-\[\mathbb{P}((X, Y) \in A) = \int_A f_{X, Y}(x, y) \ dx \text{ } \forall A \subseteq S_X \times S_Y\]
+\[\mathbb{P}((X, Y) \in A) = \int_A f_{X, Y}(x, y) \ dxdy \text{ } \forall A \subseteq S_X \times S_Y\]
 In practice, a joint probability density function is typically constructed by normalizing a non-negative ``kernel'' function $\displaystyle g(x, y)$, resulting in
 \[f_{X, Y}(x, y) = \frac{g(x, y)}{c} \text{, with } c = \int_{\mathbb{R}^2} g(x, y) \ dxdy < +\infty\]
 Starting from the joint distribution, it is possible to retrieve the marginal distribution of a single variable by computing
@@ -679,7 +719,7 @@ Alternatively, one can study the behaviour of a fully continuous random vector t
 When working with continuous random vectors, two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their joint probability density function factorises to the product of their marginal probability density functions, meaning that
 \[f_{X, Y}(x, y) = f_X(x)f_Y(y) \text{ } \forall (x, y) \in S_X \times S_Y\]
 Alternatively, it is possible to state that two random variables $\displaystyle X$ and $\displaystyle Y$ are independent if and only if their conditional distributions correspond to the marginal distributions, meaning that
-\[f_{X|Y}(x|y) = f_X(x) \quad\quad f_{Y|X}(y|x) = f_Y(x)\]
+\[f_{X|Y}(x|y) = f_X(x) \quad\quad f_{Y|X}(y|x) = f_Y(y)\]
 \begin{examplebox}[The joint distribution of two independent exponential random variables]
     For two parameters $\alpha, \beta > 0$, consider the following joint cumulative distribution function:
     \[F_{X, Y}(x, y) = 1 - e^{-\alpha x} - e^{-\beta y} + e^{-(\alpha x + \beta y)} \text{, with $(x, y) \in \mathbb{R}^+ \times \mathbb{R}^+$.}\]
@@ -690,7 +730,26 @@ Alternatively, it is possible to state that two random variables $\displaystyle 
             &= \alpha e^{-\alpha x}\mathbb{I}_{\mathbb{R}^+}(x)\beta e^{-\beta y}\mathbb{I}_{\mathbb{R}^+}(y) = f_X(x)f_Y(y) \text{ } \forall (x, y) \in \mathbb{R}^+ \times \mathbb{R}^+ \Rightarrow X \bot Y
     \end{align*}
 \end{examplebox}
-\section{The cumulative distribution function of a joint distribution}
+\section{Mixed random vectors}
+A random vector is said to be ``mixed'' if some of its components are discrete random variables, whereas the other components are continuous random variables. \newline
+For a bivariate distribution, the behaviour of a random vector $\displaystyle \mathbf{Z}$ is described using a mixture model that can be defined as
+\[f_{X, Y}(x, y) = f_{X|Y}(x|y)f_Y(y) = f_{Y|X}(y|x)f_X(x) \text{ } \forall (x, y) \in S_X \times S_Y\]
+In particular, assuming $\displaystyle X$ is the discrete component while $\displaystyle Y$ is the continuous component, it is possible to retrieve the marginal distribution of a single variable by computing
+\begin{align*}
+    f_X(x) &= p_X(x) = \int_{S_Y} f_{X, Y}(x, y) \ dxdy = \int_{S_Y} f_{X|Y}(x|y)f_Y(y) \ dxdy \\
+    f_Y(y) &= \sum_{x \in S_X} f_{X, Y}(x, y) = \sum_{x \in S_X} f_{Y|X}(y|x)f_X(x)
+\end{align*}
+\begin{examplebox}[Investigating adverse reactions in drugs]
+    A team studies the behaviour of a new drug using a discrete random variable $\displaystyle X$, which counts the number of patients showing an adverse reaction to the drug, and a continuous random variable $\displaystyle P$, which indicates the probability of an adverse reaction to the drug. \newline
+    On a sample of $\displaystyle n$ patients, it is known that $\displaystyle (X|P = p) \sim Binom(n, p)$ and $\displaystyle P \sim Uniform(0, 1)$, allowing to marginalize
+    \begin{align*}
+        f_X(x)
+            &= \int_{S_P} f(x|p)f(p) \ dp = \int_0^1 \binom{n}{x}p^x(1 - p)^{n - x} \ dp \\
+            &\stackrel{\text{Beta integral}}{=} \frac{n!}{x!(n - x)!}\frac{x!(n - x)!}{(n + 1)!} = \frac{1}{n + 1}
+    \end{align*}
+    \noindent This means that $\displaystyle X \sim BetaBin(n, 1, 1)$, which corresponds to a discrete uniform distribution on the support $\displaystyle S_X = \{0, \dots, n\}$.
+\end{examplebox}
+\section{The joint cumulative distribution function}
 The joint cumulative distribution function of any bivariate random vector can be defined as
 \[F_{X, Y}(x, y) = \mathbb{P}(\{X \leq x\} \cap \{Y \leq y\}) \text{ } \forall (x, y) \in S_X \times S_Y\]
 In this case, it is possible to retrieve the marginal cumulative distribution functions by computing
