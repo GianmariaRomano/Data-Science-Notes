@@ -29,7 +29,8 @@
 | October 7 | Fully discrete random vectors. |
 | October 8 | Deterministic transformations of continuous random variables. |
 | October 9 | Exercise session on deterministic transformations and histograms. |
-| October 14 | Fully continuous random vectors.
+| October 14 | Fully continuous random vectors. |
+| October 15 | Mixed random vectors and hints to the Geometric and Beta distributions. |
 
 </details>
 
