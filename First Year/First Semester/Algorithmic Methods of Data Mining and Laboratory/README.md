@@ -29,6 +29,7 @@
 | October 8 | Distance and similarity measures. |
 | October 12 | The edit distance between two strings. |
 | October 13 | Web scraping using Beautiful Soup. |
+| October 15 | Dynamic programming and introduction to data structures. |
 
 </details>
 
