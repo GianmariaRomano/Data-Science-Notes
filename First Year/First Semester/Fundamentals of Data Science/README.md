@@ -35,7 +35,7 @@
 | October 8 | Subgraphs, network metrics, weighted graphs and real-world degree distributions. |
 | October 9 | Gradient optimization techniques. |
 | October 12 | Exercises on optimization methods and introduction to linear regression. |
-| October 15 | Exercise session on networks. |
+| October 15 | Network analysis and visualization. |
 
 </details>
 
