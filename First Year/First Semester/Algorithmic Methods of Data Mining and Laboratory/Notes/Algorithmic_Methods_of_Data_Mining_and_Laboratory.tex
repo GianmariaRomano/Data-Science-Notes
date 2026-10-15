@@ -359,6 +359,12 @@ In the context of optimization problems, a $\displaystyle c$-approximation algor
     While the travelling salesman problem cannot be solved in polynomial time, there are some approximation algorithms that, for a cost function that satisfies the triangle inequality, are guaranteed to find a solution whose value is at most two times the optimal value.
 \end{examplebox}
 
+\chapter{Data structures}
+\section{The purpose of data structures}
+Computers normally store information as bytes or words that can be accessed by referencing their memory address. \newline
+More specifically, whenever a program must be executed, the CPU receives a portion of the available memory and, after allocating space for the instructions and the stack frame, it can use the remaining space to allocate the variables that will be used during execution. \newline
+Furthermore, it is possible to exploit dedicated data structures in order to improve the efficiency of native actions during execution.
+
 \chapter{Data relationships}
 \section{Distance functions}
 Since most data mining problems focus on describing relationships between objects wthin a ``universe'' $\mathcal{U}$, object discrepancies are measured using a distance function $\displaystyle d: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
@@ -409,6 +415,7 @@ Using this information, it is possible to define the edit distance between two s
     Since the recursive calls can go on until one of the strings becomes empty, which happens after $\displaystyle l \ge \min\{n, m\}$ steps, the recursive algorithm will require $\displaystyle T(n, m) = \Omega(2^{\min\{n, m\}})$ time. \newline
     However, by looking at the recursive definition of $\displaystyle ED(S^i, T^j)$, one can implement the recursive call using a $\displaystyle (n + 1) \times (m + 1)$ table of optimal values, resulting in $\displaystyle O(nm)$ complexity.
 \end{proofbox}
+\noindent It should be noticed that, despite a small change in the recursive formulation, this strategy can be applied even when the edit distance allows to perform substitutions as well.
 \section{Similarity functions}
 Object similarities can be described using a similarity function $\displaystyle s: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
 \begin{enumerate}
