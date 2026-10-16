@@ -31,6 +31,7 @@
 | October 9 | Exercise session on deterministic transformations and histograms. |
 | October 14 | Fully continuous random vectors. |
 | October 15 | Mixed random vectors and hints to the Geometric and Beta distributions. |
+| October 16 | Common distributions: Poisson, Gaussian, Student, Laplace, Gamma, Beta. |
 
 </details>
 
