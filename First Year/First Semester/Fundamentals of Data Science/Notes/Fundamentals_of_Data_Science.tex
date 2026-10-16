@@ -538,9 +538,9 @@ Linear regression is a supervised machine learning algorithm that models a linea
     \label{fig:linear_regression}
 \end{figure}
 \noindent Knowing that $\displaystyle y^i \approx \mathbf{\beta}^T\mathbf{x}_i$ if the residual $\displaystyle (y_i - \mathbf{\beta}^T\mathbf{x}_i)^2$ is small enough, it is possible to evaluate the quality of a linear regression model using the mean squared error metric given by
-\[MSE(\mathbf{\beta}, Z) = \frac{1}{N}\sum_{i = 1}^N (y_i - \mathbf{\beta}^T\mathbf{x}_i)^2\]
+\[MSE(\mathbf{\beta}, \mathcal{D}) = \frac{1}{N}\sum_{i = 1}^N (y_i - \mathbf{\beta}^T\mathbf{x}_i)^2\]
 Therefore, given a dataset $\displaystyle \mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i = 1}^N$, the linear regression algorithm computes the parameters
-\[\mathbf{\beta}^* = \arg\min_{\mathbf{\beta} \in \mathbb{R}^d} \mathcal{L}(\mathbf{\beta}, Z) = \arg\min_{\mathbf{\beta} \in \mathbb{R}^d} \frac{1}{N}\sum_{i = 1}^N (y_i - \mathbf{\beta}^T\mathbf{x}_i)^2 \text{, resulting in $f_{\mathbf{\beta}^*}(\mathbf{x}) = \mathbf{\beta}^{*T}\mathbf{x}$.}\]
+\[\mathbf{\beta}^* = \arg\min_{\mathbf{\beta} \in \mathbb{R}^d} \mathcal{L}(\mathbf{\beta}, \mathcal{D}) = \arg\min_{\mathbf{\beta} \in \mathbb{R}^d} \frac{1}{N}\sum_{i = 1}^N (y_i - \mathbf{\beta}^T\mathbf{x}_i)^2 \text{, resulting in $f_{\mathbf{\beta}^*}(\mathbf{x}) = \mathbf{\beta}^{*T}\mathbf{x}$.}\]
 These parameters are then optimized using gradient descent to minimize the mean squared error
 \begin{align*}
     MSE(\hat{\mathbf{\beta}}_0, \hat{\mathbf{\beta}}_1) &= \frac{1}{N}\sum_{i = 1}^N (y_i - \hat{y}_i)^2 = \frac{1}{N}\sum_{i = 1}^N (y_i - (\hat{\mathbf{\beta}}_0 + \hat{\mathbf{\beta}}_1\mathbf{x}_i))^2 \\
@@ -561,9 +561,52 @@ This means that the intercept $\displaystyle \hat{\mathbf{\beta}}_0$ and the slo
 However, since these strategies often result in performance degradation or computational waste, most machine learning algorithms make use of mini-batch gradient descent, which consists of performing updates using a small subset of the dataset to ensure better efficiency and stability.
 \subsection{Alternative performance metrics}
 Other common performance metrics used to evaluate a linear regression model include the mean absolute error and the mean relative error, which are defined as follows:
-\[MAE(\mathbf{\beta}, Z) = \frac{1}{N}\sum_{i = 1}^N |y_i - \hat{y}_i| \quad MRE(\mathbf{\beta}, Z) = \frac{1}{N}\sum_{i = 1}^N \frac{|y_i - \hat{y}_i|}{|y_i|}\]
+\[MAE(\mathbf{\beta}, \mathcal{D}) = \frac{1}{N}\sum_{i = 1}^N |y_i - \hat{y}_i| \quad MRE(\mathbf{\beta}, \mathcal{D}) = \frac{1}{N}\sum_{i = 1}^N \frac{|y_i - \hat{y}_i|}{|y_i|}\]
 Alternatively, one can opt for the determination coefficient, which describes how well the model is able to explain the variance of the data points by computing
 \[R^2 = 1 - \frac{MSE}{Var(y)}\]
+\subsection{Vectorized linear regression}
+The linear regression algorithm can be made more efficient by stacking the data points and labels into matrices. \newline
+Using this formulation, the mean squared error loss function is expressed as
+\[\mathcal{L}(\mathbf{\beta}, \mathcal{D}) = \frac{1}{N}\lVert \mathbf{Y} - \mathbf{X\beta} \rVert_2^2 \text{, which can be expanded to } N\mathcal{L}(\mathbf{\beta}, \mathcal{D}) = \mathbf{Y}^T\mathbf{Y} - 2\mathbf{Y}^T\mathbf{X\beta} + \mathbf{\beta}^T(\mathbf{X}^T\mathbf{X})\mathbf{\beta}\]
+In particular, the gradient of the loss function will be given by
+\[\nabla_{\mathbf{\beta}}\mathcal{L}(\mathbf{\beta}, \mathcal{D}) = -\frac{2}{N}\mathbf{X}^T\mathbf{Y} + \frac{2}{N}\mathbf{X}^T\mathbf{X{\beta}}\]
+Therefore, performing gradient descent on the loss function allows to find the following closed-form solution for the optimal parameters:
+\[\nabla_{\mathbf{\beta}}\mathcal{L}(\hat{\mathbf{\beta}}, \mathcal{D}) = 0 \Leftrightarrow \mathbf{X}^T\mathbf{X\hat{\beta}} = \mathbf{X}^T\mathbf{Y} \Leftrightarrow \hat{\mathbf{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{Y}\]
+While this optimization approach is more efficient, the returned solution will be unique if and only if $\displaystyle \mathbf{X}^T\mathbf{X}$ is invertible. \newline
+In fact, the solution is not unique whenever there are fewer data samples than features or in the case of multicollinearity, which happens when one feature can be expressed as a linear combination of higher features and the corresponding data matrix will be rank-deficient.
+\begin{examplebox}[Redundant features during house price predictions]
+    Consider a linear regression model that predicts house prices based on the number of bathrooms and the number of toilets: since most houses feature just one toilet per bathroom, these two features will be highly correlated and using just one of them will be sufficient for predicting the target variable.
+\end{examplebox}
+\noindent Overall, one of the main drawbacks of vectorized linear regression lies in the fact that finding the closed-form solution is computationally expensive as the overall complexity amounts to $\displaystyle O(d^3)$ time.
+\section{Polynomial regression}
+Assuming there is some ``prior knowledge'' about the function to approximate, it is possible to define the model family starting from a feature map $\displaystyle \phi: \mathbb{R} \to \mathbb{R}^m$ that is defined as
+\[\phi(x) = \begin{pmatrix}
+    1 \\
+    x \\
+    \dots \\
+    x^m
+\end{pmatrix} \Rightarrow f_{\mathbf{\beta}}(x) = \mathbf{\beta}^T\phi(x) = \sum_{i = 1}^m \mathbf{\beta}_ix^i\]
+Alternatively, it is also possible to use a generalized feature map $\displaystyle \phi: \mathbb{R}^n \to \mathbb{R}^m$ that allows to model the interactions between different components of the data cloud. \newline
+While polynomial regression provides a flexible strategy for modelling data relationships, it can suffer from severe performance degradation.
+In fact, using a high-degree polynomial makes the model prone to overfitting, meaning that it will perform well on the training data but fail on unseen data, whereas opting for a low-degree polynomial makes the model prone to underfitting, meaning that it will not be able to learn due to a bias.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/performance_degradation.png}
+    \caption{Overfitting and underfitting under a standard setting.}
+    \label{fig:performance_degradation}
+\end{figure}
+\section{Linear classification models}
+Linear models can also be used for classification tasks that involve predicting a binary variable $\displaystyle y_i \in \{0, 1\}$, typically predicting $\displaystyle y_i = 1$ if $\displaystyle \mathbf{\beta}^T\mathbf{x}_i \ge 0$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/linear_classification.png}
+    \caption{Visualization of a linear classification model.}
+    \label{fig:linear_classification}
+\end{figure}
+\noindent Assuming that, for each data point, the corresponding label is drawn independent and identically distributed from a conditional distribution $\displaystyle p_{\mathbf{\beta}}(y_i|\mathbf{x}_i)$, it is possible to formulate the likelihood of a dataset $\displaystyle \mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i = 1}^N$ as
+\[L(\mathbf{\beta}, \mathcal{D}) = p_{\mathbf{\beta}}(\mathbf{Y}|\mathbf{X}) \prod_{i = 1}^N p_{\mathbf{\beta}}(y_i|\mathbf{x}_i)\]
+However, since maximizing the likelihood of a dataset tends to be a problematic task, it is typically more convenient to minimize its negative log-likelihood, which is instead defined as
+\[\ell(\mathbf{\beta}, \mathcal{D}) -\log(\mathcal{L}(\mathbf{\beta}, \mathcal{D})) = -\sum_{i = 1}^N \log(p_{\mathbf{\beta}}(y_i|\mathbf{x}_i))\]
 
 \part{Network Science}
 

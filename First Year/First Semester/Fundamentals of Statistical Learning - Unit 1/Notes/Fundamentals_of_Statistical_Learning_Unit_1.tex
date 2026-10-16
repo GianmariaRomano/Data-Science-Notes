@@ -547,7 +547,7 @@ A continuous random variable $\displaystyle X$ is said to follow a uniform distr
 \end{cases}\]
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\linewidth]{images/uniform.png}
+    \includegraphics[width=0.5\linewidth]{images/uniform.png}
     \caption{PDF and CDF for a random variable $\displaystyle X \sim Unif(0, 1)$.}
     \label{fig:uniform}
 \end{figure}
@@ -563,7 +563,7 @@ A continuous random variable $\displaystyle X$ is said to follow an exponential 
 \[f_X(x) = \lambda e^{-\lambda x}\mathbb{I}_{\mathbb{R}^+}(x) \quad\quad\quad F_X(x) = (1 - e^{-\lambda x})\mathbb{I}_{[0, +\infty)}(x)\]
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\linewidth]{images/exponential.png}
+    \includegraphics[width=0.5\linewidth]{images/exponential.png}
     \caption{PDF and CDF for a random variable $\displaystyle X \sim Exp(1.5)$.}
     \label{fig:exponential}
 \end{figure}
@@ -575,6 +575,72 @@ A continuous random variable $\displaystyle X$ is said to follow an exponential 
     Therefore, by applying the definition of conditional probability, it is possible to conclude that
     \[\mathbb{P}(X > x + k|X > x) = \frac{\mathbb{P}(\{X > x + k\} \cap \{X > x\})}{\mathbb{P}(X > x)} = \frac{e^{-\lambda(x + k)}}{e^{-\lambda x}} = e^{-\lambda k} = \mathbb{P}(X > k)\]
 \end{proofbox}
+\subsection{The normal distribution}
+A continuous random variable $\displaystyle X$ is said to follow a normal distribution with parameters $\displaystyle \mu \in \mathbb{R}$ and $\displaystyle \sigma^2 \in \mathbb{R}^+$, which is written as $\displaystyle X \sim \mathcal{N}(\mu, \sigma^2)$, if its probability density function is defined as
+\[f_X(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x - \mu)^2}{2\sigma^2}} \text{, for $x \in \mathbb{R}$.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/gaussian.png}
+    \caption{PDF and CDF for a random variable $\displaystyle X \sim \mathcal{N}(\mu, \sigma^2)$ for some choices of $\displaystyle \mu$ and $\displaystyle \sigma^2$.}
+    \label{fig:gaussian}
+\end{figure}
+\noindent This distribution has a symmetric, bell-shaped curve that is defined using the parameters $\displaystyle \mu$, which represents the center and mode of the distribution, and $\displaystyle \sigma$, which describes its spread. \newline
+If $\displaystyle Z \sim \mathcal{N}(0, 1)$, then $\displaystyle Z$ is said to follow a ``standard normal distribution'' and its probability density function and cumulative distribution function are denoted by $\displaystyle \phi(z)$ and $\displaystyle \Phi(z)$, respectively. \newline
+In particular, one can transform a generic normal distribution into a standard normal distribution, and viceversa, through the following transformation:
+\[X \sim \mathcal{N}(\mu, \sigma^2) \Rightarrow Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1) \text{ and } Z \sim \mathcal{N}(0, 1) \Rightarrow X = \sigma Z + \mu \sim \mathcal{N}(\mu, \sigma^2)\]
+This transformation is useful because, starting from the standard normal table, it is possible to compute probabilities for a generic normal distribution as follows:
+\begin{align*}
+    \mathbb{P}(X \in [a, b]) = \mathbb{P}(a \leq X \leq b)
+        &= \mathbb{P}\Bigg(\frac{a - \mu}{\sigma} \leq \frac{X - \mu}{\sigma} \leq \frac{b - \mu}{\sigma}\Bigg) \\
+        &= \mathbb{P}\Bigg(\frac{a - \mu}{\sigma} \leq Z \leq \frac{b - \mu}{\sigma}\Bigg) = \Phi\Bigg(\frac{b - \mu}{\sigma}\Bigg) - \Phi\Bigg(\frac{a - \mu}{\sigma}\Bigg)
+\end{align*}
+\begin{examplebox}[Computing probabilities from a (standard) normal distribution]
+    Suppose that, for a random variable $\displaystyle X \sim \mathcal{N}(3, 5)$, the event $\displaystyle A = \{X > 1\}$ is observed: using standardization, it is possible to state that
+    \begin{align*}
+        \mathbb{P}(A) = \mathbb{P}(X > 1) = 1 - \mathbb{P}(X \leq 1)
+            &= 1 - \mathbb{P}\Bigg(Z \leq \frac{1 - 3}{\sqrt{5}}\Bigg) \\
+            &= 1 - \mathbb{P}(Z \leq -0.8944) = 1 - \Phi(-0.8944) \approx 0.8144
+    \end{align*}
+\end{examplebox}
+\noindent Similarly, if $\displaystyle q_p$ and $\displaystyle z_p$ denote the $\displaystyle p$-level quantiles of a generic and standard normal distribution, respectively, then it is possible to exploit the following relationship:
+\[q_p = \sigma z_p + \mu \text{, assuming that $X \sim \mathcal{N}(\mu, \sigma^2)$.}\]
+Overall, one of the biggest limitations of the normal distribution lies in the fact that, due to its lighter tails, it tends to be very sensitive to extreme values.
+\subsection{Student's $\displaystyle t$ distribution}
+A continuous random variable $\displaystyle X$ is said to follow a $\displaystyle t$ distribution with $\displaystyle \nu > 0$ degrees of freedom, which is written as $\displaystyle X \sim t(\nu)$, if its probability density function is defined as
+\[f_X(x) = \frac{\Gamma(\frac{\nu + 1}{2})}{\sqrt{\nu\pi}\Gamma(\frac{\nu}{2})}\Bigg(1 + \frac{x^2}{\nu}\Bigg)^{\frac{\nu + 1}{2}} \text{, for $x \in \mathbb{R}$.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/student_t.png}
+    \caption{PDF and CDF for a random variable $\displaystyle X \sim t(\nu)$ for some choices of $\displaystyle \nu$.}
+    \label{fig:student_t}
+\end{figure}
+\noindent This distribution is often used as a more robust alternative to the normal distribution because its degrees of freedom allow to define heavier tails, although the $\displaystyle t$ distribution converges to a standard normal distribution as $\displaystyle \nu \to +\infty$.
+\subsection{The Laplace distribution}
+A continuous random variable $\displaystyle X$ is said to follow a Laplace distribution with parameters $\displaystyle \mu \in \mathbb{R}$ and $\displaystyle \lambda \in \mathbb{R}^+$, which is written as $\displaystyle X \sim Laplace(\mu, \lambda)$, if its probability density function and cumulative distribution function are defined as
+\[f_X(x) = \frac{1}{2\lambda}e^{-\frac{|x - \mu|}{\lambda}} \quad\quad\quad F_X(x) = \begin{cases}
+    \frac{1}{2}e^{\frac{x - \mu}{\lambda}} &\quad\text{if $x < \mu$} \\
+    1 - \frac{1}{2}e^{-\frac{x - \mu}{\lambda}} &\quad\text{if $x \ge \mu$} \\
+\end{cases}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/laplace.png}
+    \caption{PDF and CDF for a random variable $\displaystyle X \sim Laplace(\mu, \lambda)$ for some choices of $\displaystyle \mu$ and $\displaystyle \lambda$.}
+    \label{fig:laplace}
+\end{figure}
+\noindent This distribution is often used to introduced sparsity in statistical models thanks to its heavier tails.
+\subsection{The Gamma distribution}
+A continuous random variable $\displaystyle X$ is said to follow a Gamma distributions with parameters $\displaystyle \alpha, \lambda > 0$, which is written as $\displaystyle X \sim Gamma(\alpha, \lambda)$, if its probability density function and cumulative distribution function are defined as
+\begin{align*}
+    f_X(x) &= \frac{\lambda^\alpha}{\Gamma(\alpha)}x^{\alpha - 1}e^{-\lambda x}\mathbb{I}_{\mathbb{R}^+}(x) \quad\quad\quad F_X(x) = \frac{\gamma(\alpha, \lambda x)}{\Gamma(\alpha)} \\
+    \Gamma(\alpha) &= \int_0^{+\infty} t^{\alpha - 1}e^{-t} \ dt \quad\quad\quad \gamma(\alpha, x) = \int_0^x t^{\alpha - 1}e^{-t} \ dt
+\end{align*}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/gamma.png}
+    \caption{PDF and CDF for a random variable $\displaystyle X \sim Gamma(\alpha, \lambda)$ for some choices of $\displaystyle \alpha$ and $\displaystyle \lambda$.}
+    \label{fig:gamma}
+\end{figure}
+\noindent For certain choices of $\displaystyle \alpha$ and $\displaystyle \lambda$, this distribution can be traced back to other known distributions, such as the exponential distribution or the chi-squared distribution.
 \subsection{The Beta distribution}
 A continuous random variable $\displaystyle X$ is said to follow a Beta distribution with parameters $\displaystyle \alpha, \beta > 0$, which is written as $\displaystyle X \sim Beta(\alpha, \beta)$, if its probability density function and cumulative distribution function are defined as
 \begin{align*}
@@ -583,11 +649,10 @@ A continuous random variable $\displaystyle X$ is said to follow a Beta distribu
 \end{align*}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/beta.png}
+    \includegraphics[width=0.45\linewidth]{images/beta.png}
     \caption{PDF and CDF for a random variable $\displaystyle X \sim Beta(\alpha, \beta)$ for some choices of $\displaystyle \alpha$ and $\displaystyle \beta$.}
     \label{fig:beta}
 \end{figure}
-\noindent An important application of this distribution lies in the conjugate Bayesian analysis of the Bernoulli and binomial models.
 
 \chapter{Random vectors}
 \section{Defining random vectors}
@@ -747,7 +812,17 @@ In particular, assuming $\displaystyle X$ is the discrete component while $\disp
             &= \int_{S_P} f(x|p)f(p) \ dp = \int_0^1 \binom{n}{x}p^x(1 - p)^{n - x} \ dp \\
             &\stackrel{\text{Beta integral}}{=} \frac{n!}{x!(n - x)!}\frac{x!(n - x)!}{(n + 1)!} = \frac{1}{n + 1}
     \end{align*}
-    \noindent This means that $\displaystyle X \sim BetaBin(n, 1, 1)$, which corresponds to a discrete uniform distribution on the support $\displaystyle S_X = \{0, \dots, n\}$.
+    \noindent This means that, on its support $\displaystyle S_X = \{0, \dots, n\}$, $\displaystyle X$ follows a discrete uniform distribution, which is a special case of the Beta-binomial distribution.
+\end{examplebox}
+\noindent An important application of mixed random vector consists of studying the distributions that involve an observable random variable, which typically follows a simple distribution, and a latent random variable that models the variability of the sampled data.
+\begin{examplebox}[Finite mixture models]
+    A bivariate random vector contains an observable discrete random variable $\displaystyle X$ and a latent discrete random variable $\displaystyle H$ whose distribution on the set $\displaystyle S_H = \{1, \dots, k\}$ is given by
+    \[\mathbb{P}(H = j) = \pi_j \text{, with } \pi_j \ge 0 \text{ } \forall j \in S_H \text{ and } \sum_{j = 1}^k \pi_j = 1\]
+    This means that, if $\displaystyle (X|H = j) \sim f_j(x)$, the marginal distribution of $\displaystyle X$ can be formulated as
+    \[f_X(x) = \sum_{i = 1}^k f_j(x)\pi_j \text{, which represents a finite mixture with $k$ sub-populations.}\]
+    Assuming that, on the support $\displaystyle S_X = \{0, 1\}$, $\displaystyle (X|H = j) \sim Ber(\pi_j)$, the marginal distribution of $\displaystyle X$ can be modelled using the law of total probability:
+    \[\mathbb{P}(E) = \sum_{j = 1}^k \mathbb{P}(E \cap H_j) = \sum_{j = 1}^k \mathbb{P}(E|H_j)\mathbb{P}(H_j)\]
+    In fact, if $\displaystyle E$ represents the observed value of $\displaystyle X$ and $\displaystyle H$ is used to model a sequence of mutually exclusive hypotheses, it is possible to recover that $\displaystyle X \sim Ber(\mathbb{P}(E))$.
 \end{examplebox}
 \section{The joint cumulative distribution function}
 The joint cumulative distribution function of any bivariate random vector can be defined as
