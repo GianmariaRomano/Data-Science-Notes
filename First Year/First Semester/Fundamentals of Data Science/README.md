@@ -36,6 +36,7 @@
 | October 9 | Gradient optimization techniques. |
 | October 12 | Exercises on optimization methods and introduction to linear regression. |
 | October 15 | Network analysis and visualization. |
+| October 16 | Vectorized linear regression and polynomial regression. |
 
 </details>
 
