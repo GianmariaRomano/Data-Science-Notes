@@ -205,8 +205,15 @@ Ordered data consists of ordered sequences of values that come in handy for geno
 \subsection{Graph data}
 Graph data allows to summarise web network data using a (directed) graph $\displaystyle G(V, E)$ whose nodes represent pages or users and whose edges denote connections, such as links or interactions, between pages or users.
 \section{Storing data}
-A computer typically features a processor that performs calculations on data that can be stored on its memory or on (external) hard disks. \newline
-Most of the time, however, data is stored using a cloud infrastructure that consists of clustered server racks that can store large amounts of data that might not fit on a normal computer.
+Most of the time, data is stored using a cloud infrastructure that consists of clustered server racks that can store large amounts of data that might not fit on a normal computer. \newline
+From a low-level perspective, computers normally store information as bytes or words that can be accessed by referencing their memory address. \newline
+More specifically, whenever a program must be executed, the CPU receives a portion of the available memory and, after allocating space for the instructions and the stack frame, it can use the remaining space to allocate the variables that will be used during execution.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/memory_storage.png}
+    \caption{Memory management in Python.}
+    \label{fig:memory_storage}
+\end{figure}
 
 \chapter{Algorithms}
 \section{Defining algorithms}
@@ -359,12 +366,6 @@ In the context of optimization problems, a $\displaystyle c$-approximation algor
     While the travelling salesman problem cannot be solved in polynomial time, there are some approximation algorithms that, for a cost function that satisfies the triangle inequality, are guaranteed to find a solution whose value is at most two times the optimal value.
 \end{examplebox}
 
-\chapter{Data structures}
-\section{The purpose of data structures}
-Computers normally store information as bytes or words that can be accessed by referencing their memory address. \newline
-More specifically, whenever a program must be executed, the CPU receives a portion of the available memory and, after allocating space for the instructions and the stack frame, it can use the remaining space to allocate the variables that will be used during execution. \newline
-Furthermore, it is possible to exploit dedicated data structures in order to improve the efficiency of native actions during execution.
-
 \chapter{Data relationships}
 \section{Distance functions}
 Since most data mining problems focus on describing relationships between objects wthin a ``universe'' $\mathcal{U}$, object discrepancies are measured using a distance function $\displaystyle d: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
@@ -428,5 +429,19 @@ When working with set data, the Jaccard index can be used to measure the similar
 \[s(A, B) = \frac{|A \cap B|}{|A \cup B|}\]
 In particular, the Jaccard index can be expressed as a distance by setting
 \[d(A, B) = 1 - s(A, B) = 1 - \frac{|A \cap B|}{|A \cup B|} = \frac{|A \cup B| - |A \cap B|}{|A \cup B|} = \frac{|A| + |B| - 2|A \cap B|}{|A \cup B|}\]
+
+\chapter{Text mining}
+\section{Handling text data}
+Documents are typically processed using the ``bag-of-words'' model, which considers raw text as a vector that counts the occurrence of each word in the document. \newline
+However, before creating the vector, the extracted raw text first undergoes a pre-processing pipeline that normally consists of the following steps:
+\begin{enumerate}
+    \item \textbf{Tokenization: }The document is split into a sequence of words or tokens.
+    \item \textbf{Stopword removal: }Common words that provide little semantic value are removed from the document in order to reduce computational costs and noise.
+    \item \textbf{Normalization: }Text features are standardized in order to avoid syntax-related or case-sensitive mismatches.
+    \item \textbf{Stemming: }Words are truncated to their root in order to group similar concepts together.
+\end{enumerate}
+For this reason, text mining is often performed using the tools provided by the \texttt{nltk} library.
+\section{The search engine problem}
+Given a corpus of $\displaystyle n$ documents $\displaystyle \mathcal{C} = \{D_i\}_{i = 1}^n$ and a query $\displaystyle q$, a search engine aims to find the top $\displaystyle k$ related documents in the corpus.
 
 \end{document}
