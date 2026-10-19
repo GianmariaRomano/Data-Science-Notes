@@ -512,7 +512,7 @@ A discrete random variable $\displaystyle X$ is said to follow a binomial distri
     \[p_X(25) = \binom{25}{25}(0.7)^{25}(0.3)^{25 - 25} = (0.7)^{25} \approx 1.34 \cdot 10^{-4}\]
 \end{examplebox}
 \subsection{The geometric distribution}
-A discrete random variable $\displaystyle X$ is said to follow a geometric distribution with parameter $\displaystyle p \in (0, 1)$, which is written as $\displaystyle X \sim Geom(0.2)$, if its probability mass function is defined as
+A discrete random variable $\displaystyle X$ is said to follow a geometric distribution with parameter $\displaystyle p \in (0, 1)$, which is written as $\displaystyle X \sim Geom(p)$, if its probability mass function is defined as
 \[p_X(x) = (1 - p)^{x - 1}p \text{, for $x \in \mathbb{N}$.}\]
 \begin{figure}[H]
     \centering
@@ -607,7 +607,7 @@ This transformation is useful because, starting from the standard normal table, 
 Overall, one of the biggest limitations of the normal distribution lies in the fact that, due to its lighter tails, it tends to be very sensitive to extreme values.
 \subsection{Student's $\displaystyle t$ distribution}
 A continuous random variable $\displaystyle X$ is said to follow a $\displaystyle t$ distribution with $\displaystyle \nu > 0$ degrees of freedom, which is written as $\displaystyle X \sim t(\nu)$, if its probability density function is defined as
-\[f_X(x) = \frac{\Gamma(\frac{\nu + 1}{2})}{\sqrt{\nu\pi}\Gamma(\frac{\nu}{2})}\Bigg(1 + \frac{x^2}{\nu}\Bigg)^{\frac{\nu + 1}{2}} \text{, for $x \in \mathbb{R}$.}\]
+\[f_X(x) = \frac{\Gamma(\frac{\nu + 1}{2})}{\sqrt{\nu\pi}\Gamma(\frac{\nu}{2})}\Bigg(1 + \frac{x^2}{\nu}\Bigg)^{-\frac{\nu + 1}{2}} \text{, for $x \in \mathbb{R}$.}\]
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{images/student_t.png}
@@ -629,7 +629,7 @@ A continuous random variable $\displaystyle X$ is said to follow a Laplace distr
 \end{figure}
 \noindent This distribution is often used to introduced sparsity in statistical models thanks to its heavier tails.
 \subsection{The Gamma distribution}
-A continuous random variable $\displaystyle X$ is said to follow a Gamma distributions with parameters $\displaystyle \alpha, \lambda > 0$, which is written as $\displaystyle X \sim Gamma(\alpha, \lambda)$, if its probability density function and cumulative distribution function are defined as
+A continuous random variable $\displaystyle X$ is said to follow a Gamma distribution with parameters $\displaystyle \alpha, \lambda > 0$, which is written as $\displaystyle X \sim Gamma(\alpha, \lambda)$, if its probability density function and cumulative distribution function are defined as
 \begin{align*}
     f_X(x) &= \frac{\lambda^\alpha}{\Gamma(\alpha)}x^{\alpha - 1}e^{-\lambda x}\mathbb{I}_{\mathbb{R}^+}(x) \quad\quad\quad F_X(x) = \frac{\gamma(\alpha, \lambda x)}{\Gamma(\alpha)} \\
     \Gamma(\alpha) &= \int_0^{+\infty} t^{\alpha - 1}e^{-t} \ dt \quad\quad\quad \gamma(\alpha, x) = \int_0^x t^{\alpha - 1}e^{-t} \ dt
@@ -801,12 +801,12 @@ For a bivariate distribution, the behaviour of a random vector $\displaystyle \m
 \[f_{X, Y}(x, y) = f_{X|Y}(x|y)f_Y(y) = f_{Y|X}(y|x)f_X(x) \text{ } \forall (x, y) \in S_X \times S_Y\]
 In particular, assuming $\displaystyle X$ is the discrete component while $\displaystyle Y$ is the continuous component, it is possible to retrieve the marginal distribution of a single variable by computing
 \begin{align*}
-    f_X(x) &= p_X(x) = \int_{S_Y} f_{X, Y}(x, y) \ dxdy = \int_{S_Y} f_{X|Y}(x|y)f_Y(y) \ dxdy \\
+    f_X(x) &= p_X(x) = \int_{S_Y} f_{X, Y}(x, y) \ dy = \int_{S_Y} f_{X|Y}(x|y)f_Y(y) \ dy \\
     f_Y(y) &= \sum_{x \in S_X} f_{X, Y}(x, y) = \sum_{x \in S_X} f_{Y|X}(y|x)f_X(x)
 \end{align*}
 \begin{examplebox}[Investigating adverse reactions in drugs]
     A team studies the behaviour of a new drug using a discrete random variable $\displaystyle X$, which counts the number of patients showing an adverse reaction to the drug, and a continuous random variable $\displaystyle P$, which indicates the probability of an adverse reaction to the drug. \newline
-    On a sample of $\displaystyle n$ patients, it is known that $\displaystyle (X|P = p) \sim Binom(n, p)$ and $\displaystyle P \sim Uniform(0, 1)$, allowing to marginalize
+    On a sample of $\displaystyle n$ patients, it is known that $\displaystyle (X|P = p) \sim Binom(n, p)$ and $\displaystyle P \sim Unif(0, 1)$, allowing to marginalize
     \begin{align*}
         f_X(x)
             &= \int_{S_P} f(x|p)f(p) \ dp = \int_0^1 \binom{n}{x}p^x(1 - p)^{n - x} \ dp \\
@@ -814,7 +814,7 @@ In particular, assuming $\displaystyle X$ is the discrete component while $\disp
     \end{align*}
     \noindent This means that, on its support $\displaystyle S_X = \{0, \dots, n\}$, $\displaystyle X$ follows a discrete uniform distribution, which is a special case of the Beta-binomial distribution.
 \end{examplebox}
-\noindent An important application of mixed random vector consists of studying the distributions that involve an observable random variable, which typically follows a simple distribution, and a latent random variable that models the variability of the sampled data.
+\noindent An important application of mixed random vectors consists of studying the distributions that involve an observable random variable, which typically follows a simple distribution, and a latent random variable that models the variability of the sampled data.
 \begin{examplebox}[Finite mixture models]
     A bivariate random vector contains an observable discrete random variable $\displaystyle X$ and a latent discrete random variable $\displaystyle H$ whose distribution on the set $\displaystyle S_H = \{1, \dots, k\}$ is given by
     \[\mathbb{P}(H = j) = \pi_j \text{, with } \pi_j \ge 0 \text{ } \forall j \in S_H \text{ and } \sum_{j = 1}^k \pi_j = 1\]
@@ -827,7 +827,7 @@ In particular, assuming $\displaystyle X$ is the discrete component while $\disp
 \section{The joint cumulative distribution function}
 The joint cumulative distribution function of any bivariate random vector can be defined as
 \[F_{X, Y}(x, y) = \mathbb{P}(\{X \leq x\} \cap \{Y \leq y\}) \text{ } \forall (x, y) \in S_X \times S_Y\]
-In this case, it is possible to retrieve the marginal cumulative distribution functions by computing
+In this case, it is possible to retrieve the marginal cumulative distribution function function of a single variable by computing
 \begin{align*}
     F_X(x) &= \lim_{y \to +\infty} F_{X, Y}(x, y) \text{ } \forall x \in S_X \\
     F_Y(y) &= \lim_{x \to +\infty} F_{X, Y}(x, y) \text{ } \forall y \in S_Y
