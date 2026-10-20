@@ -574,8 +574,45 @@ Therefore, performing gradient descent on the loss function allows to find the f
 \[\nabla_{\mathbf{\beta}}\mathcal{L}(\hat{\mathbf{\beta}}, \mathcal{D}) = 0 \Leftrightarrow \mathbf{X}^T\mathbf{X\hat{\beta}} = \mathbf{X}^T\mathbf{Y} \Leftrightarrow \hat{\mathbf{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{Y}\]
 While this optimization approach is more efficient, the returned solution will be unique if and only if $\displaystyle \mathbf{X}^T\mathbf{X}$ is invertible. \newline
 In fact, the solution is not unique whenever there are fewer data samples than features or in the case of multicollinearity, which happens when one feature can be expressed as a linear combination of other features and the corresponding data matrix will be rank-deficient.
-\begin{examplebox}[Redundant features during house price predictions]
-    Consider a linear regression model that predicts house prices based on the number of bathrooms and the number of toilets: since most houses feature just one toilet per bathroom, these two features will be highly correlated and using just one of them will be sufficient for predicting the target variable.
+\begin{examplebox}[Fitting a linear regression model using the normal equation]
+    Consider the dataset $\displaystyle \mathcal{D} = \{(1, 2), (2, 3), (3, 5)\}$ as a design matrix
+    \[\mathbf{X} = \begin{pmatrix}
+        1 & 1 \\
+        1 & 2 \\
+        1 & 3 \\
+    \end{pmatrix} \text{, where the first column acts the intercept component.}\]
+    It is possible to fit a linear model $\displaystyle y = a + bx$ by solving the normal equation $\displaystyle (\mathbf{X}^T\mathbf{X})\hat{\mathbf{\beta}} = \mathbf{X}^T\mathbf{Y}$:
+    \begin{align*}
+        \begin{pmatrix}
+            1 & 1 & 1 \\
+            1 & 2 & 3 \\
+        \end{pmatrix}\begin{pmatrix}
+            1 & 1 \\
+            1 & 2 \\
+            1 & 3 \\
+        \end{pmatrix}\hat{\mathbf{\beta}} &= \begin{pmatrix}
+            1 & 1 & 1 \\
+            1 & 2 & 3 \\
+        \end{pmatrix}\begin{pmatrix}
+            2 \\
+            3 \\
+            5 \\
+        \end{pmatrix} \\
+        \begin{pmatrix}
+            3 & 6 \\
+            6 & 14 \\
+        \end{pmatrix}\begin{pmatrix}
+            a \\
+            b \\
+        \end{pmatrix} &= \begin{pmatrix}
+            3a + 6b \\
+            6a + 14b \\
+        \end{pmatrix} = \begin{pmatrix}
+            10 \\
+            23 \\
+        \end{pmatrix}
+    \end{align*}
+    Solving this system allows to retrieve the model $\displaystyle \hat{y} = \frac{1}{3} + \frac{3}{2}x$.
 \end{examplebox}
 \noindent Overall, one of the main drawbacks of vectorized linear regression lies in the fact that finding the closed-form solution is computationally expensive as the overall complexity amounts to $\displaystyle O(d^3)$ time.
 \section{Polynomial regression}
@@ -608,7 +645,7 @@ However, since maximizing the likelihood of a dataset tends to be a problematic 
 \[\ell(\mathbf{\beta}, \mathcal{D}) -\log(L(\mathbf{\beta}, \mathcal{D})) = -\sum_{i = 1}^N \log(p_{\mathbf{\beta}}(y_i|\mathbf{x}_i))\]
 Under this setting, each observation is often assumed to be drawn from a Gaussian distribution that is centered around a linear function of $\displaystyle \mathbf{x}$ and has unit variance, meaning that
 \begin{align*}
-    p_{\mathbf{\beta}}(y_i|\mathbf{x}_i) &= \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(\mathbf{\beta}^T\mathbf{x}_i - y_1)^2} \text{ } \forall \mathbf{x}_i \in \mathcal{D} \text{, resulting in} \\
+    p_{\mathbf{\beta}}(y_i|\mathbf{x}_i) &= \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(\mathbf{\beta}^T\mathbf{x}_i - y_i)^2} \text{ } \forall \mathbf{x}_i \in \mathcal{D} \text{, resulting in} \\
     \ell(\mathbf{\beta}, \mathcal{D}) &= -\sum_{i = 1}^N \log(p_{\mathbf{\beta}}(y_i|\mathbf{x}_i)) = \frac{N\log(2\pi)}{2} + \frac{1}{2}\sum_{i = 1}^N (\mathbf{\beta}^T\mathbf{x}_i - y_i)^2
 \end{align*}
 Therefore, the goal is to express the target model as the prediction of $\displaystyle y$ that is most likely to occur given an input $\displaystyle \mathbf{x}$ and a parametrization $\displaystyle \mathbf{\beta}$, resulting in
@@ -645,7 +682,7 @@ Assuming that, for a dataset $\displaystyle \mathcal{D} = \{(\mathbf{x}_i, y_i)\
     \caption{Negative log-likelihood for a logistic regression model.}
     \label{fig:nll_logistic}
 \end{figure}
-\noindent Similarly for linear regression, a logistic regression model can be optimized by performing gradient descent on its negative log-likelihood
+\noindent Similarly for linear regression, a logistic regression model can be optimized by performing gradient descent on its negative log-likelihood:
 \begin{align*}
     \nabla_{\mathbf{\beta}}\ell(\mathbf{\beta}, \mathcal{D})
         &= -\sum_{i = 1}^N [y_i\nabla_{\mathbf{\beta}}\log(\sigma(\mathbf{\beta}^T\mathbf{x}_i)) + (1 - y_i)\nabla_{\mathbf{\beta}}\log(1 - \sigma(\mathbf{\beta}^T\mathbf{x}_i))] \\
@@ -653,8 +690,8 @@ Assuming that, for a dataset $\displaystyle \mathcal{D} = \{(\mathbf{x}_i, y_i)\
         &= -\sum_{i = 1}^N [y_i(1 - \sigma(\mathbf{\beta}^T\mathbf{x}_i))\mathbf{x}_i + (1 - y_i)\sigma(\mathbf{\beta}^T\mathbf{x}_i)\mathbf{x}_i] = \sum_{i = 1}^N (\sigma(\mathbf{\beta}^T\mathbf{x}_i) - y_i)\mathbf{x}_i
 \end{align*}
 However, unlike for linear regression, no closed-form solution is available when optimizing a logistic regression model.
-\subsection{Multi-class classification}
-When performing multi-class regression on a set of labels $\displaystyle \mathcal{Y} = \{1, \dots, K\}$, each class score can be computed independently using dedicated parameter vectors $\displaystyle \mathbf{\beta}_1, \dots, \mathbf{\beta}_K$. \newline
+\subsection{Multi-class logistic regression}
+When performing multi-class logistic regression on a set of labels $\displaystyle \mathcal{Y} = \{1, \dots, K\}$, each class score can be computed independently using dedicated parameter vectors $\displaystyle \mathbf{\beta}_1, \dots, \mathbf{\beta}_K$. \newline
 Under this setting, the sigmoid function can be generalized using the softmax function, which is defined as
 \[p_{\mathbf{\beta}}(y = j|\mathbf{x}) = \frac{e^{\mathbf{\beta}_j^T\mathbf{x}}}{\sum_{k = 1}^K e^{\mathbf{\beta}_k^T\mathbf{x}}}\]
 Assuming that, for a dataset $\displaystyle \mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i = 1}^N$, each data point is drawn independent and identically distributed, its likelihood can be expressed as
@@ -687,12 +724,18 @@ However, this metric tends to be misleading when dealing with imbalanced dataset
 The sensitivity of a classification model denotes the proportion of true positives among all ground-truth positive examples, meaning that
 \[Recall = \frac{TP}{TP + FN}\]
 This metric is useful to monitor a model whenever a false negative is not an acceptable result.
+\begin{examplebox}[Medical screening models]
+    For a medical screening model, not detecting a sick subject is much worse than having a healthy person undergo additional screenings.
+\end{examplebox}
 \subsection{The specificity of a classification model}
 The specificity of a classification model denotes the proportion of true negatives among all ground-truth negative examples, meaning that
 \[Specificity = \frac{TN}{TN + FP}\]
-Alternatively, it is possible to define the precision of a classification model as the proportion of true positives among all positive predictions, meaning that
+This metric is useful to monitor a model whenever a false positive is not an acceptable result.
+\begin{examplebox}[Spam filtering models]
+    For a spam filtering model, not blocking a few spam messages is far more acceptable than wrongly marking an important message as spam.
+\end{examplebox}
+\noindent Alternatively, it is possible to define the precision of a classification model as the proportion of true positives among all positive predictions, meaning that
 \[Recall = \frac{TP}{TP + FP}\]
-Both metrics are useful to monitor a model whenever a false positive is not an acceptable result.
 \subsection{The F1 score of a classification model}
 The F1 score of a classification model acts as a harmonic mean between its precision and recall, meaning that it is defined as
 \[F1 = 2 \cdot \frac{Precision \cdot Recall}{Precision + Recall}\]
@@ -712,7 +755,7 @@ Assuming $\displaystyle k$ different datasets are drawn from the same underlying
         \caption{Results of using different models for fitting the same data.}
         \label{fig:bias_variance}
     \end{figure}
-    \noindent The first model appears to underfit the data as each fit is identical and far from the true function, whereas the second model seems to overfit the data as the fits are very differents but their average is close to the true function. \newline
+    \noindent The first model appears to underfit the data as each fit is identical and far from the true function, whereas the second model seems to overfit the data as the fits are very different but their average is close to the true function. \newline
     By contrast, fitting the data using a linear function yields the best results as the fits are quite similar and their average does resemble the true function.
 \end{examplebox}
 \noindent For a linear model, the expected mean squared error can be decomposed into bias-variance terms and an ``irreducible'' error that comes from the data generation process, resulting in
