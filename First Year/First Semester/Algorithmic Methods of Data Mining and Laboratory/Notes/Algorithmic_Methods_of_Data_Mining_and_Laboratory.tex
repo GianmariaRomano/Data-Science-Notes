@@ -221,8 +221,8 @@ An algorithm can be seen as a set of instructions to solve a given problem. \new
 In particular, an algorithm is evaluated based on its correctness, which determines whether the algorithm works on every possible input or not, and its efficiency, which measures the time taken by the algorithm to find a solution to the given problem.
 \begin{examplebox}[The maximum value of an array]
     Consider an algorithm that finds the maximum value in an array of $\displaystyle n$ elements:
+    \RestyleAlgo{plain}
     \begin{algorithm}[H]
-        \caption{Finding the Maximum Value in an Array.}
         \KwData{An array $\displaystyle A$ of size $\displaystyle n$}
         \KwResult{$\displaystyle \max(A)$}
     
@@ -261,10 +261,10 @@ Since algorithm efficiency often depends on the code or machine that is used, it
     \item \textbf{Tight bound: }$\displaystyle T(n) = \Theta(g(n))$ if it possible to find $\displaystyle c_1, c_2 > 0$ and $\displaystyle n \ge n_0$ such that
     \[0 \leq c_1 \cdot g(n) \leq T(n) \leq c_2 \cdot g(n) \text{ } \forall n \ge n_0\]
 \end{itemize}
-\begin{examplebox}[The prefix sum problem] % DA FINIRE
+\begin{examplebox}[The prefix sum problem]
     The following algorithm computes the prefix sum for an array of $\displaystyle n$ elements:
+    \RestyleAlgo{plain}
     \begin{algorithm}[H]
-        \caption{Computing the Prefix Sum of an Array.}
         \KwData{An array $\displaystyle A$ of size $\displaystyle n$}
         \KwResult{An array $\displaystyle S$ of size $\displaystyle n$ such that $S[i] = \sum_{k = 1}^i A[k]$}
     
@@ -280,8 +280,8 @@ Since algorithm efficiency often depends on the code or machine that is used, it
     \noindent Since this solution computes $\displaystyle i \leq n$ operations at each iteration, its running time can be bounded as $\displaystyle T(n) = n^2 + 3n + 2 = O(n^2)$. \newline
     However, since $\displaystyle T(n) = \Omega(n)$, there is a gap between the lower and upper running time bounds, requiring further investigation to find a better or tighter bound. \newline
     For this reason, one can opt for an alternative algorithm that re-uses a previously computed prefix $\displaystyle S[i - 1]$ to compute $\displaystyle S[i]$ in constant time.
+    \RestyleAlgo{plain}
     \begin{algorithm}[H]
-        \caption{Alternative Algorithm for the Prefix Sum of an Array.}
         \KwData{An array $\displaystyle A$ of size $\displaystyle n$}
         \KwResult{An array $\displaystyle S$ of size $\displaystyle n$ such that $S[i] = \sum_{k = 1}^i A[k]$}
     
@@ -304,8 +304,8 @@ The gap problem is a situation in which the lower and upper running time bounds 
 In some cases, it is possible to solve a problem using a recursive algorithm, which makes use of a function that (cyclically) calls itself to solve smaller pieces of a complex problem.
 \begin{examplebox}[The Fibonacci sequence]
     It is possible to compute a generic term of the Fibonacci sequence using a recursive algorithm.
+    \RestyleAlgo{plain}
     \begin{algorithm}[H]
-        \caption{Recursive Fibonacci.}
         \KwData{A non-negative integer $\displaystyle n$}
         \KwResult{The $\displaystyle n^{th}$ element of the Fibonacci sequence}
         
@@ -329,8 +329,8 @@ In some cases, it is possible to solve a problem using a recursive algorithm, wh
             &\ge 2^{\frac{n}{2}}T\bigg(n - 2\bigg(\frac{n}{2}\bigg)\bigg) = 2^{\frac{n}{2}}T(0) = 2^{\frac{n}{2} + 1} = O(2^{\frac{n}{2}})
     \end{align*}
     Since the recursive solution runs in exponential time, it can be more convenient to opt for a trivial constant-time algorithm based on Binet's formula or for a linear-time iterative algorithm.
+    \RestyleAlgo{plain}
     \begin{algorithm}[H]
-        \caption{Iterative Fibonacci.}
         \KwData{A non-negative integer $\displaystyle n$}
         \KwResult{The $\displaystyle n^{th}$ element of the Fibonacci sequence}
         
@@ -429,6 +429,13 @@ When working with set data, the Jaccard index can be used to measure the similar
 \[s(A, B) = \frac{|A \cap B|}{|A \cup B|}\]
 In particular, the Jaccard index can be expressed as a distance by setting
 \[d(A, B) = 1 - s(A, B) = 1 - \frac{|A \cap B|}{|A \cup B|} = \frac{|A \cup B| - |A \cap B|}{|A \cup B|} = \frac{|A| + |B| - 2|A \cap B|}{|A \cup B|}\]
+\subsection{The cosine similarity}
+If $\displaystyle \mathcal{U} = \mathbb{R}^m$, the cosine similarity measures how similar the directions of two vectors are in terms of the angle between them. \newline
+Using the dot product, this metric can be formulated a
+\[\mathbf{x} \cdot \mathbf{y} = \lVert \mathbf{x} \rVert_2 \lVert \mathbf{y} \rVert_2 \cos(\theta) 
+\quad \implies \quad 
+\cos(\theta) = \frac{\mathbf{x} \cdot \mathbf{y}}{\lVert \mathbf{x} \rVert_2 \lVert \mathbf{y} \rVert_2} = \frac{\sum_{i = 1}^m x_i y_i}{\sqrt{\sum_{j = 1}^m x_j^2}\sqrt{\sum_{j = 1}^m y_j^2}}\]
+Therefore, this similarity will be maximum when the two vectors are parallel, meaning that they point towards the same direction, and minimum when the two vectors are anti-parallel, meaning that they point towards different directions.
 
 \chapter{Text mining}
 \section{Handling text data}
@@ -442,6 +449,59 @@ However, before creating the vector, the extracted raw text first undergoes a pr
 \end{enumerate}
 For this reason, text mining is often performed using the tools provided by the \texttt{nltk} library.
 \section{The search engine problem}
-Given a corpus of $\displaystyle n$ documents $\displaystyle \mathcal{C} = \{D_i\}_{i = 1}^n$ and a query $\displaystyle q$, a search engine aims to find the top $\displaystyle k$ related documents in the corpus.
+Given a corpus of $\displaystyle n$ pre-processed documents $\displaystyle \mathcal{C} = \{D^i\}_{i = 1}^n$ and a query $\displaystyle \mathcal{Q}$, a search engine aims to find the $\displaystyle k$ documents in the corpus that are closest to the query. \newline
+This problem can be interpreted as a ``nearest neighbours'' problem, which measures relevance in terms of geometric proximity, or as a ``Boolean algorithm'', which evaluates queries using dedicated data structures.
+\subsection{The nearest neighbours formulation}
+Using the ``vector space'' model, which treats each document $\displaystyle D^i \in \mathcal{C}$ as a text vector $\displaystyle \mathbf{d}^i \in \mathbb{R}^m$ within a vocabulary of terms, the search engine problem can be solved as a nearest neighbours problem. \newline
+However, checking document relevance using the Euclidean distance tends to yield misleading results because the algorithm ignores document sizes and term relevance.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/documents_vector_space.png}
+    \caption{The search engine problem as a nearest neighbours problem in $\displaystyle \mathbb{R}^2$.}
+    \label{fig:documents_vector_space}
+\end{figure}
+\noindent Concerning the first issue, one can prioritize vector directions and model proximity between two documents $\displaystyle D^i, D^j \in \mathcal{C}$ by measuring the cosine similarity between their text vectors, meaning that
+\[s(D^i, D^j) = \cos(\theta) = \frac{\mathbf{d}^i \cdot \mathbf{d}^j}{\lVert \mathbf{d}^i \rVert_2\lVert \mathbf{d}^j \rVert_2}\]
+The second problem can instead be addressed using the ``TF-IDF'' representation: rather than viewing each text vector as a collection of raw frequencies $\displaystyle TF_j^i$, which simply measure the occurrence of term $\displaystyle j$ in document $\displaystyle D^i$, it is possible to introduce a sequence of non-negative weights $\displaystyle w_1, \dots, w_m$ such that a text vector can be formulated as
+\[\mathbf{d}_j^i = TF_j^iw_j = TF_j^i\log\Bigg(\frac{n}{n_j}\Bigg) \text{, where $n_j = |\{i: \mathbf{d}_j^i > 0\}|$.}\]
+Knowing that a query $\displaystyle \mathcal{Q}$ can be treated as a text vector $\displaystyle \mathbf{q}$, it is possible to formulate the nearest neighbours problem using the following algorithm:
+
+\begin{algorithm}[H]
+    \caption{The search engine problem as a nearest neighbours problem.}
+    \KwData{A corpus $\displaystyle \mathcal{C} = \{\mathbf{d}^i\}_{i = 1}^n$, a query vector $\displaystyle \mathbf{q}$ and an integer $\displaystyle k \in \mathbb{N}$.}
+    \KwResult{The $\displaystyle k$ closes documents to $\displaystyle \mathbf{q}$.}
+
+    $scores \gets [] * n$\;
+    \For{$i \gets 1$ \KwTo $n$}{
+        $scores[i] \gets \cos(\mathbf{q}, \mathbf{d}^i)$\;
+    }
+    $scores \gets sort(scores)$\;
+    \Return{the indices of the $k$ closest documents}\;
+\end{algorithm}
+\noindent While this approach is correct and easy to implement, its running time of $\displaystyle O(nm)$ makes it very inefficient for real-life search engines.
+\subsection{The Boolean algorithm}
+An alternative formulation of the search engine problem consists of finding the documents in the corpus that contain all the terms in the query vector.
+
+\begin{algorithm}[H]
+    \caption{The search engine problem as a Boolean algorithm.}
+    \KwData{A corpus $\displaystyle \mathcal{C} = \{\mathbf{d}^i\}_{i = 1}^n$, a query vector $\displaystyle \mathbf{q}$ and an integer $\displaystyle k \in \mathbb{N}$.}
+    \KwResult{The $\displaystyle k$ closes documents to $\displaystyle \mathbf{q}$.}
+
+    $results \gets \{\}$\;
+    \For{$i \gets 1$ \KwTo $n$}{
+        \If{$\mathbf{d}^i$ contains all terms of $\mathbf{q}$}{
+            $results \gets Results \cup \{i\}$\;
+        }
+    }
+    \Return{$results$}\;
+\end{algorithm}
+\noindent While this approach has a similar complexity to the nearest neighbours formulation, its efficiency can be improved by introducing an ``inverted index'' data structure that, for each term in the vocabulary, stores a posting list containing all the documents that contain that term.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/invertex_index.png}
+    \caption{The ``inverted index'' data structure.}
+    \label{fig:inverted_index}
+\end{figure}
+\noindent In fact, using this data structure allows to reduce the complexity of a query to the order of the sum of the lengths of the matching posting lists.
 
 \end{document}
