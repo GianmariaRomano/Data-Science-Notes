@@ -750,9 +750,9 @@ Alternatively, it is possible to state that two random variables $\displaystyle 
 \section{Fully continuous random vectors}
 A random vector is said to be ``fully continuous'' if all its components are continuous random variables. \newline
 For a bivariate distribution, the behaviour of a random vector $\displaystyle \mathbf{Z}$ is described using a joint probability density function such that
-\[\mathbb{P}((X, Y) \in A) = \int_A f_{X, Y}(x, y) \ dxdy \text{ } \forall A \subseteq S_X \times S_Y\]
+\[\mathbb{P}((X, Y) \in A) = \int\int_A f_{X, Y}(x, y) \ dxdy \text{ } \forall A \subseteq S_X \times S_Y\]
 In practice, a joint probability density function is typically constructed by normalizing a non-negative ``kernel'' function $\displaystyle g(x, y)$, resulting in
-\[f_{X, Y}(x, y) = \frac{g(x, y)}{c} \text{, with } c = \int_{\mathbb{R}^2} g(x, y) \ dxdy < +\infty\]
+\[f_{X, Y}(x, y) = \frac{g(x, y)}{c} \text{, with } c = \int\int_{\mathbb{R}^2} g(x, y) \ dxdy < +\infty\]
 Starting from the joint distribution, it is possible to retrieve the marginal distribution of a single variable by computing
 \begin{align*}
     f_X(x) &= \int_{S_Y} f_{X, Y}(x, y) \ dy \\
@@ -835,12 +835,18 @@ In this case, it is possible to retrieve the marginal cumulative distribution fu
 Furthermore, whenever two random variables $\displaystyle X$ and $\displaystyle Y$ are independent, it is the case that
 \[F_{X, Y}(x, y) = F_X(x)F_Y(y) \text{ } \forall (x, y) \in \mathbb{R}^2\]
 \subsection{Building independent and identically distributed random samples}
-A random sample $\displaystyle \mathcal{D}_n = \{X_1, \dots, X_n\}$ is said to be ``independent and identically distributed'' if all the sampled random variables are independent and come from the same population model $\displaystyle F_X$, allowing to define their joint distribution as
+A random sample $\displaystyle \mathcal{D}_n = \{X_1, \dots, X_n\}$ is said to be ``independent and identically distributed'' if all the sampled random variables are independent and come from the same population model $\displaystyle F_X$, allowing to define their joint distribution using the likelihood function, resulting in
 \[\mathbb{P}(\mathcal{D}_n) = F(x_1, \dots, x_n) = \mathbb{P}(X_1 \leq x_1, \dots, X_n \leq x_n) = \prod_{i = 1}^n \mathbb{P}(X_i \leq x_i) = \prod_{i = 1}^n F(x_i)\]
-\begin{examplebox}[Maximum likelihood estimation]
-    Consider a machine learning model that aims to learn an unknown population model $\displaystyle F_X$ from a random sample $\displaystyle \mathcal{D}_n$: using the likelihood function leads the model to learn the empirical cumulative distribution function associated to a distribution that places the same mass to each data point, meaning that
-    \[\hat{F} = \arg\max_{F_X \text{ CDF}} L(F_X) = \arg\max_{F_X \text{ CDF}} \prod_{i = 1}^n F_X(x_i)\]
+\begin{examplebox}[Maximum likelihood estimation on a Gaussian mixture model]
+    Suppose that the data points of a random sample $\displaystyle \mathcal{D}$ are drawn independent are identically distributed from a $\displaystyle K$-mode ``mixture of Gaussians'' distribution, meaning that
+    \[\mathbb{P}(x_i) = \sum_{j = 1}^K \pi_j \cdot \mathcal{N}(x_i|, \mu_j, \sigma_j^2) \text{ } \forall x_i \in \mathcal{D}\]
+    Under the assumption of independence, the joint probability of the random sample can be expressed using the likelihood function, resulting in
+    \[\mathbb{P}(\mathcal{D}_n) = \mathbb{P}(x_1, \dots, x_n) = \prod_{i = 1}^n \mathbb{P}(x_i) = \prod_{i = 1}^n\Bigg(\sum_{j = 1}^K \pi_j \cdot \mathcal{N}(x_i|\mu_j, \sigma_j^2)\Bigg)\]
+    If the parameters $\displaystyle \mathbf{\Theta} = \{(\pi_j, \mu_j, \sigma_j^2)\}_{j = 1}^K$ are unknown, one can learn the optimal parameters by performing maximum likelihood estimation:
+    \[\hat{\mathbf{\Theta}} = \arg\max_{\mathbf{\Theta}} L(\mathbf{\Theta}) = \arg\max_{\mathbf{\Theta}} \mathbb{P}(\mathcal{D}_n)\]
+    Overall, a machine learning model would need to learn $\displaystyle (3K - 1)$ parameters, although the number of modes is often counted as an additional parameter, but some solutions can cause the model to reach infinite likelihood.
 \end{examplebox}
+\noindent In some cases, however, it can be more convenient to express the likelihood function using a probability density function and a penalty or constraint on the data.
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
@@ -935,6 +941,110 @@ However, if the function $\displaystyle r(x)$ is known to be invertible in $\dis
     This means that, on the support $\displaystyle S_Y = \{x^2 : x \in S_X\} = [0, 1]$, the probability density function of $\displaystyle Y$ will be given by
     \[f_Y(y) = F_y'(y) = \frac{1}{2\sqrt{y}}\mathbb{I}_{(0, 1]}(y)\]
 \end{examplebox}
+\noindent This concept can be generalized to create transformations of random vectors. \newline
+For a couple of random variables $\displaystyle X$ and $\displaystyle Y$ with joint probability density function $\displaystyle f_{X, Y}(x, y)$, it is possible to study the many-to-one (deterministic) transformation $\displaystyle Z = r(X, Y)$ by defining the set $\displaystyle A_z = \{(x, y) \in S_X \times S_Y: r(x, y) \leq z\}$ and using it to compute
+\begin{align*}
+    F_Z(z) &= \mathbb{P}(Z \leq z) = \mathbb{P}(r(X, Y) \leq z) = \mathbb{P}(\{(x, y) \in S_X \times S_Y: r(x, y) \leq z\}) = \int\int_{A_z} f_{X, Y}(x, y) \ dxdy \\
+    f_Z(z) &= F_Z'(z)
+\end{align*}
+This strategy can be extended to certain many-to-many (deterministic) transformations as well. \newline
+From a broader perspective, let $\displaystyle \mathbf{r}: \mathbb{R}^p \to \mathbb{R}^q$ be a differentiable vector field such that each component $\displaystyle r_1, \dots, r_q$ is a function $\displaystyle r_i: \mathbb{R}^p \to \mathbb{R}$: the Jacobian matrix $\displaystyle \nabla_{\mathbf{r}}$ is a $\displaystyle (q \times p)$ matrix that contains all the partial derivatives of $\displaystyle \mathbf{r}$, meaning that
+\[\nabla_{\mathbf{r}}[i, j] = \frac{\partial r_i}{\partial x_j} \text{ } \forall (i, j) \in \{1, \dots, q\} \times \{1, \dots, p\}\]
+Therefore, given two open sets $\displaystyle A, B \subseteq \mathbb{R}^p$, consider a random vector $\displaystyle \mathbf{X}$ that, on the set $\displaystyle A$, has joint probability density function $\displaystyle f_{\mathbf{X}}(\mathbf{x})$ and define $\displaystyle \mathbf{r}: A \to B$ as a (deterministic) bijective and differentiable vector field with continuous partial derivatives: the random vector $\displaystyle \mathbf{Y} = \mathbf{r}(\mathbf{X})$ can be studied by inverting its defining system of equations and considering
+\begin{align*}
+    \mathbf{y} &= \mathbf{r}(\mathbf{x}) \Leftrightarrow \begin{cases}
+        y_1 = r_1(\mathbf{x}) \\
+        y_2 = r_2(\mathbf{x}) \\
+        \vdots \\
+        y_p = r_p(\mathbf{x}) \\
+    \end{cases} \to \begin{cases}
+        x_1 = s_1(\mathbf{y}) \\
+        x_2 = s_2(\mathbf{y}) \\
+        \vdots \\
+        x_p = s_p(\mathbf{y}) \\
+    \end{cases} \Leftrightarrow \mathbf{x} = \mathbf{s}(\mathbf{y}) \\
+    f_{\mathbf{Y}}(\mathbf{y}) &= f_{\mathbf{X}}(\mathbf{s}(\mathbf{y})) \cdot |det(\nabla_{\mathbf{s}}(\mathbf{y}))| \cdot \mathbb{I}_B(\mathbf{y})
+\end{align*}
+\begin{examplebox}[Creating a $\displaystyle t$ distribution using a deterministic transformation]
+    Consider two independent random variables $\displaystyle Z \sim \mathcal{N}(0, 1)$ and $\displaystyle W \sim \chi^2_{\nu}$: it is possible to show that
+    \[T_{\nu} = \frac{Z}{\sqrt{\frac{W}{\nu}}} \sim t_{\nu} \Rightarrow f_T(t) \propto \Bigg(1 + \frac{t^2}{\nu}\Bigg)^{-\frac{\nu + 1}{2}}\]
+    Since a many-to-one transformation is not bijective, it is possible to introduce a new variable $\displaystyle X \sim \chi^2_{\nu}$ so that $\displaystyle f_{T_\nu}(t)$ can be retrieved from the joint probability density function $\displaystyle f_{T_{\nu}, X}(t, x)$. \newline
+    For this reason, define the following many-to-many transformation:
+    \[\begin{pmatrix}
+        T_{\nu} \\
+        X \\
+    \end{pmatrix} = \mathbf{r}(Z, W) = \begin{pmatrix}
+        \frac{Z}{\sqrt{\frac{W}{\nu}}} \\
+        W \\
+    \end{pmatrix} \Leftrightarrow \begin{pmatrix}
+        Z \\
+        W \\
+    \end{pmatrix} = \mathbf{s}(T_{\nu}, X) = \begin{pmatrix}
+        T_{\nu}\sqrt{\frac{X}{\nu}} \\
+        X \\
+    \end{pmatrix}\]
+    Its Jacobian matrix will be given by
+    \[\nabla_{\mathbf{s}} = \begin{pmatrix}
+        \frac{\partial s_1}{\partial t} & \frac{\partial s_1}{\partial x} \\
+        \frac{\partial s_2}{\partial t} & \frac{\partial s_2}{\partial x} \\
+    \end{pmatrix} = \begin{pmatrix}
+        \sqrt{\frac{x}{\nu}} & \frac{t}{2\sqrt{\nu x}} \\
+        0 & 1 \\
+    \end{pmatrix} \Rightarrow |det(\nabla_{\mathbf{s}})| = \sqrt{\frac{x}{\nu}}\]
+    Therefore, it is possible to find the joint probability density function of $\displaystyle T_{\nu}$ and $\displaystyle X$ by computing
+    \begin{align*}
+        f_{T_{\nu}, X}(t, x)
+            &= f_{Z, W}(\mathbf{s}(t, x)) \cdot |det(\nabla_{\mathbf{s}})| \stackrel{Z \bot W}{=} f_Z\Bigg(t\sqrt{\frac{x}{\nu}}\Bigg)f_W(x) \cdot \sqrt{\frac{x}{\nu}} \\
+            &\propto e^{-\frac{1}{2}(t^2\frac{x}{\nu})}x^{\frac{\nu}{2} - 1}e^{-\frac{\nu}{2}}\sqrt{\frac{x}{\nu}} = e^{-\frac{1}{2}x(1 + \frac{t^2}{\nu})}x^{\frac{\nu + 1}{2} - 1}
+    \end{align*}
+    The marginal distribution of $\displaystyle T_{\nu}$ will ultimately be given by
+    \begin{align*}
+        f_{T_\nu}(t) &= \int_0^{+\infty} f_{T_{\nu}, X}(t, x) \ dx \propto \int_0^{+\infty} x^{\frac{\nu + 1}{2} - 1}e^{-\frac{1}{2}(1 + \frac{t^2}{\nu})x} \ dx \xrightarrow[\text{Gamma integral}]{u = \frac{1}{2}(1 + \frac{t^2}{\nu})} \\
+        f_{T_{\nu}}(t) &\propto \frac{\Gamma(\frac{\nu + 1}{2})}{(1 + \frac{t^2}{\nu})^{\frac{\nu + 1}{2}}} \propto \Bigg(1 + \frac{t^2}{\nu}\Bigg)^{-\frac{\nu + 1}{2}}
+    \end{align*}
+\end{examplebox}
+\noindent For instance, the Box-Muller transform is a commonly used many-to-many transformation that allows to convert pairs of uniformly distributed samples starting from two independent random variables $\displaystyle X, Y \sim \mathcal{N}(0, 1)$ whose joint probability function is
+\[f_{X, Y}(x, y) = \frac{1}{2\pi}e^{-\frac{x^2 + y^2}{2}}\]
+In particular, it is possible to simplify $\displaystyle f_{X, Y}(x, y)$ through an inverse transformation based on polar coordinates:
+\[\begin{pmatrix}
+    X \\
+    Y \\
+\end{pmatrix} = \mathbf{s}(R, \Theta) = \begin{pmatrix}
+    R\cos(\Theta) \\
+    R\sin(\Theta) \\
+\end{pmatrix} \Leftrightarrow \begin{pmatrix}
+    R \\
+    \Theta \\
+\end{pmatrix} = \mathbf{r}(X, Y) = \begin{pmatrix}
+    \sqrt{X^2 + Y^2} \\
+    atan2(Y, X) \\
+\end{pmatrix}\]
+In fact, this transformation is invertible in the open set $\displaystyle \mathcal{D} = (0, +\infty) \times (0, 2\pi)$, where the Jacobian matrix is given by
+\[\nabla_{\mathbf{s}} = \begin{pmatrix}
+    \frac{\partial s_1}{\partial r} & \frac{\partial s_1}{\partial \theta} \\
+    \frac{\partial s_2}{\partial r} & \frac{\partial s_2}{\partial \theta} \\
+\end{pmatrix} = \begin{pmatrix}
+    \cos(\theta) & -r\sin(\theta) \\
+    \sin(\theta) & r\cos(\theta) \\
+\end{pmatrix} \Rightarrow |det(\nabla_{\mathbf{s}})| = r\]
+Therefore, it is possible to reformulate the joint probability density function by considering
+\begin{align*}
+    f_{R, \Theta}(r, \theta) = f_{X, Y}(\mathbf{s}(r, \theta)) \cdot |det(\nabla_{\mathbf{s}})| \cdot \mathbb{I}_{\mathcal{D}}
+        &= \frac{1}{2}re^{-\frac{1}{2}r^2}\mathbb{I}_{(0, +\infty) \times (0, 2\pi)}(r, \theta) \\
+        &= \Bigg(re^{-\frac{1}{2}r^2}\mathbb{I}_{\mathbb{R}^+}(r)\Bigg)\Bigg(\frac{1}{2\pi}\mathbb{I}_{(0, 2\pi)}(\theta)\Bigg) = f_R(r)f_{\Theta}(\theta)
+\end{align*}
+Knowing that $\displaystyle f_{\Theta}(\theta)$ allows to draw samples from a $\displaystyle Unif(0, 2\pi)$ distribution, it is possible to construct samples from $\displaystyle f_R(r)$ using the quantile transform method. \newline
+The first step consists of retrieving the cumulative distribution function of $\displaystyle R$:
+\[F_R(r) = \mathbb{P}(R \leq r) = \int_0^r f_R(t) \ dt = \int_0^r te^{-\frac{1}{2}t^2} \ dt = -e^{-\frac{t^2}{2}}\Bigg|_0^r = \Bigg(1 - e^{-\frac{1}{2}r^2}\Bigg)\mathbb{I}_{\mathbb{R}^+}(r)\]
+Since $\displaystyle F_R(r)$ is an invertible function in $\displaystyle \mathbb{R}^+$, its quantile function can be computed directly as
+\[p = F_R(r) = 1 - e^{-\frac{1}{2}r^2} \Leftrightarrow r = \sqrt{-2\log(1 - p)} = \mathbb{Q}(p)\]
+Therefore, it is possible to draw samples from $\displaystyle R = \mathbb{Q}(U) = \sqrt{-2\log(U)}$, where $\displaystyle U \sim Unif(0, 1)$ and, consequently, $\displaystyle (1 - U) \sim Unif(0, 1)$ as well.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/box_muller_plots.png}
+    \caption{Visualization of the Box-Muller transform.}
+    \label{fig:box_muller}
+\end{figure}
 
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}
