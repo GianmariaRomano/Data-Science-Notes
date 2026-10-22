@@ -434,7 +434,7 @@ If $\displaystyle \mathcal{U} = \mathbb{R}^m$, the cosine similarity measures ho
 Using the dot product, this metric can be formulated a
 \[\mathbf{x} \cdot \mathbf{y} = \lVert \mathbf{x} \rVert_2 \lVert \mathbf{y} \rVert_2 \cos(\theta) 
 \quad \implies \quad 
-\cos(\theta) = \frac{\mathbf{x} \cdot \mathbf{y}}{\lVert \mathbf{x} \rVert_2 \lVert \mathbf{y} \rVert_2} = \frac{\sum_{i = 1}^m x_i y_i}{\sqrt{\sum_{j = 1}^m x_j^2}\sqrt{\sum_{j = 1}^m y_j^2}}\]
+\cos(\theta) = \frac{\mathbf{x} \cdot \mathbf{y}}{\lVert \mathbf{x} \rVert_2 \lVert \mathbf{y} \rVert_2} = \frac{\sum_{i = 1}^m \mathbf{x}_i\mathbf{y}_i}{\sqrt{\sum_{j = 1}^m \mathbf{x}_j^2}\sqrt{\sum_{j = 1}^m \mathbf{y}_j^2}}\]
 Therefore, this similarity will be maximum when the two vectors are parallel, meaning that they point towards the same direction, and minimum when the two vectors are anti-parallel, meaning that they point towards different directions.
 
 \chapter{Text mining}
@@ -502,6 +502,9 @@ An alternative formulation of the search engine problem consists of finding the 
     \caption{The ``inverted index'' data structure.}
     \label{fig:inverted_index}
 \end{figure}
-\noindent In fact, using this data structure allows to reduce the complexity of a query to the order of the sum of the lengths of the matching posting lists.
+\noindent In fact, using inverted indexing allows to reduce the complexity of a query to the order of the sum of the lengths of the matching posting lists. \newline
+In particular, since this data structure can handle any Boolean query, it can be used to optimize the nearest neighbours formulation as well, focusing exclusively on the documents that share at least one term with the query and for which $\displaystyle \cos(\mathbf{q}, \mathbf{d}^i) > 0$. \newline
+Therefore, for each term in the query, the posting list now stores both the matching documents and the corresponding weighted frequency scores so that, since the length of the query does not influence the final scores, it is sufficient to compute
+\[\cos(\theta) \propto \frac{\mathbf{q} \cdot \mathbf{d}^i}{\lVert \mathbf{d}^i \rVert_2} = \frac{\sum_{j = 1}^m \mathbf{q}_j \cdot (TF_j^iw_j)}{\sqrt{\sum_{j = 1}^m TF_j^iw_j}} \text{, where $\mathbf{d}^i$ can be stored in a dedicated file.}\]
 
 \end{document}

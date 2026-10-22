@@ -853,7 +853,7 @@ A network can be represented using an edge list in which each tuple represents a
     g_py = ig.Graph.DataFrame(edge_list_py, directed=False)
 \end{lstlisting}
 \subsection{Visualizing a network using an adjacency matrix}
-It is possible to represent the connections in a network using an adjacency matrix in which $\displaystyle A_{i, j} = 1$ if and only if $\displaystyle (i, j) \in E$ and $\displaystyle A_{ii} = 0 \text{ } \forall i$.
+It is possible to represent the connections in a network using an adjacency matrix in which $\displaystyle A_{ij} = 1$ if and only if $\displaystyle (i, j) \in E$ and $\displaystyle A_{ii} = 0 \text{ } \forall i$.
 \begin{lstlisting}[
   language=Python,
   captionpos=b,
@@ -967,6 +967,47 @@ Since this distribution is typically discrete, it can be defined using raw frequ
     \caption{CDF and CCDF for the degree distribution of the ``Zachary Karate Club'' network.}
     \label{fig:graph_cdf}
 \end{figure}
-\noindent In fact, using the (complementary) cumulative distribution function reveals that many real-world networks follow a power law distribution.
+\noindent In fact, using the (complementary) cumulative distribution function reveals that the (discrete) degree distribution of many real-world networks can be approximated using a continuous power law distribution that, for a constant $\displaystyle C$ and an exponent $\displaystyle \gamma > 0$, is defined as $\displaystyle p(x) = Cx^{-\gamma}\mathbb{I}_{\mathbb{R}^+}(x)$. \newline
+Since the power law distribution belongs to the family of heavy-tailed distributions, its (sample) mean is often a non-representative value for the typical behaviour of the distribution. \newline
+In a more general sense, if a power law is defined over the interval $\displaystyle [x_{\min}, +\infty)$, its $\displaystyle m^{th}$ momentum is defined as
+\begin{align*}
+    \langle x^m \rangle
+        &= \int_{-\infty}^{+\infty} x^mp(x) \ dx \\
+        &= \int_{x_{\min}}^{+\infty} x^mCx^{-\gamma} \ dx = \int_{x_{\min}}^{+\infty} Cx^{m - \gamma} \ dx = \frac{C}{m  - \gamma + 1}x^{m - \gamma + 1}\Bigg|_{x_{\min}}^{+\infty} < +\infty \Leftrightarrow \gamma > m + 1
+\end{align*}
+In particular, one can estimate the exponent of a power law distribution by fitting a linear regression model to the logarithmically transformed distribution, having
+\[\log(p(x)) = \log(Cx^{-\gamma}) = \log(C) + \log(x^{-\gamma}) = \log(C) - \gamma\log(x)\]
+\section{Bipartite networks}
+A bipartite network consists of two distinct types of nodes, with edges connecting only nodes belonging to different groups.
+\begin{examplebox}[Using bipartite networks for recommendation systems]
+    A bipartite network showing the users that are subscribed to certain subreddits can be used to implement a collaborative-filtering-based recommendation system that suggests new content to users based on the preferences shown by similar users.
+\end{examplebox}
+\noindent Assuming the two node groups are represented using two disjoint sets $\displaystyle V_i$ and $\displaystyle V_j$, a bipartite network can be formally represented as an undirected graph $\displaystyle G = (V, E)$, with $\displaystyle V = V_i \cup V_j$ and $\displaystyle E \subseteq V_i \times V_j$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/bipartite_network.png}
+    \caption{Example of a bipartite graph with $\displaystyle |V_i| = 6$ and $\displaystyle |V_j| = 3$.}
+    \label{fig:bipartite_network}
+\end{figure}
+\noindent In particular, a bipartite network is typically represented using an biadjacency matrix $\displaystyle I$, which has size $\displaystyle |V_i| \times |V_j|$, such that $\displaystyle I_{ij} = 1$ if and only if $\displaystyle \{i, j\} \in E$.
+\subsection{The density of a bipartite network}
+Assuming bipartite networks are undirected, the constraint that edges can only connect nodes in different partitions requires formulating the density of a bipartite network $\displaystyle G = (V, E)$ as
+\[\delta = \frac{|E|}{|E_{\max}|} = \frac{|E|}{|V_i| \cdot |V_j|}\]
+\subsection{Performing one-mode projection on a bipartite network}
+While bipartite networks are useful to represent certain systems, they can also be used to build ``co-occurrence'' networks that contain only the nodes belonging to one of the two partitions. \newline
+This procedure, known as ``one-mode projection'', can be performed by computing either the matrix $\displaystyle A_i = II^T$, which represents the projection onto partition $\displaystyle V_i$, or the matrix $\displaystyle A_j = I^TI$, which represents the projection onto partition $\displaystyle V_j$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/one_mode_projection.png}
+    \caption{One-mode projections obtained from a bipartite network.}
+    \label{fig:one_mode_projection}
+\end{figure}
+\begin{examplebox}[Projecting onto users and subreddits]
+    Consider a bipartite network where the set $\displaystyle V_i$ represents Reddit users and the set $\displaystyle V_j$ represents popular subreddits: two users will be connected if they are both part of some subreddit, whereas two subreddits will be connected if they share at least one subscriber.
+\end{examplebox}
+\noindent Generally speaking, performing one-mode projection on a bipartite network always returns an undirected graph, which, however, is not guaranteed to be simple or unweighted. \newline
+However, one can retrieve the corresponding adjacency matrix by simplifying the network and, if necessary, removing the weights obtained during the projection. \newline
+Overall, the main issue of one-mode projection lies in the fact that it becomes too computationally expensive on large networks. \newline
+For this reason, common optimization strategies include block-matrix multiplication, which consists of using matrix algebra con smaller sub-matrices for which the overall computational cost is acceptable, or the clique algorithm, which treats projection as a union of cliques formed by groups of nodes that share a common neighbour from the other partition.
 
 \end{document}

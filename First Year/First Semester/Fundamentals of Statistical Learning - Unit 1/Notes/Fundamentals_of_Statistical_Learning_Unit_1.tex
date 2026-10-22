@@ -1046,6 +1046,70 @@ Therefore, it is possible to draw samples from $\displaystyle R = \mathbb{Q}(U) 
     \label{fig:box_muller}
 \end{figure}
 
+\chapter{Graphical models}
+\section{The Markov assumption}
+Generally speaking, the joint distribution $\displaystyle p_{\mathbf{X}}(\mathbf{x})$ of a discrete random vector $\displaystyle \mathbf{x} \in \mathbb{R}^D$ can be described using the chain rule, resulting in
+\[p_{\mathbf{X}}(\mathbf{x}) = p_{X_1, \dots, X_D}(x_1, \dots, x_D) = \mathbb{P}(x_1)\mathbb{P}(x_2|x_1)\mathbb{P}(x_3|x_1, x_2)\dots\mathbb{P}(x_D|x_1, \dots, x_{D - 1})\]
+However, as the number of components in the random vector increases, modelling this distribution becomes computationally and statistically unviable. \newline
+In fact, assuming each variable in the random vector can take $\displaystyle J$ possible values, the conditional probability table that describes the factor $\displaystyle \mathbb{P}(x_d|x_1, \dots, x_{d - 1})$ requires $\displaystyle O(J^d)$ values, meaning that a total of $\displaystyle O(J^D)$ parameters would be needed to represent the full joint distribution. \newline
+However, it is possible to simplify this joint distribution by introducing some assumptions about the conditional independence of the random variables. \newline
+From a broader perspective, two random variables $\displaystyle X$ and $\displaystyle Y$ are said to be conditionally independent given the random variable $\displaystyle Z$ if and only if
+\[\mathbb{P}(X, Y|Z) = \mathbb{P}(X|Z)\mathbb{P}(Y|Z) \text{ or } \mathbb{P}(X|Y, Z) = \mathbb{P}(X|Z)\]
+This concept allows to formulate the first-order Markov assumption, which states that ``the future is independent of the past given the present'', as follows:
+\[p_{\mathbf{X}}(\mathbf{x}) = \mathbb{P}(x_1) \cdot \prod_{d = 2}^D \mathbb{P}(x_d|x_{d - 1})\]
+Overall, this formulation is computationally lighter, although it only works for one-dimensional data sequences, whereas higher-dimensional data sequences require more advanced tools, such as graphical models.
+\section{Formalizing (direct) graphical models}
+A graphical model allows to represent conditional independence assumptions using a graph $\displaystyle \mathcal{G} = (V, E)$ that is described by a node set $\displaystyle V$, which represents the components of a random vector, and an edge set $\displaystyle E$, which indicates the conditional independence relations.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/graphical_models.png}
+    \caption{Examples of directed and undirected graphical models.}
+    \label{fig:graphical_models}
+\end{figure}
+\noindent Most graphical models are based on direct acyclic graphs because they allow for a topological ordering, ensuring that all parent nodes come before their child nodes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/graph_terminology.png}
+    \caption{Graph terminology for directed graphical models.}
+    \label{fig:graph_terminology}
+\end{figure}
+\noindent In fact, for a directed graph $\displaystyle \mathcal{G} = (V, E)$, where $\displaystyle V = \{X_1, \dots, X_D\}$, the ordered Markov property denotes the assumption that ``each node in the graph depends only on its immediate parents'', which can be formulated as
+\[X_d \bot \mathbf{X}_{predecessors(d) \setminus parents(d)}|\mathbf{X}_{parents(d)} \text{ } \forall d \in \{1, \dots, D\}\]
+\begin{examplebox}[Factorizing a joint distribution using a graphical model]
+    For a random vector $\displaystyle \mathbf{X} = (X_1, X_2, X_3, X_4, X_5)$, consider the following direct acyclic graph:
+    
+    \begin{tikzpicture}[
+        ->, 
+        >=stealth, 
+        thick,
+        node distance=1.5cm, 
+        every node/.style={circle, draw, inner sep=2pt, minimum size=7mm}
+    ]
+        \node (X1) at (0, 1) {$X_1$};
+        \node (X2) at (1.8, 0) {$X_2$};
+        \node (X3) at (1.8, 2) {$X_3$};
+        \node (X4) at (3.6, 1) {$X_4$};
+        \node (X5) at (3.6, 3) {$X_5$};
+        \draw (X1) -- (X3);
+        \draw (X1) -- (X2);
+        \draw (X3) -- (X5);
+        \draw (X3) -- (X4);
+        \draw (X2) -- (X4);
+    \end{tikzpicture}
+    
+    \noindent Using the information provided by the graph, the joint distribution can be simplified to
+    \begin{align*}
+        p_{\mathbf{X}}(\mathbf{x})
+            &\stackrel{\text{Chain rule}}{=} \mathbb{P}(x_1)\mathbb{P}(x_2|x_1)\mathbb{P}(x_3|x_1, x_2)\mathbb{P}(x_4|x_1, x_2, x_3)\mathbb{P}(x_5|x_1, x_2, x_3, x_4) \\
+            &\stackrel{\text{DAG}}{=} \mathbb{P}(x_1)\mathbb{P}(x_2|x_1)\mathbb{P}(x_3|x_1)\mathbb{P}(x_4|x_2, x_3)\mathbb{P}(x_5|x_3)
+    \end{align*}
+\end{examplebox}
+\noindent In a more general sense, the ordered Markov property results in
+\[p_{\mathbf{X}}(\mathbf{x}|\mathcal{G}) = \prod_{d = 1}^D \mathbb{P}(x_d|\mathbf{x}_{parents(d)}) \text{, provided each assumption is correct and satisfied.}\]
+In particular, the set $\displaystyle \mathcal{M}(\mathcal{G})$ contains all the joint distributions $\displaystyle \mathbb{P}$ that, by satisfying the Markov property, are said to be ``Markov to $\displaystyle \mathcal{G}$''. \newline
+However, this set can also contain distributions that are ``not faithful to $\displaystyle \mathcal{G}$'', meaning that they define additional independence relations that are not captured by $\displaystyle \mathcal{G}$, requiring to consider
+\[\mathcal{M}(\mathcal{G}) = \{\mathbb{P} \text{ is a joint distribution over } \mathbf{X}: CI(\mathcal{G}) \subseteq CI(\mathbb{P})\}\]
+
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}
 Assuming a continuous random variable follows an unknown probability distribution, several strategies allow to learn this distribution starting from a data sample $\displaystyle \mathcal{D}_n = \{x_1, \dots, x_n\}$ and plotting its behaviour.
