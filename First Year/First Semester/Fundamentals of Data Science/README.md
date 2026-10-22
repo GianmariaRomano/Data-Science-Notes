@@ -38,6 +38,7 @@
 | October 15 | Network analysis and visualization. |
 | October 16 | Vectorized linear regression and polynomial regression. |
 | October 19 | Linear classification models. |
+| October 22 | Bipartite networks. |
 
 </details>
 
