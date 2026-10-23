@@ -34,6 +34,7 @@
 | October 16 | Common distributions: Poisson, Gaussian, Student, Laplace, Gamma, Beta. |
 | October 21 | Deterministic transformations of random vectors: Many-to-One, Many-to-Many, Box-Muller. |
 | October 22 | **Classwork 00** |
+| October 23 | Directed graphical models. |
 
 </details>
 
