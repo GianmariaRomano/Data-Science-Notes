@@ -39,6 +39,7 @@
 | October 16 | Vectorized linear regression and polynomial regression. |
 | October 19 | Linear classification models. |
 | October 22 | Bipartite networks. |
+| October 23 | **Introduction to the Kaggle Challenge** |
 
 </details>
 
