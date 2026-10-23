@@ -154,7 +154,7 @@ Probability is the field of mathematics that studies events and how likely they 
 Starting from a model's data generation process, probability aims to investigate the properties of the observed outcomes, whereas inference makes use of the observed outcomes to study the underlying data generation process.
 \begin{examplebox}[Diffusion models]
     Diffusion models are a type of generative model that create new data by gradually reversing a noising process. \newline
-    From a mathematical perspective, a diffusion model can be described using a Markovian Direct Acyclic Graph whose nodes represent the observable or latent variables involved in the process and whose edges denote the transition probabilities of the model.
+    From a mathematical perspective, a diffusion model can be described using a Markovian directed acyclic graph whose nodes represent the observable or latent variables involved in the process and whose edges denote the transition probabilities of the model.
 \end{examplebox}
 \section{Formalizing probability using set theory}
 It is possible to formalize probabilistic experiments using set theory. \newline
@@ -1058,7 +1058,7 @@ From a broader perspective, two random variables $\displaystyle X$ and $\display
 This concept allows to formulate the first-order Markov assumption, which states that ``the future is independent of the past given the present'', as follows:
 \[p_{\mathbf{X}}(\mathbf{x}) = \mathbb{P}(x_1) \cdot \prod_{d = 2}^D \mathbb{P}(x_d|x_{d - 1})\]
 Overall, this formulation is computationally lighter, although it only works for one-dimensional data sequences, whereas higher-dimensional data sequences require more advanced tools, such as graphical models.
-\section{Formalizing (direct) graphical models}
+\section{Formalizing (directed) graphical models}
 A graphical model allows to represent conditional independence assumptions using a graph $\displaystyle \mathcal{G} = (V, E)$ that is described by a node set $\displaystyle V$, which represents the components of a random vector, and an edge set $\displaystyle E$, which indicates the conditional independence relations.
 \begin{figure}[H]
     \centering
@@ -1066,7 +1066,7 @@ A graphical model allows to represent conditional independence assumptions using
     \caption{Examples of directed and undirected graphical models.}
     \label{fig:graphical_models}
 \end{figure}
-\noindent Most graphical models are based on direct acyclic graphs because they allow for a topological ordering, ensuring that all parent nodes come before their child nodes.
+\noindent Most graphical models are based on directed acyclic graphs because they allow for a topological ordering, ensuring that all parent nodes come before their child nodes.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{images/graph_terminology.png}
@@ -1076,7 +1076,7 @@ A graphical model allows to represent conditional independence assumptions using
 \noindent In fact, for a directed graph $\displaystyle \mathcal{G} = (V, E)$, where $\displaystyle V = \{X_1, \dots, X_D\}$, the ordered Markov property denotes the assumption that ``each node in the graph depends only on its immediate parents'', which can be formulated as
 \[X_d \bot \mathbf{X}_{predecessors(d) \setminus parents(d)}|\mathbf{X}_{parents(d)} \text{ } \forall d \in \{1, \dots, D\}\]
 \begin{examplebox}[Factorizing a joint distribution using a graphical model]
-    For a random vector $\displaystyle \mathbf{X} = (X_1, X_2, X_3, X_4, X_5)$, consider the following direct acyclic graph:
+    For a random vector $\displaystyle \mathbf{X} = (X_1, X_2, X_3, X_4, X_5)$, consider the following directed acyclic graph:
     
     \begin{tikzpicture}[
         ->, 
@@ -1109,6 +1109,118 @@ A graphical model allows to represent conditional independence assumptions using
 In particular, the set $\displaystyle \mathcal{M}(\mathcal{G})$ contains all the joint distributions $\displaystyle \mathbb{P}$ that, by satisfying the Markov property, are said to be ``Markov to $\displaystyle \mathcal{G}$''. \newline
 However, this set can also contain distributions that are ``not faithful to $\displaystyle \mathcal{G}$'', meaning that they define additional independence relations that are not captured by $\displaystyle \mathcal{G}$, requiring to consider
 \[\mathcal{M}(\mathcal{G}) = \{\mathbb{P} \text{ is a joint distribution over } \mathbf{X}: CI(\mathcal{G}) \subseteq CI(\mathbb{P})\}\]
+\begin{examplebox}[Hidden Markov models]
+    A first-degree Hidden Markov model is defined using a sequence of marginally dependent (discrete) random variables $\displaystyle X_1, \dots, X_D$ such that each variable $\displaystyle X_i$ is conditionally independent given the corresponding (discrete) latent variable $\displaystyle Y_i$.
+
+    \begin{tikzpicture}[
+        ->, 
+        >=stealth, 
+        thick,
+        latent/.style={circle, draw, thick, minimum size=8mm},
+        observed/.style={circle, draw, thick, fill=gray!40, minimum size=8mm}
+    ]
+        \node[latent] (Y1) at (0, 1.5) {$Y_1$};
+        \node[latent] (Y2) at (1.5, 1.5) {$Y_2$};
+        \node at (2.75, 1.5) {$\dots$};
+        \node[latent] (YD) at (4, 1.5) {$Y_D$};
+
+        \node[observed] (X1) at (0, 0) {$X_1$};
+        \node[observed] (X2) at (1.5, 0) {$X_2$};
+        \node at (2.75, 0) {$\dots$};
+        \node[observed] (XD) at (4, 0) {$X_D$};
+
+        \draw (Y1) -- (Y2);
+        \draw (Y2) -- (2.2, 1.5);
+        \draw (3.3, 1.5) -- (YD);
+
+        \draw (Y1) -- (X1);
+        \draw (Y2) -- (X2);
+        \draw (YD) -- (XD);
+    \end{tikzpicture}
+
+    \noindent Looking at the structure of its graph, the joint probability distribution of a Hidden Markov model can be expressed as
+    \[p_{\mathbf{X}, \mathbf{Y}}(\mathbf{x}, \mathbf{y}) = \mathbb{P}(y_1)\Bigg[\prod_{d = 1}^D \mathbb{P}(x_d|y_d)\Bigg]\Bigg[\prod_{t = 2}^D \mathbb{P}(y_t|y_{t - 1})\Bigg]\]
+\end{examplebox}
+\noindent Overall, conditional independence in directed acyclic graphs can be determined by checking whether two sets of random variables are connected conditioned on a third set of variables, with connection indicating conditional dependence and separation implying conditional independence. \newline
+For a joint distribution $\displaystyle \mathbb{P} \in \mathcal{M}(\mathcal{G})$, a generic conditional independence statement $\displaystyle (\mathbf{X}_A \bot \mathbf{X}_B|\mathbf{X}_C)$ holds if every variable in the set $\displaystyle A$ is separated from every variable in the set $\displaystyle B$, conditioned on all variables in the set $\displaystyle C$. \newline
+Rather than checking every single path between a variable in the set $\displaystyle A$ and a variable in the set $\displaystyle B$, it is sufficient to consider triples of nodes $\displaystyle X$, $\displaystyle Y$ and $\displaystyle Z$ that form one of the following structures:
+\begin{enumerate}
+    \item \textbf{Chain: }This structure substantially represents the first-order Markov assumption at the base of (directed) graphical models.
+    
+    \begin{tikzpicture}[
+        ->, 
+        >=stealth, 
+        thick,
+        node distance=1.5cm, 
+        latent/.style={circle, draw, thick, minimum size=8mm},
+        observed/.style={circle, draw, thick, fill=gray!40, minimum size=8mm}
+    ]
+        \node[latent] (X) at (0, 1) {$X$};
+        \node[observed] (Y) at (1.8, 1) {$Y$};
+        \node[latent] (Z) at (3.6, 1) {$Z$};
+        \draw (X) -- (Y);
+        \draw (Y) -- (Z);
+    \end{tikzpicture}
+
+    \noindent Indeed, the structure of this graph reveals that
+    \begin{align*}
+        \mathbb{P}(x, y, z) &= \mathbb{P}(x)\mathbb{P}(y|x)\mathbb{P}(z|y) \\
+        \mathbb{P}(z|x, y) &= \frac{\mathbb{P}(x, y, z)}{\mathbb{P}(x, y)} = \frac{\mathbb{P}(x)\mathbb{P}(y|x)\mathbb{P}(z|y)}{\mathbb{P}(x)\mathbb{P}(y|x)} = \mathbb{P}(z|y) \Rightarrow (X \bot Z|Y)
+    \end{align*}
+    \item \textbf{Common cause: }This structure indicates $\displaystyle Y$ acts as a cause for both $\displaystyle X$ and $\displaystyle Z$.
+    
+    \begin{tikzpicture}[
+        ->, 
+        >=stealth, 
+        thick,
+        node distance=1.5cm, 
+        latent/.style={circle, draw, thick, minimum size=8mm},
+        observed/.style={circle, draw, thick, fill=gray!40, minimum size=8mm}
+    ]
+        \node[observed] (Y) at (1.8, 2) {$Y$};
+        \node[latent] (X) at (0, 0) {$X$};
+        \node[latent] (Z) at (3.6, 0) {$Z$};
+        \draw (Y) -- (X);
+        \draw (Y) -- (Z);
+    \end{tikzpicture}
+
+    \noindent In particular, the structure of this graph reveals that
+    \begin{align*}
+        \mathbb{P}(x, y, z) &= \mathbb{P}(y)\mathbb{P}(x|y)\mathbb{P}(z|y) \\
+        \mathbb{P}(x, z|y) &= \frac{\mathbb{P}(x, y, z)}{\mathbb{P}(y)} = \frac{\mathbb{P}(y)\mathbb{P}(x|y)\mathbb{P}(z|y)}{\mathbb{P}(y)} = \mathbb{P}(x|y)\mathbb{P}(z|y) \Rightarrow (X \bot Z|Y)
+    \end{align*}
+    \item \textbf{Colliders: }This structure indicates that both $\displaystyle X$ and $\displaystyle Z$ can act as causes for $\displaystyle Y$
+
+    \begin{tikzpicture}[
+        ->, 
+        >=stealth, 
+        thick,
+        node distance=1.5cm, 
+        latent/.style={circle, draw, thick, minimum size=8mm},
+        observed/.style={circle, draw, thick, fill=gray!40, minimum size=8mm}
+    ]
+        \node[latent] (X) at (0, 2) {$X$};
+        \node[latent] (Z) at (3.6, 2) {$Z$};
+        \node[observed] (Y) at (1.8, 0) {$Y$};
+        \draw (X) -- (Y);
+        \draw (Z) -- (Y);
+    \end{tikzpicture}
+
+    \noindent An interesting property related to this structure is Berkson's paradox, which states that, in this scenario, $\displaystyle X$ and $\displaystyle Z$ are marginally independent, but become conditionally dependent given $\displaystyle Y$ because one would have
+    \begin{align*}
+        \mathbb{P}(x, y, z) &= \mathbb{P}(x)\mathbb{P}(z)\mathbb{P}(y|x, z) \\
+        \mathbb{P}(x, z) &= \sum_y \mathbb{P}(x, y, z) = \mathbb{P}(x)\mathbb{P}(z)\Bigg(\sum_y \mathbb{P}(y|x, z)\Bigg) = \mathbb{P}(x)\mathbb{P}(z) \Rightarrow X \bot Z \\
+        \mathbb{P}(x, z|y) &= \frac{\mathbb{P}(x, y, z)}{\mathbb{P}(y)} = \frac{\mathbb{P}(x)\mathbb{P}(z)\mathbb{P}(y|x, z)}{\mathbb{P}(y)} \neq \mathbb{P}(x|y)\mathbb{P}(z|y) \Rightarrow (X \not\bot Z|Y)
+    \end{align*}
+\end{enumerate}
+Using this information, it is possible to define an algorithm that, given a directed graph $\displaystyle \mathcal{G} = (V, E)$ and three disjoint sets $\displaystyle \mathbf{X}_A$, $\mathbf{X}_B$ and $\displaystyle \mathbf{X}_C$, checks whether the graph implies that $\displaystyle (\mathbf{X}_A \bot \mathbf{X}_B|\mathbf{X}_C)$. \newline
+This algorithm considers all possible undirected paths $\displaystyle \mathcal{U}$ from any node in the set $\displaystyle \mathbf{X}_A$ to any node in the set $\displaystyle \mathbf{X}_B$ and states that a path is ``blocked'' if and only if at least one of the following conditions is met:
+\begin{enumerate}
+    \item $\displaystyle \mathcal{U}$ contains a chain that passes through some node in the set $\displaystyle \mathbf{X}_C$.
+    \item $\displaystyle \mathcal{U}$ contains a common clause that starts from a node in the set $\displaystyle \mathbf{X}_C$.
+    \item $\displaystyle \mathcal{U}$ contains a collider that converges to a node that is not in the set $\displaystyle \mathbf{X}_C$ and whose descendants are not in the set $\displaystyle \mathbf{X}_C$ either.
+\end{enumerate}
+Therefore, if all the checked paths are blocked, it is possible to conclude that $\displaystyle \mathbf{X}_A$ is separated from $\displaystyle \mathbf{X}_B$ by $\displaystyle \mathbf{X}_C$ and the joint distribution represented by the graph satisfies the conditional independence assumption that $\displaystyle (\mathbf{X}_A \bot \mathbf{X}_B|\mathbf{X}_C)$.
 
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}
