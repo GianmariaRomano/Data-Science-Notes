@@ -34,6 +34,7 @@
 | October 20 | The search engine problem in text mining. |
 | October 22 | Improving the search engine problem through inverted indexing. |
 | October 26 | Mergesort and Quicksort. |
+| October 27 | Information retrieving. |
 
 </details>
 
