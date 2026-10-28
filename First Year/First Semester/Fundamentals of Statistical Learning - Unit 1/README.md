@@ -35,6 +35,7 @@
 | October 21 | Deterministic transformations of random vectors: Many-to-One, Many-to-Many, Box-Muller. |
 | October 22 | **Classwork 00** |
 | October 23 | Directed graphical models. |
+| October 28 | $d$-separation and ancestral sampling from directed acyclic graphs. |
 
 </details>
 
