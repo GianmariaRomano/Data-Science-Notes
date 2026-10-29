@@ -35,6 +35,7 @@
 | October 22 | Improving the search engine problem through inverted indexing. |
 | October 26 | Mergesort and Quicksort. |
 | October 27 | Information retrieving. |
+| October 29 | Data structures: Lists, Priority Queues, Heaps. |
 
 </details>
 
