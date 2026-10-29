@@ -428,9 +428,72 @@ In the context of optimization problems, a $\displaystyle c$-approximation algor
     While the travelling salesman problem cannot be solved in polynomial time, there are some approximation algorithms that, for a cost function that satisfies the triangle inequality, are guaranteed to find a solution whose value is at most two times the optimal value.
 \end{examplebox}
 
+\chapter{Data structures}
+\section{The purpose of data structures}
+A data structure is a way of storing and organizing data to optimize or simplify certain tasks. \newline
+A data structure is first defined as an ``abstract data type'', which describes the operations supported by the structure, and then implemented as a ``concrete data structure'', which describes how data is stored and the way certain operations are performed.
+\section{Lists}
+A list is an abstract data type that is used to store a sequence of objects, each indicated by an index, while supporting the following operations:
+\begin{itemize}
+    \item \texttt{L.insert(x, i)}: The value \texttt{x} gets inserted at position \texttt{i}.
+    \item \texttt{L.remove(i)}: The value located in position \texttt{i} gets removed.
+    \item \texttt{L.get(i)}: The list returns the value located in position \texttt{i}.
+    \item \texttt{L.set(i)}: The value located in position \texttt{i} is set to \texttt{x}.
+\end{itemize}
+A list can be implemented using an array, which is a contiguous data structure where elements are stored sequentially and accessed using a positional index, or using a linked list, which is a non-contiguous data structure where elements can be stored in different memory locations and accessed using pointers.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Data Structure} & \textbf{Insertion} & \textbf{Removal} & \textbf{Retrieval} & \textbf{Setting} \\
+        \hline
+        Array & $\displaystyle \Theta(n)$ & $\displaystyle \Theta(n)$ & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(1)$ \\
+        \hline
+        Linked List & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(1)$ or $\displaystyle \Theta(n)$ & $\displaystyle \Theta(1)$ or $\displaystyle \Theta(n)$ & $\displaystyle \Theta(1)$ or $\displaystyle \Theta(n)$ \\
+        \hline
+    \end{tabular}
+    \caption{Comparing the complexity of list operations for different data structures.}
+    \label{tab:list_complexity}
+\end{table}
+\noindent Overall, arrays are simple to manage but more computationally efficient, whereas linked lists are flexible and efficient but problematic to manage.
+\section{Heaps}
+A heap is a concrete data structure that stores data using a (binary) tree that satisfies the following structural properties:
+\begin{itemize}
+    \item The tree is build top-down, starting from the root and and filling each tree level left-to-right before moving to the next one. \newline
+    This implies that the height of a tree containing $\displaystyle n$ nodes will be $\displaystyle \lceil\log_2(n)\rceil$.
+    \item The value of a node is always greater or equal than the values of its children, which, however, are not necessarily sorted because this property only holds locally.
+    \item If a heap is implemented as an array, the child nodes of the element at position $\displaystyle i$ are located at positions $\displaystyle 2i$ and $\displaystyle (2i + 1)$, respectively, whereas the parent node is located at position $\displaystyle \bigg\lfloor\frac{i}{2}\bigg\rfloor$.
+\end{itemize}
+For this reason, a heap is useful to keep track of the maximum or minimum value in an array.
+\section{Priority queues}
+A priority queue is an abstract data structure that stores a set of objects, each with an associated priority, while supporting the following operations:
+\begin{itemize}
+    \item \texttt{Q.insert(x)}: The value \texttt{x} is inserted at the back of the queue.
+    \item \texttt{Q.peekMax()}: The queue returns the maximum value.
+    \item \texttt{Q.removeMax()}: The queue removes and returns the maximum value.
+\end{itemize}
+While a priority queue can be implemented using an array or a (doubly) linked lists, these data structures tend to be quite inefficient when peeking or removing the maximum value. \newline
+For this reason, priority queues are often implemented using heaps because the heap property allows to make queue operations more efficient.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Data Structure} & \textbf{Insertion} & \textbf{Peeking} & \textbf{Removal} \\
+        \hline
+        Linked List/Array & $\displaystyle \Theta(1)$ or $\displaystyle \Theta(n)$ & $\displaystyle \Theta(n)$ & $\displaystyle \Theta(n)$ \\
+        \hline
+        Sorted Array & $\displaystyle \Theta(n)$ & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(1)$ \\
+        \hline
+        Heap & $\displaystyle \Theta(\log(n))$ & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(\log(n))$ \\
+        \hline
+    \end{tabular}
+    \caption{Comparing the complexity of queue operations for different data structures}
+    \label{tab:queue_operations}
+\end{table}
+
 \chapter{Data relationships}
 \section{Distance functions}
-Since most data mining problems focus on describing relationships between objects wthin a ``universe'' $\mathcal{U}$, object discrepancies are measured using a distance function $\displaystyle d: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
+Since most data mining problems focus on describing relationships between objects within a ``universe'' $\mathcal{U}$, object discrepancies are measured using a distance function $\displaystyle d: \mathcal{U} \times \mathcal{U} \to \mathbb{R}^+$ such that
 \begin{enumerate}
     \item The function is non-negative, meaning that $\displaystyle d(x, y) \ge 0 \text{ } \forall (x, y) \in \mathcal{U} \times \mathcal{U}$, with $\displaystyle d(x, y) = 0$ if and only if $\displaystyle x = y$.
     \item The function is symmetric, meaning that $\displaystyle d(x, y) = d(y, x) \text{ } \forall (x, y) \in \mathcal{U} \times \mathcal{U}$.

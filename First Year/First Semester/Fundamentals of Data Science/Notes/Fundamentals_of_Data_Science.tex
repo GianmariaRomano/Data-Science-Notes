@@ -1079,5 +1079,48 @@ This procedure, known as ``one-mode projection'', can be performed by computing 
 However, one can retrieve the corresponding adjacency matrix by simplifying the network and, if necessary, removing the weights obtained during the projection. \newline
 Overall, the main issue of one-mode projection lies in the fact that it becomes too computationally expensive on large networks. \newline
 For this reason, common optimization strategies include block-matrix multiplication, which consists of using matrix algebra con smaller sub-matrices for which the overall computational cost is acceptable, or the clique algorithm, which treats projection as a union of cliques formed by groups of nodes that share a common neighbour from the other partition.
+\section{Paths in networks}
+For a network $\displaystyle G = (V, E)$, a path is a sequence of distinct nodes in which each node is adjacent to the next one.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/paths.png}
+    \caption{Example of paths in a graph.}
+    \label{fig:paths}
+\end{figure}
+\noindent Generally speaking, the length of a path is measured as the number of edges that compose it, although, for a weighted network, the sum of the edge weights is used as a measurement instead. \newline
+In particular, the distance between two nodes corresponds to the length of the shortest path between them, with $\displaystyle d_{i, i} = 0 \text{ } \forall i \in V$ and $\displaystyle d_{i, j} = +\infty$ whenever no path connects node $\displaystyle i$ to node $\displaystyle j$. \newline
+However, when considering a directed graph, the distance from node $\displaystyle i$ to node $\displaystyle j$ might not be equal to the distance from node $\displaystyle j$ to node $\displaystyle i$ as link directions must be respected.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/shortest_paths.png}
+    \caption{Shortest paths between two nodes in a directed network.}
+    \label{fig:shortest_paths}
+\end{figure}
+\noindent From a broader perspective, distances in a network are measured using the breadth-first search algorithm, which acts as a variant of Dijkstra's algorithm for unweighted graphs. \newline
+In fact, this algorithm starts from a source node, which is at distance zero from itself, and finds all its neighbours, which are assigned distance equal to one from the source node. \newline
+The neighbours are then added to a queue, which is used to iteratively compute all the distances in the graph until all the nodes have been visited by the algorithm.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/breadth_first_search.png}
+    \caption{Performing breadth-first search on an undirected graph.}
+    \label{fig:bfs}
+\end{figure}
+\subsection{The average path length}
+If $\displaystyle G = (V, E)$ is an undirected graph, the average distance for a path is given by
+\[\langle d \rangle = \frac{1}{\binom{|V|}{2}}\sum_{i \neq j} d_{i, j}\]
+By contrast, if $\displaystyle G = (V, E)$ is a directed graph, the average distance for a path is instead defined as
+\[\langle d \rangle = \frac{1}{|V|(|V| - 1)}\sum_{i \neq j} d_{i, j}\]
+Overall, real networks tend to exhibit the ``small-world property'' because, due to the presence of hubs, any node can be reached from any other node in a small number of steps, resulting in $\displaystyle \langle d \rangle \propto \log(|V|)$.
+\begin{examplebox}[The US Air Transportation Network]
+    Let $\displaystyle G = (V, E)$ be a graph whose nodes represent airports and whose edges represent direct flights from one airport to another: the average distance between two airports in the network tends to be quite small because many airports can be connected by a path passing through some international airport, which can act as a hub for the network.
+\end{examplebox}
+\subsection{Connectedness in networks}
+Sometimes, a network simply consists of multiple components, which represent subgraphs that are disconnected from each other. \newline
+In particular, it is possible to make a distinction between ``weakly connected components'', where each pair of vertices is connected only if edge direction is ignored, and ``strongly connected components'', where each pair of vertices is connected by a directed path.
+\begin{examplebox}[The six degrees of separation]
+    Let $\displaystyle G = (V, E)$ be a graph whose nodes represent scientists and whose edges connect scientists that co-authored some article: while, historically, many research fields rarely collaborated, recent developments have brought many researchers into a giant connected component that is often summarised using the Erdős number.
+\end{examplebox}
+\subsection{Random walks}
+On a graph $\displaystyle G = (V, E)$, a random walk is a stochastic process in which an agent starts from a source node and iteratively moves to a randomly chosen neighbour until a target node is reached.
 
 \end{document}
