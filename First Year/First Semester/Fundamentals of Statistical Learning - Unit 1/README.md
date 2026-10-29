@@ -36,6 +36,7 @@
 | October 22 | **Classwork 00** |
 | October 23 | Directed graphical models. |
 | October 28 | $d$-separation and ancestral sampling from directed acyclic graphs. |
+| October 29 | Hypothesis testing for ancestral sampling. |
 
 </details>
 
