@@ -41,6 +41,7 @@
 | October 22 | Bipartite networks. |
 | October 23 | **Introduction to the Kaggle Challenge** |
 | October 26 | Non-parametric models. |
+| October 29 | Paths in networks. |
 
 </details>
 
