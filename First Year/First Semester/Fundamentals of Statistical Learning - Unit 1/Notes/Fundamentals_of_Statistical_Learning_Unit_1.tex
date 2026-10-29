@@ -1003,9 +1003,9 @@ Therefore, given two open sets $\displaystyle A, B \subseteq \mathbb{R}^p$, cons
         f_{T_{\nu}}(t) &\propto \frac{\Gamma(\frac{\nu + 1}{2})}{(1 + \frac{t^2}{\nu})^{\frac{\nu + 1}{2}}} \propto \Bigg(1 + \frac{t^2}{\nu}\Bigg)^{-\frac{\nu + 1}{2}}
     \end{align*}
 \end{examplebox}
-\noindent For instance, the Box-Muller transform is a commonly used many-to-many transformation that allows to convert pairs of uniformly distributed samples starting from two independent random variables $\displaystyle X, Y \sim \mathcal{N}(0, 1)$ whose joint probability function is
+\noindent For instance, the Box-Muller transform is a many-to-many transformation that allows to convert pairs of uniformly distributed samples into pairs of normally distributed samples, starting from two independent random variables $\displaystyle X, Y \sim \mathcal{N}(0, 1)$ whose joint probability density function is
 \[f_{X, Y}(x, y) = \frac{1}{2\pi}e^{-\frac{x^2 + y^2}{2}}\]
-In particular, it is possible to simplify $\displaystyle f_{X, Y}(x, y)$ through an inverse transformation based on polar coordinates:
+This function can be simplified through an inverse transformation based on polar coordinates:
 \[\begin{pmatrix}
     X \\
     Y \\
@@ -1029,7 +1029,7 @@ In fact, this transformation is invertible in the open set $\displaystyle \mathc
 \end{pmatrix} \Rightarrow |det(\nabla_{\mathbf{s}})| = r\]
 Therefore, it is possible to reformulate the joint probability density function by considering
 \begin{align*}
-    f_{R, \Theta}(r, \theta) = f_{X, Y}(\mathbf{s}(r, \theta)) \cdot |det(\nabla_{\mathbf{s}})| \cdot \mathbb{I}_{\mathcal{D}}
+    f_{R, \Theta}(r, \theta) = f_{X, Y}(\mathbf{s}(r, \theta)) \cdot |det(\nabla_{\mathbf{s}})| \cdot \mathbb{I}_{\mathcal{D}}(r, \theta)
         &= \frac{1}{2}re^{-\frac{1}{2}r^2}\mathbb{I}_{(0, +\infty) \times (0, 2\pi)}(r, \theta) \\
         &= \Bigg(re^{-\frac{1}{2}r^2}\mathbb{I}_{\mathbb{R}^+}(r)\Bigg)\Bigg(\frac{1}{2\pi}\mathbb{I}_{(0, 2\pi)}(\theta)\Bigg) = f_R(r)f_{\Theta}(\theta)
 \end{align*}
@@ -1052,7 +1052,7 @@ Generally speaking, the joint distribution $\displaystyle p_{\mathbf{X}}(\mathbf
 \[p_{\mathbf{X}}(\mathbf{x}) = p_{X_1, \dots, X_D}(x_1, \dots, x_D) = \mathbb{P}(x_1)\mathbb{P}(x_2|x_1)\mathbb{P}(x_3|x_1, x_2)\dots\mathbb{P}(x_D|x_1, \dots, x_{D - 1})\]
 However, as the number of components in the random vector increases, modelling this distribution becomes computationally and statistically unviable. \newline
 In fact, assuming each variable in the random vector can take $\displaystyle J$ possible values, the conditional probability table that describes the factor $\displaystyle \mathbb{P}(x_d|x_1, \dots, x_{d - 1})$ requires $\displaystyle O(J^d)$ values, meaning that a total of $\displaystyle O(J^D)$ parameters would be needed to represent the full joint distribution. \newline
-However, it is possible to simplify this joint distribution by introducing some assumptions about the conditional independence of the random variables. \newline
+However, it is possible to simplify this joint distribution by introducing some assumptions about the conditional independence between random variables. \newline
 From a broader perspective, two random variables $\displaystyle X$ and $\displaystyle Y$ are said to be conditionally independent given the random variable $\displaystyle Z$ if and only if
 \[\mathbb{P}(X, Y|Z) = \mathbb{P}(X|Z)\mathbb{P}(Y|Z) \text{ or } \mathbb{P}(X|Y, Z) = \mathbb{P}(X|Z)\]
 This concept allows to formulate the first-order Markov assumption, which states that ``the future is independent of the past given the present'', as follows:
@@ -1074,7 +1074,7 @@ A graphical model allows to represent conditional independence assumptions using
     \label{fig:graph_terminology}
 \end{figure}
 \noindent In fact, for a directed graph $\displaystyle \mathcal{G} = (V, E)$, where $\displaystyle V = \{X_1, \dots, X_D\}$, the ordered Markov property denotes the assumption that ``each node in the graph depends only on its immediate parents'', which can be formulated as
-\[X_d \bot \mathbf{X}_{predecessors(d) \setminus parents(d)}|\mathbf{X}_{parents(d)} \text{ } \forall d \in \{1, \dots, D\}\]
+\[(X_d \bot \mathbf{X}_{predecessors(d) \setminus parents(d)}|\mathbf{X}_{parents(d)}) \text{ } \forall d \in \{1, \dots, D\}\]
 \begin{examplebox}[Factorizing a joint distribution using a graphical model]
     For a random vector $\displaystyle \mathbf{X} = (X_1, X_2, X_3, X_4, X_5)$, consider the following directed acyclic graph:
     
@@ -1167,7 +1167,7 @@ Rather than checking every single path between a variable in the set $\displayst
         \mathbb{P}(x, y, z) &= \mathbb{P}(x)\mathbb{P}(y|x)\mathbb{P}(z|y) \\
         \mathbb{P}(z|x, y) &= \frac{\mathbb{P}(x, y, z)}{\mathbb{P}(x, y)} = \frac{\mathbb{P}(x)\mathbb{P}(y|x)\mathbb{P}(z|y)}{\mathbb{P}(x)\mathbb{P}(y|x)} = \mathbb{P}(z|y) \Rightarrow (X \bot Z|Y)
     \end{align*}
-    \item \textbf{Common cause: }This structure indicates $\displaystyle Y$ acts as a cause for both $\displaystyle X$ and $\displaystyle Z$.
+    \item \textbf{Common cause: }This structure indicates that $\displaystyle Y$ acts as a cause for both $\displaystyle X$ and $\displaystyle Z$.
     
     \begin{tikzpicture}[
         ->, 
@@ -1189,7 +1189,7 @@ Rather than checking every single path between a variable in the set $\displayst
         \mathbb{P}(x, y, z) &= \mathbb{P}(y)\mathbb{P}(x|y)\mathbb{P}(z|y) \\
         \mathbb{P}(x, z|y) &= \frac{\mathbb{P}(x, y, z)}{\mathbb{P}(y)} = \frac{\mathbb{P}(y)\mathbb{P}(x|y)\mathbb{P}(z|y)}{\mathbb{P}(y)} = \mathbb{P}(x|y)\mathbb{P}(z|y) \Rightarrow (X \bot Z|Y)
     \end{align*}
-    \item \textbf{Colliders: }This structure indicates that both $\displaystyle X$ and $\displaystyle Z$ can act as causes for $\displaystyle Y$
+    \item \textbf{Colliders: }This structure indicates that both $\displaystyle X$ and $\displaystyle Z$ can act as causes for $\displaystyle Y$.
 
     \begin{tikzpicture}[
         ->, 
@@ -1221,6 +1221,64 @@ This algorithm considers all possible undirected paths $\displaystyle \mathcal{U
     \item $\displaystyle \mathcal{U}$ contains a collider that converges to a node that is not in the set $\displaystyle \mathbf{X}_C$ and whose descendants are not in the set $\displaystyle \mathbf{X}_C$ either.
 \end{enumerate}
 Therefore, if all the checked paths are blocked, it is possible to conclude that $\displaystyle \mathbf{X}_A$ is separated from $\displaystyle \mathbf{X}_B$ by $\displaystyle \mathbf{X}_C$ and the joint distribution represented by the graph satisfies the conditional independence assumption that $\displaystyle (\mathbf{X}_A \bot \mathbf{X}_B|\mathbf{X}_C)$.
+\begin{examplebox}[An application of the separation algorithm]
+    A five-variable joint distribution is Markov to the following graph:
+
+    \begin{tikzpicture}[
+        ->, 
+        >=stealth, 
+        thick,
+        node distance=1.5cm, 
+        every node/.style={circle, draw, thick, minimum size=8mm}
+    ]
+        \node (X2) at (0, 2.5) {$X_2$};
+        \node (X1) at (1, 0.5) {$X_1$};
+        \node (X3) at (2.5, 2) {$X_3$};
+        \node (X4) at (2.5, -1) {$X_4$};
+        \node (X5) at (4, 0.5) {$X_5$};    
+        \draw (X2) -- (X3);
+        \draw (X1) -- (X3);
+        \draw (X1) -- (X4);
+        \draw (X3) -- (X5);
+        \draw (X4) -- (X5);
+    \end{tikzpicture}
+
+    \noindent The structure of the graph allows to show that $\displaystyle (\{X_4, X_5\} \bot X_2|\{X_1, X_3\})$:
+    \begin{enumerate}
+        \item The path $\displaystyle X_2 \to X_3 \to X_5 \gets X_4$ is blocked because $\displaystyle X_5 \notin \{X_1, X_3\}$ acts as a collider for the graph.
+        \item The path $\displaystyle X_2 \to X_3 \to X_5$ is blocked because it represents a chain passing through $\displaystyle X_3 \in \{X_1, X_3\}$.
+    \end{enumerate}
+    Since both paths are blocked, the assumption that $\displaystyle (\{X_4, X_5\} \bot X_2|\{X_1, X_3\})$ is indeed true.
+\end{examplebox}
+\section{Using directed acyclic graphs for ancestral sampling}
+Ancestral sampling is a generative technique that exploits the Markov property to draw samples from a joint distribution encoded by a directed acyclic graph.
+\begin{examplebox}[Modelling data distribution from a graphical model]
+    Consider a four-variable joint distribution that is represented by the following graph:
+
+    \begin{tikzpicture}[
+        ->, 
+        >=stealth, 
+        thick,
+        node distance=1.5cm, 
+        every node/.style={circle, draw, thick, minimum size=8mm}
+    ]
+        \node (E) at (0, 2) {$E$};
+        \node (F) at (3.6, 2) {$F$};
+        \node (G) at (1.8, 0) {$G$};
+        \node (H) at (1.8, -1.8) {$H$};    
+        \draw (E) -- (G);
+        \draw (F) -- (G);
+        \draw (G) -- (H);
+    \end{tikzpicture}
+
+    \noindent Using the Markov property, this joint distribution can be expressed as
+    \[\mathbb{P}(e, f, g, h) = \mathbb{P}(e)\mathbb{P}(f)\mathbb{P}(g|e, f)\mathbb{P}(h|g)\]
+    Assuming $\displaystyle (H|G = g) \sim Exp(g)$ and $\displaystyle (G|E = e, F = f) \sim Gamma(e, f)$, it is necessary to set some constraints on the support of each variable. \newline
+    Since $\displaystyle g$ is a parameter for an exponential distribution, its support must be a subset of $\displaystyle \mathbb{R}^+$. \newline
+    Similarly, knowing that $\displaystyle e$ and $\displaystyle f$ are used to model a Gamma distribution, their supports must also lie within $\displaystyle \mathbb{R}^+$. \newline
+    For this reason, the marginal distributions of $\displaystyle E$ and $\displaystyle F$ must be uniform, provided the support is defined as a subset of $\displaystyle \mathbb{R}^+$, or belong to the Gamma or exponential families. \newline
+    Therefore, drawing a single sample from the joint distribution requires (independently) sampling $\displaystyle e$ and $\displaystyle f$ from their respective distributions and using them to draw $\displaystyle g$, which, in turn, allows to sample $\displaystyle h$.
+\end{examplebox}
 
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}

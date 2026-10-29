@@ -735,7 +735,7 @@ This metric is useful to monitor a model whenever a false positive is not an acc
     For a spam filtering model, not blocking a few spam messages is far more acceptable than wrongly marking an important message as spam.
 \end{examplebox}
 \noindent Alternatively, it is possible to define the precision of a classification model as the proportion of true positives among all positive predictions, meaning that
-\[Recall = \frac{TP}{TP + FP}\]
+\[Precision = \frac{TP}{TP + FP}\]
 \subsection{The F1 score of a classification model}
 The F1 score of a classification model acts as a harmonic mean between its precision and recall, meaning that it is defined as
 \[F1 = 2 \cdot \frac{Precision \cdot Recall}{Precision + Recall}\]
@@ -759,7 +759,7 @@ Assuming $\displaystyle k$ different datasets are drawn from the same underlying
     By contrast, fitting the data using a linear function yields the best results as the fits are quite similar and their average does resemble the true function.
 \end{examplebox}
 \noindent For a linear model, the expected mean squared error can be decomposed into bias-variance terms and an ``irreducible'' error that comes from the data generation process, resulting in
-\[\mathbb{E}[\mathcal{L}(f(\mathbf{x}), y)] = \mathbb{E}[(y - f(\mathbf{x}))^2] = (\mathbb{E}[\hat{f}(\mathbf{x}) - f(\mathbf{x})]^2 + \mathbb{E}[(\hat{f}(\mathbf{x}) - \mathbb{E}(\hat{f}(\mathbf{x})))^2] + \sigma^2\]
+\[\mathbb{E}[\mathcal{L}(f(\mathbf{x}), y)] = \mathbb{E}[(y - f(\mathbf{x}))^2] = (\mathbb{E}[\hat{f}(\mathbf{x}) - f(\mathbf{x})])^2 + \mathbb{E}[(\hat{f}(\mathbf{x}) - \mathbb{E}(\hat{f}(\mathbf{x})))^2] + \sigma^2\]
 Assuming the chosen model belongs to the family of functions $\displaystyle y = f(\mathbf{x}) + \varepsilon$, where the error term $\displaystyle \varepsilon$ follows a zero-mean distribution with variance $\displaystyle \sigma^2$, the mean squared error can be reformulated as
 \begin{align*}
     MSE
@@ -793,6 +793,76 @@ Lasso regression is a modified form of linear regression that uses the following
     \label{fig:l1_regression}
 \end{figure}
 \noindent This regularization technique creates a sparse model that, by dropping irrelevant features, requires less parameters during computations.
+
+\chapter{Non-parametric models}
+\section{The non-parametric learning paradigm}
+While parametric models assume a fixed functional form $\displaystyle f_{\mathbf{\beta}}$ and focus on learning a finite number of parameters, non-parametric models do not assume a fixed form and can be used to represent arbitrarily flexible functions.
+\section{The $\displaystyle K$-nearest neighbours algorithm}
+Starting from a training dataset $\displaystyle \mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i = 1}^N$, the $\displaystyle K$-nearest neighbours algorithm aims to classify a new data point $\displaystyle \mathbf{x}$ based on geometric proximity. \newline
+In fact, this algorithm first finds the $\displaystyle K$ training data points that are closest to $\displaystyle \mathbf{x}$ and then predicts the class label through a majority among these neighbours, meaning that
+\[i_1, \dots, i_K = K\text{-}\arg\min_{i \in \{1, \dots N\}} \text{dist}(\mathbf{x}, \mathbf{x}_i) \text{, from which } y = \text{Mode}(y_{i_1}, \dots, y_{i_K})\]
+From a technical standpoint, the $\displaystyle K$-nearest neighbours algorithm has no explicit training phase and, rather than minimizing a loss function for optimization, model performance is evaluated using dedicated metrics.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/knn.png}
+    \caption{Performing $\displaystyle K$-nearest neighbours on the IRIS Dataset.}
+    \label{fig:knn}
+\end{figure}
+\noindent Overall, this algorithm provides a simple and interpretable framework that is efficient for dynamic datasets, although it tends to be computationally expensive and sensitive to noise coming from irrelevant features or extreme values. \newline
+Regarding the bias-variance trade-off, choosing a low value for $\displaystyle K$ makes the model flexible but prone to overfitting, whereas opting for a high value for $\displaystyle K$ makes the model smooth but prone to underfitting.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/knn_hyperparameter.png}
+    \caption{Results of $\displaystyle K$-nearest neighbours using different choices of $\displaystyle K$.}
+    \label{fig:knn_hyperparameter}
+\end{figure}
+\noindent For this reason, it is common practice to introduce a validation dataset to analyse how model performance varies as $\displaystyle K$ changes from $\displaystyle 1$ to $\displaystyle \sqrt{N}$.
+\section{Decision trees}
+A decision tree is a non-parametric algorithm that defines complex decision boundaries by learning simple and interpretable rules. \newline
+In fact, a decision tree is implemented as a binary tree that contains decision nodes, where a Boolean condition is used to compare a single feature $\displaystyle x_j$ and a threshold $\displaystyle t$, and terminates with leaf nodes, which represent the final prediction. \newline
+Since finding an optimal decision tree is a $\displaystyle \mathbf{NP}$-complete problem, decision trees are built using a top-down greedy heuristic rule that locally minimizes impurity upon each split. \newline
+From a broader perspective, the impurity of a node $\displaystyle Z$, where a set of classes $\displaystyle \{1, \dots, C\}$ follows a distribution where $\displaystyle p_c$ denotes the proportion of data points belonging to class $\displaystyle c$, can be measured using one of two possible metrics:
+\begin{enumerate}
+    \item \textbf{Gini impurity: }This metric denotes the probability of incorrectly classifying a randomly chosen data point based on the node's class distribution, resulting in
+    \[I_{Gini}(Z) = 1 - \sum_{c = 1}^C p_c^2\]
+    \item \textbf{Entropy: }This metric quantifies the average uncertainty in the node's class distribution, meaning that
+    \[I_{Entropy}(Z) = -\sum_{c = 1}^C p_c\log(p_c)\]
+\end{enumerate}
+In particular, the quality of a decision tree can be evaluated in terms of information gain, which measures the reduction in impurity upon a split: assuming a node $\displaystyle Z$, which contains $\displaystyle n$ data points, is split into the nodes $\displaystyle Z_L$ and $\displaystyle Z_R$, which contain $\displaystyle n_L$ and $\displaystyle n_R$ nodes respectively, the resulting information gain is given by
+\[IG(Z, \text{split}) = I(Z) - \Bigg(\frac{n_L}{n}I(Z_L) + \frac{n_R}{n}I(Z_R)\Bigg)\]
+At each level, a decision tree finds the best split by sorting unique feature values $\displaystyle v_1, \dots, v_m$ and tests candidate thresholds $\displaystyle t \in \Bigg\{\frac{v_i + v_{i + 1}}{2}\Bigg\}_{i = 1}^{m - 1}$ in order to greedily select the feature-threshold pair that maximizes the information gain. \newline
+Overall, concerning the bias-variance trade-off, implementing a shallow decision tree results in high bias and makes the model prone to underfitting, whereas opting for a deep decision tree makes the model prone to overfitting due to high variance. \newline
+However, it is possible to mitigate the risk of overfitting by introducing a regularization term or by performing post-pruning, which consists of recursively replacing decision nodes with leaf nodes and evaluating performance improvements using a validation dataset.
+\subsection{Using decision trees for regression tasks}
+While decision trees are often used for classification tasks, they can be adapted to perform regression by predicting the average value of the target variable, resulting in
+\[\text{Prediction} = \mu_Z = \frac{1}{n}\sum_{i = 1}^n y_i \text{, for a node $Z$ with $n$ data points.}\]
+Therefore, to achieve homogeneity during predictions, regression trees measure impurity using the mean squared error metric, meaning that
+\[MSE(Z) = \frac{1}{n}\sum_{i = 1}^n (y_i - \mu_Z)^2\]
+\section{Ensemble learning techniques}
+Ensemble learning is a strategy that consists of training different tree-based models $\displaystyle f_1, \dots, f_k$ and combining their results, often using a (weighted) average or majority vote, into a single, stronger model $\displaystyle F$. \newline
+Generally speaking, an ensemble model is built using the ``mixture of experts'' technique, which introduces a gating network $\displaystyle g(\mathbf{x})$ that produces a dynamic sequence of weights $\displaystyle \alpha_1, \dots, \alpha_k$ for each data point, resulting in
+\[F(\mathbf{x}) = \sum_{i = 1}^k \alpha_i(\mathbf{x}) \cdot f_i(\mathbf{x})\]
+Therefore, a mixture of experts model aims to learn which base model should be trusted based on the observed input $\displaystyle \mathbf{x}$.
+\subsection{Bagging techniques}
+A bagging technique is designed to reduce variance and prevent overfitting by averaging many unbiased models $\displaystyle f_1, \dots, f_k$ into a more robust model $\displaystyle F$. \newline
+Starting from a dataset $\displaystyle \mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i = 1}^N$, a bagging algorithm creates $\displaystyle k$ bootstrap datasets by sampling $\displaystyle N$ training data points with replacement, meaning that each bootstrap dataset will omit some ``out-of-bag'' data points. \newline
+After creating the bootstrap datasets, each base model is trained on a single bootstrap dataset, allowing each model to learn slightly different information due to data variability, and predictions are aggregated for evaluation. \newline
+For each training data point $\displaystyle \mathbf{x}_j$, the base models that did not see $\displaystyle \mathbf{x}_j$ during training generate an out-of-bag prediction, which is compared to the true label, so that the average error across all out-of-bag samples can provide a reliable estimate of the ensemble model's generalization performance.
+\subsection{Random forests}
+A random forest is an ensemble of decision trees that combines bagging with random feature selection for better generalization. \newline
+In fact, upon each split, the algorithm randomly samples a subset of features so that weaker features can influence the splits and produce more diverse decision trees.
+\subsection{Boosting models}
+Boosting is an ensemble learning technique that builds a strong predictor by sequentially combining many weak learners that are trained to correct the errors of their predecessors. \newline
+Common boosting models include:
+\begin{itemize}
+    \item \textbf{Adaptive Boosting: }This model initially assigns equal importance to each training data point and, for each round, updates sample weights to give more importance to misclassified data points. \newline
+    Assuming training lasts $\displaystyle T$ steps, the resulting model will be
+    \[F(x) = sign\Bigg(\sum_{t = 1}^T \mathbf{\beta}_tf_t(\mathbf{x}\Bigg)\]
+    \item \textbf{Gradient Boosting: }Rather than updating weights for data points, this model sequentially builds new learners that predict the residuals of the previous learners. \newline
+    Starting from an initial model $\displaystyle F_0(\mathbf{x})$, a generic residual is computed as $\displaystyle r_t = y - F_{t - 1}(\mathbf{x})$: a new weak learner $\displaystyle h_t(\mathbf{x})$ is trained to predict the residual so that the ensemble can be updated using a learning rate $\displaystyle \nu$, resulting in
+    \[F_t(\mathbf{x}) = F_{t - 1}(\mathbf{x}) + \nu h_t(\mathbf{x})\]
+    Among this family of models, XGBoost serves as an optimized and regularized implementation of the gradient boosting algorithm.
+\end{itemize}
 
 \part{Network Science}
 

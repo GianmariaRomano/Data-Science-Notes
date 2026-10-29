@@ -347,6 +347,68 @@ In some cases, it is possible to solve a problem using a recursive algorithm, wh
         \Return{$current$}\;
     \end{algorithm}
 \end{examplebox}
+\section{Sorting algorithms}
+A sorting algorithm takes an input array and rearranges its elements in (ascending) order, typically using numerical or lexicographical criteria. \newline
+These algorithms come in handy to improve the efficiency of other algorithms that require or work well with sorted data.
+\subsection{Mergesort}
+Mergesort is a ``divide-et-impera'' algorithm that recursively splits an array into smaller sub-lists until they are trivially sorted before merging them back together.
+
+\begin{algorithm}[H]
+    \caption{The Mergesort algorithm.}
+    \KwData{An array $\displaystyle A$}
+    \KwResult{A sorted permutation of $\displaystyle A$}
+    
+    $n \gets len(A)$\;
+    \If{$n \leq 1$}{
+        \Return{$A$}\;
+    }
+    $A_1 \gets A[1, \dots, \lceil\frac{n}{2}\rceil]$\;
+    $A_2 \gets A[\lceil\frac{n}{2}\rceil + 1, \dots, n]$\;
+    $A_1' \gets MergeSort(A_1)$\;
+    $A_2' \gets MergeSort(A_2)$\;
+    $A' \gets merge(A_1', A_2')$\;
+    \Return{$A'$}\;
+\end{algorithm}
+\noindent Looking at the pseudocode, the running time of the algorithm can be formulated as
+\[T(n) = \begin{cases}
+    c &\quad\text{if $n \leq 1$} \\
+    2T\big(\frac{n}{2}\big) + c_2n + c_3 &\quad\text{otherwise}
+\end{cases}\]
+Unrolling the recursive case of this formulation reveals that
+\begin{align*}
+    T(n) &= 2\bigg(2T\bigg(\frac{n}{4}\bigg) + c_2\frac{n}{2} + c_3\bigg) + c_2n + c_3 \\
+         &= 4T\bigg(\frac{n}{4}\bigg) + 2c_2n + 3c_3 \\
+         &= \dots \\
+         &= 2^iT\bigg(\frac{n}{2^i}\bigg) + ic_2n + (2^i - 1)c_3
+\end{align*}
+Since the recursive calls can be executed until the base case, where $\displaystyle \frac{n}{2^i} = 1 \Leftrightarrow i = \log_2(n)$, the recurrence can be solved as
+\begin{align*}
+    T(n) &= 2^{\log_2(n)}T(1) + c_2n\log_2(n) + (2^{\log_2(n)} - 1)c_3 \\
+         &= cn + c_2n\log_2(n) + (n - 1)c_3 \\
+         &= c_2n\log_2(n) + (c + c_3)n - c_3 = \Theta(n\log n)
+\end{align*}
+\subsection{Quicksort}
+Quicksort is a randomized ``divide-et-impera'' algorithm that randomly selects a pivot and partitions the array into two sub-list, one containing the elements smaller than the pivot and the other containing the elements greater than the pivot, that are recursively sorted using the same strategy.
+
+\begin{algorithm}[H]
+    \caption{The Quicksort algorithm.}
+    \KwData{An array $\displaystyle A$}
+    \KwResult{A sorted permutation of $\displaystyle A$}
+    
+    $n \gets len(A)$\;
+    \If{$n \leq 1$}{
+        \Return{$A$}\;
+    }
+    Pick a random $p \in \{1, \dots, n\}$\;
+    Compare each element in $A$ with $A[p]$, except for the pivot itself\;
+    $A_1 \gets [elements \leq A[p]]$\;
+    $A_2 \gets [elements > A[p]]$\;
+    $A_1' \gets QuickSort(A_1)$\;
+    $A_2' \gets QuickSort(A_2)$\;
+    \Return{$A_1' + [A[p]] + A_2'$}\;
+\end{algorithm}
+\noindent In this setting, the worst-case scenario happens if the algorithm consistently splits the array into maximally unbalanced sub-arrays, meaning that the chosen pivot is either the first or the last element in the array, causing the running time to degrade to $\displaystyle O(n^2)$. \newline
+However, since the pivot is always chosen uniformly at random, the worst-case scenario tends to be extremely unlikely as the expected running time of this algorithm can be bounded by $\displaystyle \mathbb{E}(T(n)) = O(n\log(n))$.
 \section{$\mathbf{NP}$-completeness}
 When studying algorithms and computational complexity, (decision) problems can be classified depending on how hard they are to solve. \newline
 For this reason, it is possible to define the complexity classes $\displaystyle \mathbf{P}$, which includes all decision problems that can be solved in polynomial time using a deterministic algorithm, and $\displaystyle \mathbf{NP}$, which includes all decision problems for which a proposed solution can be verified in polynomial time. \newline
@@ -469,9 +531,9 @@ Knowing that a query $\displaystyle \mathcal{Q}$ can be treated as a text vector
 \begin{algorithm}[H]
     \caption{The search engine problem as a nearest neighbours problem.}
     \KwData{A corpus $\displaystyle \mathcal{C} = \{\mathbf{d}^i\}_{i = 1}^n$, a query vector $\displaystyle \mathbf{q}$ and an integer $\displaystyle k \in \mathbb{N}$.}
-    \KwResult{The $\displaystyle k$ closes documents to $\displaystyle \mathbf{q}$.}
+    \KwResult{The $\displaystyle k$ closest documents to $\displaystyle \mathbf{q}$.}
 
-    $scores \gets [] * n$\;
+    $scores \gets [0] * n$\;
     \For{$i \gets 1$ \KwTo $n$}{
         $scores[i] \gets \cos(\mathbf{q}, \mathbf{d}^i)$\;
     }
@@ -485,12 +547,12 @@ An alternative formulation of the search engine problem consists of finding the 
 \begin{algorithm}[H]
     \caption{The search engine problem as a Boolean algorithm.}
     \KwData{A corpus $\displaystyle \mathcal{C} = \{\mathbf{d}^i\}_{i = 1}^n$, a query vector $\displaystyle \mathbf{q}$ and an integer $\displaystyle k \in \mathbb{N}$.}
-    \KwResult{The $\displaystyle k$ closes documents to $\displaystyle \mathbf{q}$.}
+    \KwResult{All the documents that contain each term in $\displaystyle \mathbf{q}$.}
 
     $results \gets \{\}$\;
     \For{$i \gets 1$ \KwTo $n$}{
         \If{$\mathbf{d}^i$ contains all terms of $\mathbf{q}$}{
-            $results \gets Results \cup \{i\}$\;
+            $results \gets results \cup \{i\}$\;
         }
     }
     \Return{$results$}\;
