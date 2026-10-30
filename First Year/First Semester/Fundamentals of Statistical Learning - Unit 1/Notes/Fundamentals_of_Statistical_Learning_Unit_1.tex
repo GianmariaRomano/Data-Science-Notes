@@ -848,6 +848,53 @@ A random sample $\displaystyle \mathcal{D}_n = \{X_1, \dots, X_n\}$ is said to b
 \end{examplebox}
 \noindent In some cases, however, it can be more convenient to express the likelihood function using a probability density function and a penalty or constraint on the data.
 
+\chapter{Expectation and variance}
+\section{Summarizing a distribution}
+While the distribution of a random variable provides all the probabilistic information about its behaviour, it can be cumbersome to analyse. \newline
+For this reason, a probability distribution is often summarized by looking at its quantiles, which give an idea of the possible values taken by the random variable, or using other parameters, such as the expected value or the variance, that provide information about the central behaviour and spread of the distribution.
+\section{The expected value of a random variable}
+Intuitively, the expected value of a random variable can be seen as a weighted average of its possible values with respect to their probabilities. \newline
+In fact, the expected value of a random variable $\displaystyle X: \Omega \to S_X$ with cumulative distribution $\displaystyle F_X$ is formally defined as
+\[\mathbb{E}(X) \int_{\mathbb{R}} x \ dF_X(x) = \begin{cases}
+    \sum_{x \in S_X} xp_X(x) &\quad\text{if $X$ is discrete and has PMF $p_X(x)$} \\
+    \int_{S_X} xf_X(x) \ dx &\quad\text{if $X$ is continuous and has PDF $f_X(x)$} \\
+\end{cases}\]
+\begin{examplebox}[Modelling the average failure time of a device]
+    The failure time of a device is modelled using a random variable $\displaystyle X$ whose probability density function is given by $\displaystyle f_X(x) = 2x^{-3}\mathbb{I}_{[1, +\infty)}(x)$, meaning that the expected time to failure will be given by
+    \begin{align*}
+        \mathbb{E}(X) = \int_{\mathbb{R}} xf_X(x) \ dx = \int_{\mathbb{R}} x\frac{2}{x^3}\mathbb{I}_{[1, +\infty)}(x) \ dx
+            &= \int_1^{+\infty} \frac{2}{x^2} \ dx \\
+            &= \lim_{L \to +\infty} \int_1^{+\infty} \frac{2}{x^2} \ dx = \lim_{L \to +\infty} -\frac{2}{x}\Bigg|_1^L = 2
+    \end{align*}
+\end{examplebox}
+\noindent In particular, if a random variable follows a distribution that is symmetric around a central value $\displaystyle x_0$, then $\displaystyle \mathbb{E}(X) = x_0$, provided the mean is well-defined.
+\begin{examplebox}[Exploiting symmetry in the uniform distribution]
+    The uniform distribution is a popular symmetric distribution that is centered around the midpoint of the interval defined by its support. \newline
+    In fact, if $\displaystyle X \sim Unif(a, b)$, then its expected value will be given by
+    \[\mathbb{E}(X) = \int_{\mathbb{R}} x \ dF_X(x) = \int_a^b \frac{x}{b - a} \ dx = \frac{x^2}{2(b - a)}\Bigg|_a^b = \frac{b^2 - a^2}{2(b - a)} = \frac{(b - a)(b + a)}{2(b - a)} = \frac{a + b}{2}\]
+\end{examplebox}
+\noindent Overall, the expected value of a random variable depends solely on its distribution and can be seen as a ``center of mass'', although it is not robust to extreme values because a small change in the probability of small or large values can significantly affect the expected value. \newline
+Furthermore, for some distributions, the expected value may not even exist because it is not well-defined.
+\begin{examplebox}[The Cauchy distribution]
+    A continuous random variable $\displaystyle X$ is said to follow a Cauchy distribution if $\displaystyle X \sim t(1)$, meaning that its probability density function will be given by
+    \[f_X(x) = \frac{1}{\pi(x^2 + 1)} \text{, for $x \in \mathbb{R}$.}\]
+    Looking at its heavy-tailed shape, one can discover that
+    \begin{align*}
+        \mathbb{E}(X)
+            &= \int_{-\infty}^{+\infty} \frac{x}{\pi(x^2 + 1)} \ dx = \frac{1}{2\pi}\int_{-\infty}^{+\infty} \frac{2x}{x^2 + 1} \ dx = \frac{1}{2\pi}\Bigg(\int_{-\infty}^0 \frac{2x}{x^2 + 1} \ dx + \int_0^{+\infty} \frac{2x}{x^2 + 1} \ dx\Bigg) \\
+            &= \frac{1}{2\pi}\Bigg[\Bigg(\lim_{a \to -\infty}\int_a^0 \frac{2x}{x^2 + 1} \ dx\Bigg) + \Bigg(\lim_{b \to +\infty}\int_0^b \frac{2x}{2^2 + 1} \ dx\Bigg)\Bigg] \\
+            &= \frac{1}{2\pi}\Bigg[\Bigg(\lim_{a \to -\infty} \ln(x^2 + 1)\Bigg|_a^0\Bigg) + \Bigg(\lim_{b \to +\infty} \ln(x^2 + 1)\Bigg|_0^b\Bigg)\Bigg] = -\infty + \infty
+    \end{align*}
+\end{examplebox}
+\subsection{The law of the lazy statistician}
+The law of the lazy statistician states that, if $\displaystyle X$ is a (continuous) random variable with cumulative distribution function $\displaystyle F_X$, then, for a deterministic function $\displaystyle r$, the expected value of the random variable $\displaystyle Y = r(X)$ is given by
+\[\mathbb{E}(Y) = \int_{\mathbb{R}} y \ dF_y(y) = \mathbb{E}(r(X)) = \int_{\mathbb{R}} r(x) \ dF_X(x)\]
+\begin{examplebox}[Probabilities as expected values]
+    Assuming $\displaystyle X$ is a continuous random variable with probability density function $\displaystyle f_X(x)$, pick any event $\displaystyle A$ and define the indicator variable $\displaystyle Y = \mathbb{I}_A(X)$: the expected value of $\displaystyle Y$ will be given by
+    \[\mathbb{E}(Y) = \mathbb{E}(\mathbb{I}_A(X)) = \int_{\mathbb{R}} \mathbb{I}_A(x)f_X(x) \ dx = \int_A f_X(x) \ dx = \mathbb{P}(X \in A)\]
+\end{examplebox}
+\noindent In general, however, it is the case that $\displaystyle \mathbb{E}(r(X)) \neq r(\mathbb{E}(X))$.
+
 \chapter{Stochastic simulations}
 \section{Defining simulations}
 A stochastic simulation allows to study complex probabilistic models by generating values for a random variable that will be used into the model, providing an approximation of a random system. \newline
@@ -1279,6 +1326,55 @@ Ancestral sampling is a generative technique that exploits the Markov property t
     For this reason, the marginal distributions of $\displaystyle E$ and $\displaystyle F$ must be uniform, provided the support is defined as a subset of $\displaystyle \mathbb{R}^+$, or belong to the Gamma or exponential families. \newline
     Therefore, drawing a single sample from the joint distribution requires (independently) sampling $\displaystyle e$ and $\displaystyle f$ from their respective distributions and using them to draw $\displaystyle g$, which, in turn, allows to sample $\displaystyle h$.
 \end{examplebox}
+\section{Causal inference}
+Causation occurs whenever a change in one variable directly produces a change in another variable. \newline
+However, an association, which describes a statistical relationship or dependence between variables, does not necessarily indicate a cause-and-effect relationship because it may arise from a ``spurious correlation'' in which the variables are actually influenced by a hidden ``confounding'' variable.
+\begin{examplebox}[Conspiracy theories in the era of COVID-19]
+    In the early 2020s, conspiracies about the COVID-19 pandemic arose because many reported cases in the United States of America occurred in the proximity of 5G cable stations. \newline
+    However, this relationship can be explained by considering the number of people living in these regions as a larger population introduces a higher risk of spreading the disease while also providing an incentive to build cable stations nearby.
+\end{examplebox}
+\noindent Causation can be formally described using causal directed acyclic graphs. \newline
+Assuming $\displaystyle X$ is an observable potential cause and $\displaystyle Y$ is an observed effect, define the random vector $\displaystyle \mathbf{U}$ as a collection of (unobservable) confounding variables that can affect $\displaystyle X$ or $\displaystyle Y$: the resulting causal directed acyclic graph will be structured as
+
+\begin{tikzpicture}[
+    ->, 
+    >=stealth, 
+    thick,
+    node distance=1.5cm, 
+    circle node/.style={circle, draw, thick, minimum size=8mm}
+]
+    \node[circle node] (U) at (1.8, 2) {$U$};
+    \node[circle node] (X) at (0, 0) {$X$};
+    \node[circle node] (Y) at (3.6, 0) {$Y$};
+    
+    \draw (U) -- (X);
+    \draw (U) -- (Y);
+    \draw (X) -- (Y);
+\end{tikzpicture}
+
+\noindent By the Markov property, this graph models the joint distribution $\displaystyle \mathbb{P}(x, y, \mathbf{u}) = \mathbb{P}(\mathbf{u})\mathbb{P}(x|\mathbf{u})\mathbb{P}(y|x, \mathbf{u})$. \newline
+More specifically, while the association between $\displaystyle X$ and $\displaystyle Y$ can be represented by the conditional distribution $\displaystyle \mathbb{P}(y|\text{Observe } X = x) =  \mathbb{P}(y|x)$, the causal distribution requires fixing some $\displaystyle X = x$ and changing the graph as follows:
+
+\begin{tikzpicture}[
+    ->, 
+    >=stealth, 
+    thick,
+    node distance=1.5cm, 
+    circle node/.style={circle, draw, thick, minimum size=8mm},
+    square node/.style={rectangle, draw, thick, minimum size=8mm}
+]
+    \node[circle node] (U) at (1.8, 2) {$U$};
+    \node[square node] (x) at (0, 0) {$x$};
+    \node[circle node] (Y) at (3.6, 0) {$Y$};
+    
+    \draw (U) -- (Y);
+    \draw (x) -- (Y);
+\end{tikzpicture}
+
+\noindent In fact, using the point mass distribution $\displaystyle \delta_X(x)$, the causal distribution can be retrieved by computing
+\[\mathbb{P}(y|\text{Set } X = x) = \int \mathbb{P}(y|x, \mathbf{u})\mathbb{P}(\mathbf{u}) \ d\mathbf{u}\]
+Overall, an association indicates a passive conditioning based on observations, whereas a causal distribution describes an active conditioning based on intervention. \newline
+However, a causal distribution cannot be estimated directly because it depends on a collection of not (entirely) observable variables, requiring to collect data in order to measure (some elements) of $\displaystyle \mathbf{U}$.
 
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}
