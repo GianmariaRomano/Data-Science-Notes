@@ -388,7 +388,7 @@ Since the recursive calls can be executed until the base case, where $\displayst
          &= c_2n\log_2(n) + (c + c_3)n - c_3 = \Theta(n\log n)
 \end{align*}
 \subsection{Quicksort}
-Quicksort is a randomized ``divide-et-impera'' algorithm that randomly selects a pivot and partitions the array into two sub-list, one containing the elements smaller than the pivot and the other containing the elements greater than the pivot, that are recursively sorted using the same strategy.
+Quicksort is a randomized ``divide-et-impera'' algorithm that randomly selects a pivot and partitions the array into two sub-lists, one containing the elements smaller than the pivot and the other containing the elements greater than the pivot, that are recursively sorted using the same strategy.
 
 \begin{algorithm}[H]
     \caption{The Quicksort algorithm.}
@@ -438,7 +438,7 @@ A list is an abstract data type that is used to store a sequence of objects, eac
     \item \texttt{L.insert(x, i)}: The value \texttt{x} gets inserted at position \texttt{i}.
     \item \texttt{L.remove(i)}: The value located in position \texttt{i} gets removed.
     \item \texttt{L.get(i)}: The list returns the value located in position \texttt{i}.
-    \item \texttt{L.set(i)}: The value located in position \texttt{i} is set to \texttt{x}.
+    \item \texttt{L.set(x, i)}: The value located in position \texttt{i} is set to \texttt{x}.
 \end{itemize}
 A list can be implemented using an array, which is a contiguous data structure where elements are stored sequentially and accessed using a positional index, or using a linked list, which is a non-contiguous data structure where elements can be stored in different memory locations and accessed using pointers.
 \begin{table}[H]
@@ -455,16 +455,16 @@ A list can be implemented using an array, which is a contiguous data structure w
     \caption{Comparing the complexity of list operations for different data structures.}
     \label{tab:list_complexity}
 \end{table}
-\noindent Overall, arrays are simple to manage but more computationally efficient, whereas linked lists are flexible and efficient but problematic to manage.
+\noindent Overall, arrays are simple to manage but computationally inefficient, whereas linked lists are flexible and efficient but problematic to manage.
 \section{Heaps}
 A heap is a concrete data structure that stores data using a (binary) tree that satisfies the following structural properties:
 \begin{itemize}
-    \item The tree is build top-down, starting from the root and and filling each tree level left-to-right before moving to the next one. \newline
+    \item The tree is built top-down, starting from the root and and filling each tree level left-to-right before moving to the next one. \newline
     This implies that the height of a tree containing $\displaystyle n$ nodes will be $\displaystyle \lceil\log_2(n)\rceil$.
     \item The value of a node is always greater or equal than the values of its children, which, however, are not necessarily sorted because this property only holds locally.
     \item If a heap is implemented as an array, the child nodes of the element at position $\displaystyle i$ are located at positions $\displaystyle 2i$ and $\displaystyle (2i + 1)$, respectively, whereas the parent node is located at position $\displaystyle \bigg\lfloor\frac{i}{2}\bigg\rfloor$.
 \end{itemize}
-For this reason, a heap is useful to keep track of the maximum or minimum value in an array.
+For this reason, a heap is useful to efficiently sort the values in an array.
 \section{Priority queues}
 A priority queue is an abstract data structure that stores a set of objects, each with an associated priority, while supporting the following operations:
 \begin{itemize}
@@ -472,7 +472,7 @@ A priority queue is an abstract data structure that stores a set of objects, eac
     \item \texttt{Q.peekMax()}: The queue returns the maximum value.
     \item \texttt{Q.removeMax()}: The queue removes and returns the maximum value.
 \end{itemize}
-While a priority queue can be implemented using an array or a (doubly) linked lists, these data structures tend to be quite inefficient when peeking or removing the maximum value. \newline
+While a priority queue can be implemented using an array or a (doubly) linked list, these data structures tend to be quite inefficient when peeking or removing the maximum value. \newline
 For this reason, priority queues are often implemented using heaps because the heap property allows to make queue operations more efficient.
 \begin{table}[H]
     \centering
