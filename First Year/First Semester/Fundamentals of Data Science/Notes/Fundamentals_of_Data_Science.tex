@@ -835,7 +835,7 @@ Overall, concerning the bias-variance trade-off, implementing a shallow decision
 However, it is possible to mitigate the risk of overfitting by introducing a regularization term or by performing post-pruning, which consists of recursively replacing decision nodes with leaf nodes and evaluating performance improvements using a validation dataset.
 \subsection{Using decision trees for regression tasks}
 While decision trees are often used for classification tasks, they can be adapted to perform regression by predicting the average value of the target variable, resulting in
-\[\text{Prediction} = \mu_Z = \frac{1}{n}\sum_{i = 1}^n y_i \text{, for a node $Z$ with $n$ data points.}\]
+\[\hat{y}_i = \mu_Z = \frac{1}{n}\sum_{i = 1}^n y_i \text{, for a node $Z$ with $n$ data points.}\]
 Therefore, to achieve homogeneity during predictions, regression trees measure impurity using the mean squared error metric, meaning that
 \[MSE(Z) = \frac{1}{n}\sum_{i = 1}^n (y_i - \mu_Z)^2\]
 \section{Ensemble learning techniques}
@@ -857,12 +857,67 @@ Common boosting models include:
 \begin{itemize}
     \item \textbf{Adaptive Boosting: }This model initially assigns equal importance to each training data point and, for each round, updates sample weights to give more importance to misclassified data points. \newline
     Assuming training lasts $\displaystyle T$ steps, the resulting model will be
-    \[F(x) = sign\Bigg(\sum_{t = 1}^T \mathbf{\beta}_tf_t(\mathbf{x}\Bigg)\]
+    \[F(x) = sign\Bigg(\sum_{t = 1}^T \mathbf{\beta}_tf_t(\mathbf{x})\Bigg)\]
     \item \textbf{Gradient Boosting: }Rather than updating weights for data points, this model sequentially builds new learners that predict the residuals of the previous learners. \newline
     Starting from an initial model $\displaystyle F_0(\mathbf{x})$, a generic residual is computed as $\displaystyle r_t = y - F_{t - 1}(\mathbf{x})$: a new weak learner $\displaystyle h_t(\mathbf{x})$ is trained to predict the residual so that the ensemble can be updated using a learning rate $\displaystyle \nu$, resulting in
     \[F_t(\mathbf{x}) = F_{t - 1}(\mathbf{x}) + \nu h_t(\mathbf{x})\]
     Among this family of models, XGBoost serves as an optimized and regularized implementation of the gradient boosting algorithm.
 \end{itemize}
+
+\chapter{Neural networks}
+\section{The representation learning paradigm}
+While many machine learning models rely on finding and engineering custom features, finding suitable information tends to be time consuming and impractical without expert knowledge. \newline
+For this reason, the representation learning paradigm allows a model to automatically learn features from raw data. \newline
+For instance, deep learning is a representation learning method that uses a hierarchy of layers to learn various levels of information.
+\begin{examplebox}[Using a deep learning model for face recognition]
+    A deep neural network learns how to recognize a face starting from the extraction of simple ``low-level'' features, such as edges or corners, that are combined into ``middle-level'' features, such as shapes or textures. \newline
+    The shapes and textures are then combined into ``high-level'' object parts, which are ultimately combined into the abstract concept of a face.
+\end{examplebox}
+\noindent Most deep learning models are based on neural networks, which typically consist of a linear transformation of the input features followed by an activation function.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/shallow_linear_nn.png}
+    \caption{Common implementations of simple neural networks.}
+    \label{fig:shallow_linear_nn}
+\end{figure}
+\noindent Overall, the capacity of a deep learning network depends on its depth, which denotes the number of hidden layers in the architecture, and its width, which indicates the number of neurons in each hidden layer.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/shallow_nn_nomenclature.png}
+    \caption{Nomenclature for a shallow neural network.}
+    \label{fig:shallow_nn_nomenclature}
+\end{figure}
+\section{Shallow neural networks}
+Generally speaking, one can implement arbitrarily complex model using a ``shallow'' neural network because, since a stack of many linear layers is mathematically equivalent to a single linear layer, one would have
+\[y = \mathbf{W}_n(\dots(\mathbf{W}_2(\mathbf{W}_1x))\dots) = (\mathbf{W}_n\dots\mathbf{W}_2\mathbf{W}_1)x = \mathbf{W}_{\text{stacked}}x\]
+In fact, the ``universal approximation theorem'' states that a shallow neural network with enough hidden units can describe any continuous function on a compact subset of $\displaystyle \mathbb{R}^D$ to arbitrary precision. \newline
+From a broader perspective, a shallow neural network with $\displaystyle D_i$ inputs, $\displaystyle D$ hidden units and $\displaystyle D_o$ outputs can be described using the following equations:
+\[h_d = Act\Bigg(\theta_{d0} + \sum_{i = 1}^{D_i} \theta_{di}x_i\Bigg) \quad y_j = \phi_{j0} + \sum_{d = 1}^D \phi_{jd}h_d \text{, with $Act(z) = ReLU(z) = \max\{0, z\}$.}\]
+Therefore, learning a shallow neural network is equivalent to learning a total of $\displaystyle D(D_i + 1) + D_o(D_i + 1)$ parameters, assuming the bias terms are considered.
+\begin{examplebox}[Implementing a shallow neural network based on linear regression]
+    A shallow neural network is implemented as follows:
+    \[y = f(x, \phi) = \phi_0 + \phi_1Act(\theta_{10} + \theta_{11}x) + \phi_2Act(\theta_{20} + \theta_{21}x) + \phi_3Act(\theta_{30} + \theta_{31}x)\]
+    This model corresponds to a piecewise linear function that, with the help of hidden units, can be formulated as
+    \[y = \phi_0 + \phi_1h_1 + \phi_2h_2 + \phi_3h_3 \text{, where $h_i = Act(\theta_{i0} + \theta_i1x)$.}\]
+    In particular, learning this model is equivalent to learning a total of $\displaystyle 20$ parameters.
+\end{examplebox}
+\subsection{Optimizing a shallow neural network using backpropagation}
+A neural network is optimized by performing backpropagation, which consists of repeatedly applying the chain rule to compute the gradients of a loss function. \newline
+Generally speaking, a neural network is optimized using the binary cross-entropy loss function, which is defined as
+\[\mathcal{L} = \frac{1}{N}\sum_{i = 1}^N \ell_i(f(x), y)\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/shallow_nn_binary.png}
+    \caption{Example of a shallow neural network for binary classification.}
+    \label{fig:shallow_nn_binary}
+\end{figure}
+\noindent For instance, optimizing a shallow neural network used for a binary classification task requires using the chain rule to compute the gradient of the loss function with respect to the parameters $\displaystyle w_1$, $\displaystyle w_2$ and $\displaystyle b$. \newline
+In particular, using the chain rule results in
+\begin{align*}
+    \frac{\partial\mathcal{L}}{\partial w_2} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial w_2} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot h = (\hat{y} - y)h^T \\
+    \frac{\partial\mathcal{L}}{\partial b} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial b} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot \mathbf{1}^T = (\hat{y} - y)\mathbf{1}^T \\
+    \frac{\partial\mathcal{L}}{\partial w_1} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial h}\frac{\partial h}{\partial(xw_1)}\frac{\partial(xw_1)}{\partial w_1} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot w_2^T \cdot \mathbf{1}(xw_1 > 0) \cdot x = (\hat{y} - y) \cdot w_2^T \cdot \mathbf{1}(xw_1 > 0) \cdot x
+\end{align*}
 
 \part{Network Science}
 
@@ -1093,7 +1148,7 @@ However, when considering a directed graph, the distance from node $\displaystyl
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{images/shortest_paths.png}
-    \caption{Shortest paths between two nodes in a directed network.}
+    \caption{Shortest paths between two nodes in a directed graph.}
     \label{fig:shortest_paths}
 \end{figure}
 \noindent From a broader perspective, distances in a network are measured using the breadth-first search algorithm, which acts as a variant of Dijkstra's algorithm for unweighted graphs. \newline

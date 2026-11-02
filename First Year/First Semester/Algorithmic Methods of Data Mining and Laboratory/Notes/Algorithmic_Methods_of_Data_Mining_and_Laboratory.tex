@@ -464,7 +464,7 @@ A heap is a concrete data structure that stores data using a (binary) tree that 
     \item The value of a node is always greater or equal than the values of its children, which, however, are not necessarily sorted because this property only holds locally.
     \item If a heap is implemented as an array, the child nodes of the element at position $\displaystyle i$ are located at positions $\displaystyle 2i$ and $\displaystyle (2i + 1)$, respectively, whereas the parent node is located at position $\displaystyle \bigg\lfloor\frac{i}{2}\bigg\rfloor$.
 \end{itemize}
-For this reason, a heap is useful to efficiently sort the values in an array.
+For this reason, a heap is useful because it allows to implement the Heapsort algorithm for sorting the values in an array.
 \section{Priority queues}
 A priority queue is an abstract data structure that stores a set of objects, each with an associated priority, while supporting the following operations:
 \begin{itemize}
@@ -490,6 +490,28 @@ For this reason, priority queues are often implemented using heaps because the h
     \caption{Comparing the complexity of queue operations for different data structures}
     \label{tab:queue_operations}
 \end{table}
+\section{Dictionaries}
+A dictionary is an abstract data type that stores pairs of keys, which are unique and immutable objects, and associated values while supporting the following operations:
+\begin{itemize}
+    \item \texttt{D.set(k, v)}: Key \texttt{k} is assigned value \texttt{k}. \newline
+    If the key is not present in the dictionary, this operation acts as an insertion method.
+    \item \texttt{D.get(k)}: The dictionary returns the value associated to key \texttt{k}.
+    \item \texttt{D.remove(k)}: The dictionary removes key \texttt{k} and the value associated to it.
+    \item \texttt{D.exists(k)}: The dictionary checks whether it contains key \texttt{k}.
+\end{itemize}
+Assuming all keys in a dictionary are numeric values, this data type can efficiently be implemented using an array, which stores each key in the dictionary, and a linked list, which points each key to the corresponding value. \newline
+On the other hand, generic non-numeric keys first need to be mapped onto numeric representations, although it is necessary to discard letter case and avoid collisions, which occur when different items are mapped onto the same value. \newline
+Therefore, dictionaries are organized using a hash function $\displaystyle h: [0, \dots, 2^m - 1] \to [0, \dots, 2^n - 1]$, typically having $\displaystyle m >> n$, that minimizes the risk of collisions between keys. \newline
+For instance, when using a random hash map, the probability of a collision between two keys $\displaystyle x \neq y$ is given by
+\[\mathbb{P}(h(x) = h(y)) = \frac{1}{2^n} \text{ } \forall x, y \in [0, \dots, 2^m - 1]\]
+However, a random function cannot be used as a hash map because, since it returns a different value upon every call, it is not compatible with the deterministic nature of hash functions.
+\begin{examplebox}[Using universal hashing to manage IP addresses]
+    An IP address is expressed as a sequence $\displaystyle x = x_1x_2x_3x_4$, which consists of four $\displaystyle 8$-bit values, that are typically mapped to the set $\displaystyle [0, \dots, 255]$. \newline
+    The mapping starts with the choice of a prime number $\displaystyle p$, which is slightly larger than $\displaystyle 255$, that is used to sample four weights $\displaystyle \alpha_1, \alpha_2, \alpha_3, \alpha_4$, which are drawn uniformly at random from the set $\displaystyle \{1, \dots, p - 1\}$. \newline
+    Therefore, the resulting hash function will be given by
+    \[h(x) = \Bigg(\sum_{i = 1}^4 \alpha_ix_i\Bigg) \text{, for which one can prove that } \mathbb{P}(h(x) = h(y)) = \frac{1}{p} \text{ } \forall x \neq y\]
+\end{examplebox}
+\noindent Overall, hash functions are often handled with buckets, which act as linked lists that store all the key-value pairs associated to the same hash value, so that, if the expected size of each bucket is small, operations can be carried out in constant time.
 
 \chapter{Data relationships}
 \section{Distance functions}
