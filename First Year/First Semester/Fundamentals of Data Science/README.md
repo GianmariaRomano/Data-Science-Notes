@@ -43,6 +43,7 @@
 | October 26 | Non-parametric models. |
 | October 29 | Paths in networks. |
 | October 30 | Exercises on linear models. |
+| November 2 | Shallow neural networks. |
 
 </details>
 
