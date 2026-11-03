@@ -37,6 +37,7 @@
 | October 27 | Information retrieving. |
 | October 29 | Data structures: Lists, Priority Queues, Heaps. |
 | November 2 | Data structures: Dictionaries. |
+| November 3 | Measuring the performance of an algorithm. |
 
 </details>
 
