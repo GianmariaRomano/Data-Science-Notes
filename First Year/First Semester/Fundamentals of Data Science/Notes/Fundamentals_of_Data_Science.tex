@@ -873,7 +873,7 @@ For instance, deep learning is a representation learning method that uses a hier
     A deep neural network learns how to recognize a face starting from the extraction of simple ``low-level'' features, such as edges or corners, that are combined into ``middle-level'' features, such as shapes or textures. \newline
     The shapes and textures are then combined into ``high-level'' object parts, which are ultimately combined into the abstract concept of a face.
 \end{examplebox}
-\noindent Most deep learning models are based on neural networks, which typically consist of a linear transformation of the input features followed by an activation function.
+\noindent Most deep learning models are based on neural networks, which typically consist of a linear transformation of the input features followed by a (non-linear) activation function.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{images/shallow_linear_nn.png}
@@ -888,8 +888,8 @@ For instance, deep learning is a representation learning method that uses a hier
     \label{fig:shallow_nn_nomenclature}
 \end{figure}
 \section{Shallow neural networks}
-Generally speaking, one can implement arbitrarily complex model using a ``shallow'' neural network because, since a stack of many linear layers is mathematically equivalent to a single linear layer, one would have
-\[y = \mathbf{W}_n(\dots(\mathbf{W}_2(\mathbf{W}_1x))\dots) = (\mathbf{W}_n\dots\mathbf{W}_2\mathbf{W}_1)x = \mathbf{W}_{\text{stacked}}x\]
+Generally speaking, one can implement arbitrarily complex models using a ``shallow'' neural network because, since a stack of many linear layers is mathematically equivalent to a single linear layer, one would have
+\[y = W_n(\dots(W_2(W_1x))\dots) = (W_n\dots W_2W_1)x = \mathbf{W}_{\text{stacked}}x\]
 In fact, the ``universal approximation theorem'' states that a shallow neural network with enough hidden units can describe any continuous function on a compact subset of $\displaystyle \mathbb{R}^D$ to arbitrary precision. \newline
 From a broader perspective, a shallow neural network with $\displaystyle D_i$ inputs, $\displaystyle D$ hidden units and $\displaystyle D_o$ outputs can be described using the following equations:
 \[h_d = Act\Bigg(\theta_{d0} + \sum_{i = 1}^{D_i} \theta_{di}x_i\Bigg) \quad y_j = \phi_{j0} + \sum_{d = 1}^D \phi_{jd}h_d \text{, with $Act(z) = ReLU(z) = \max\{0, z\}$.}\]
@@ -903,16 +903,15 @@ Therefore, learning a shallow neural network is equivalent to learning a total o
 \end{examplebox}
 \subsection{Optimizing a shallow neural network using backpropagation}
 A neural network is optimized by performing backpropagation, which consists of repeatedly applying the chain rule to compute the gradients of a loss function. \newline
-Generally speaking, a neural network is optimized using the binary cross-entropy loss function, which is defined as
-\[\mathcal{L} = \frac{1}{N}\sum_{i = 1}^N \ell_i(f(x), y)\]
+Generally speaking, a neural network is optimized using the (binary) cross-entropy loss function, which is defined as
+\[\mathcal{L} = \frac{1}{N}\sum_{i = 1}^N \ell_i(f(x), y) \text{, for a dataset $\mathcal{D} = \{(x_i, y_i)\}_{i = 1}^N$.}\]
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{images/shallow_nn_binary.png}
     \caption{Example of a shallow neural network for binary classification.}
     \label{fig:shallow_nn_binary}
 \end{figure}
-\noindent For instance, optimizing a shallow neural network used for a binary classification task requires using the chain rule to compute the gradient of the loss function with respect to the parameters $\displaystyle w_1$, $\displaystyle w_2$ and $\displaystyle b$. \newline
-In particular, using the chain rule results in
+\noindent For instance, optimizing a shallow neural network used for a binary classification task requires using the chain rule to compute the gradient of the loss function with respect to the parameters $\displaystyle w_1$, $\displaystyle w_2$ and $\displaystyle b$, resulting in
 \begin{align*}
     \frac{\partial\mathcal{L}}{\partial w_2} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial w_2} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot h = (\hat{y} - y)h^T \\
     \frac{\partial\mathcal{L}}{\partial b} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial b} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot \mathbf{1}^T = (\hat{y} - y)\mathbf{1}^T \\
