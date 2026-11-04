@@ -838,7 +838,7 @@ Furthermore, whenever two random variables $\displaystyle X$ and $\displaystyle 
 A random sample $\displaystyle \mathcal{D}_n = \{X_1, \dots, X_n\}$ is said to be ``independent and identically distributed'' if all the sampled random variables are independent and come from the same population model $\displaystyle F_X$, allowing to define their joint distribution using the likelihood function, resulting in
 \[\mathbb{P}(\mathcal{D}_n) = F(x_1, \dots, x_n) = \mathbb{P}(X_1 \leq x_1, \dots, X_n \leq x_n) = \prod_{i = 1}^n \mathbb{P}(X_i \leq x_i) = \prod_{i = 1}^n F(x_i)\]
 \begin{examplebox}[Maximum likelihood estimation on a Gaussian mixture model]
-    Suppose that the data points of a random sample $\displaystyle \mathcal{D}$ are drawn independent are identically distributed from a $\displaystyle K$-mode ``mixture of Gaussians'' distribution, meaning that
+    Suppose that the data points of a random sample $\displaystyle \mathcal{D}_n$ are drawn independent and identically distributed from a $\displaystyle K$-mode ``mixture of Gaussians'' distribution, meaning that
     \[\mathbb{P}(x_i) = \sum_{j = 1}^K \pi_j \cdot \mathcal{N}(x_i|, \mu_j, \sigma_j^2) \text{ } \forall x_i \in \mathcal{D}\]
     Under the assumption of independence, the joint probability of the random sample can be expressed using the likelihood function, resulting in
     \[\mathbb{P}(\mathcal{D}_n) = \mathbb{P}(x_1, \dots, x_n) = \prod_{i = 1}^n \mathbb{P}(x_i) = \prod_{i = 1}^n\Bigg(\sum_{j = 1}^K \pi_j \cdot \mathcal{N}(x_i|\mu_j, \sigma_j^2)\Bigg)\]
@@ -873,8 +873,14 @@ In fact, the expected value of a random variable $\displaystyle X: \Omega \to S_
     In fact, if $\displaystyle X \sim Unif(a, b)$, then its expected value will be given by
     \[\mathbb{E}(X) = \int_{\mathbb{R}} x \ dF_X(x) = \int_a^b \frac{x}{b - a} \ dx = \frac{x^2}{2(b - a)}\Bigg|_a^b = \frac{b^2 - a^2}{2(b - a)} = \frac{(b - a)(b + a)}{2(b - a)} = \frac{a + b}{2}\]
 \end{examplebox}
-\noindent Overall, the expected value of a random variable depends solely on its distribution and can be seen as a ``center of mass'', although it is not robust to extreme values because a small change in the probability of small or large values can significantly affect the expected value. \newline
-Furthermore, for some distributions, the expected value may not even exist because it is not well-defined.
+\noindent Overall, the expected value of a random variable depends solely on its distribution and can be seen as a ``center of mass'', although it is not robust to extreme values because a small change in the probability of small or large values can significantly affect the expected value.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/distribution_central_summary.png}
+    \caption{Comparing the mean, median and mode of a distribution.}
+    \label{fig:distribution_central_summary}
+\end{figure}
+\noindent Furthermore, for some distributions, the expected value may not even exist because it is not well-defined.
 \begin{examplebox}[The Cauchy distribution]
     A continuous random variable $\displaystyle X$ is said to follow a Cauchy distribution if $\displaystyle X \sim t(1)$, meaning that its probability density function will be given by
     \[f_X(x) = \frac{1}{\pi(x^2 + 1)} \text{, for $x \in \mathbb{R}$.}\]
@@ -893,7 +899,55 @@ The law of the lazy statistician states that, if $\displaystyle X$ is a (continu
     Assuming $\displaystyle X$ is a continuous random variable with probability density function $\displaystyle f_X(x)$, pick any event $\displaystyle A$ and define the indicator variable $\displaystyle Y = \mathbb{I}_A(X)$: the expected value of $\displaystyle Y$ will be given by
     \[\mathbb{E}(Y) = \mathbb{E}(\mathbb{I}_A(X)) = \int_{\mathbb{R}} \mathbb{I}_A(x)f_X(x) \ dx = \int_A f_X(x) \ dx = \mathbb{P}(X \in A)\]
 \end{examplebox}
-\noindent In general, however, it is the case that $\displaystyle \mathbb{E}(r(X)) \neq r(\mathbb{E}(X))$.
+\noindent However, one has $\displaystyle \mathbb{E}(r(X)) = r(\mathbb{E}(X))$ if and only if $\displaystyle r$ is an affine map. \newline
+In fact, if $\displaystyle Y = r(X) = \alpha + \beta X$, it is possible to state that
+\[\mathbb{E}(Y) = \mathbb{E}(r(X)) = \mathbb{E}(\alpha + \beta X) = \alpha + \beta X = r(\mathbb{E}(X))\]
+\begin{proofbox}
+    If $\displaystyle Y = \alpha + \beta X$, where $\displaystyle X$ is a random variable with cumulative distribution function $\displaystyle F_X(x)$, then, by the law of the lazy statistician, one has
+    \begin{align*}
+        \mathbb{E}(Y) = \int_{\mathbb{R}} (\alpha + \beta x) \ dF_X(x)
+            &= \int_{\mathbb{R}} \alpha \ dF_X(x) + \int_{\mathbb{R}} \beta x \ dF_X(x) \\
+            &= \alpha\int_{\mathbb{R}} \ dF_X(x) + \beta\int_{\mathbb{R}} x \ dF_X(x) = \alpha + \beta\mathbb{E}(X)
+    \end{align*}
+\end{proofbox}
+\noindent In general, the behaviour of a non-affine map depends on its convexity. \newline
+A function $\displaystyle r: \mathbb{R} \to \mathbb{R}$ is said to be convex on a set $\displaystyle S \subseteq \mathbb{R}$ if, for any $\displaystyle x_1, x_2 \in S$ and $\displaystyle t \in [0, 1]$, one has
+\[r(tx_1 + (1 - t)x_2) \leq tr(x_1) + (1 - t)r(x_2)\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/convex_function.png}
+    \caption{Visualization of a convex function.}
+    \label{fig:convex_function}
+\end{figure}
+\noindent In particular, Jensen's inequality states that, if $\displaystyle r$ is a (strictly) convex deterministic function, it must be the case that $\displaystyle r(\mathbb{E}(X)) \leq \mathbb{E}(r(X))$.
+\begin{examplebox}[The evidence lower bound for a finite mixture of Gaussians]
+    Assuming that, given a generic parametrization $\displaystyle \mathbf{\Theta}$, the joint distribution of a random sample $\displaystyle \mathcal{D}_n$ is modelled as a $\displaystyle K$-mode mixture of Gaussians, one can learn $\displaystyle \mathbf{\Theta}$ by analysing the likelihood function, meaning that
+    \[\hat{\mathbf{\Theta}} = \arg\max_{\mathbf{\Theta}} L(\mathbf{\Theta}) \text{, where } L(\mathbf{\Theta}) = \mathbb{P}_{\mathbf{\Theta}}(\mathcal{D}_n) = \prod_{i = 1}^n p_{\mathbf{\Theta}}(x_i) = \prod_{i = 1}^n\Bigg(\sum_{j = 1}^K \pi_j \cdot \mathcal{N}(x_i|\mu_j, \sigma_j^2)\Bigg)\]
+    Optimizing this function can be made easier by introducing a latent random variable $\displaystyle Y$, which is assumed to follow a marginal distribution $\displaystyle q$, and formulate
+    \[\log(p_{\mathbf{\Theta}}(x)) = \log\Bigg(\int_{S_Y} p_{\mathbf{\Theta}}(x, y) \ dy\Bigg) = \log\Bigg(\int q(y)\frac{p_{\mathbf{\Theta}}(x, y)}{q(y)} \ dy\Bigg) = \log\Bigg(\mathbb{E}_q\Bigg(\frac{p_{\mathbf{\Theta}}(x, y)}{q(y)}\Bigg)\Bigg)\]
+    Since $\displaystyle f(x) = \log(x)$ is a concave function, Jensen's inequality implies that
+    \[\log(p_{\mathbf{\Theta}}(x)) = \log\Bigg(\mathbb{E}_q\Bigg(\frac{p_{\mathbf{\Theta}}(x, y)}{q(y)}\Bigg)\Bigg) \ge \mathbb{E}_q\Bigg(\log\Bigg(\frac{p_{\mathbf{\Theta}}(x, y)}{q(y)}\Bigg)\Bigg) = \mathcal{F}(q, \mathbf{\Theta})\]
+    Therefore, it is possible to define the information gap as
+    \begin{align*}
+        \log(p_{\mathbf{\mathbf{\Theta}}}(x)) - \mathcal{F}(q, \mathbf{\Theta})
+            &= \log(p_{\mathbf{\Theta}}(x)) - \int_{S_Y} q(y)\log\Bigg(\frac{p_{\mathbf{\Theta}}(x, y)}{q(y)}\Bigg) \ dy \\
+            &= \log(p_{\mathbf{\Theta}}(x)) - \int_{S_Y} q(y)\log\Bigg(\frac{p_{\mathbf{\Theta}}(y|x)p_{\mathbf{\Theta}}(x)}{q(y)}\Bigg) \ dy \\
+            &= \log(p_{\mathbf{\Theta}}(x)) - \Bigg(\int_{S_Y} q(y)\log\Bigg(\frac{p_{\mathbf{\Theta}}(y|x)}{q(y)}\Bigg) \ dy + \int_{S_Y} q(y)\log(p_{\mathbf{\Theta}}(x)) \ dy \Bigg) \\
+            &= \log(p_{\mathbf{\Theta}}(x)) - \Bigg(\int_{S_Y} q(y)\log\Bigg(\frac{p_{\mathbf{\Theta}}(y|x)}{q(y)}\Bigg) \ dy + \log(p_{\mathbf{\Theta}}(x))\Bigg) \\
+            &= -\int_{S_Y} q(y)\log\Bigg(\frac{p_{\mathbf{\Theta}}(y|x)}{q(y)}\Bigg) \ dy = \int_{S_Y} q(y)\log\Bigg(\frac{q(y)}{p_{\mathbf{\Theta}}(y|x)}\Bigg) \ dy
+    \end{align*}
+    The computations reveal that the information gap can be expressed as a Kullback-Leiber divergence, which can be proved to be minimum for $\displaystyle p_{\mathbf{\Theta}} = q$ using the expectation maximization algorithm.
+\end{examplebox}
+\noindent An interesting application of Jensen's inequality consists of finding an upper bound for the deviation between the mean and median of a (well-defined) random variable.
+\begin{proofbox}
+    For a well-defined random variable $\displaystyle X$, which has mean equal to $\displaystyle \mathbb{E}(X) = \mu$ and median $\displaystyle m$, it is possible to state that
+    \begin{align*}
+        |\mu - m| = |\mathbb{E}(X) - m|
+            &\stackrel{r(x) = |x|}{=} r(\mathbb{E}(X) - m) \stackrel{\text{Jensen}}{\leq} \mathbb{E}(r(X - m)) = \mathbb{E}(|X - m|) \\
+            &\leq \mathbb{E}(|X - \mu|) \stackrel{\sqrt{x^2} = |x|}{=} \mathbb{E}\bigg(\sqrt{(X - \mu)^2}\bigg) \stackrel{\text{Jensen - Concave}}{\leq} \sqrt{\mathbb{E}((X - \mu)^2)} = \sigma
+    \end{align*}
+    Therefore, the standard deviation of the random variable also acts as an upper bound for the fluctuation between its mean and median.
+\end{proofbox}
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
