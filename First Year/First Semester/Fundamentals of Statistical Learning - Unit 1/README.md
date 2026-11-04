@@ -38,6 +38,7 @@
 | October 28 | $d$-separation and ancestral sampling from directed acyclic graphs. |
 | October 29 | Hypothesis testing for ancestral sampling. |
 | October 30 | Causal inference and the expectation of a random variable. |
+| November 4 | Jensen's inequality. |
 
 </details>
 
