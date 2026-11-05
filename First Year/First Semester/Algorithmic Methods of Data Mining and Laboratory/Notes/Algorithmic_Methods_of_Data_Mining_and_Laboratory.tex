@@ -654,4 +654,44 @@ In particular, since this data structure can handle any Boolean query, it can be
 Therefore, for each term in the query, the posting list now stores both the matching documents and the corresponding weighted frequency scores so that, since the length of the query does not influence the final scores, it is sufficient to compute
 \[\cos(\theta) \propto \frac{\mathbf{q} \cdot \mathbf{d}^i}{\lVert \mathbf{d}^i \rVert_2} = \frac{\sum_{j = 1}^m \mathbf{q}_j \cdot (TF_j^iw_j)}{\sqrt{\sum_{j = 1}^m TF_j^iw_j}} \text{, where $\mathbf{d}^i$ can be stored in a dedicated file.}\]
 
+\chapter{Clustering}
+\section{Defining clustering}
+A clustering algorithm partitions a dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$ into non-overlapping groups such that the data points in the same cluster are closer to each other than to the points belonging to other groups.
+\section{Hierarchical clustering}
+Hierarchical clustering is an unsupervised learning method that produces a tree-like hierarchy of clusters that can be visually summarised using a dendrogram.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/hierarchical_clustering.png}
+    \caption{Example of hierarchical clustering and the resulting dendrogram.}
+    \label{fig:hierarchical_clustering}
+\end{figure}
+\noindent Hierarchical methods can be implemented as top-down ``divisive'' algorithms, which recursively split large clusters into smaller and heterogeneous sub-clusters, or bottom-up ``agglomerative'' algorithms, which treat each data point as an individual cluster and iteratively merge close clusters until all data points belong to the same root cluster. \newline
+Overall, hierarchical clustering provides a flexible approach to data visualization because it does not require a predefined number of clusters, although it tends to be computationally expensive. \newline
+In fact, keeping track of all cluster distances requires $\displaystyle O(n^2)$ time for each of the $\displaystyle n$ iterations, resulting in a total complexity of $\displaystyle O(n^3)$. \newline
+However, this complexity can be reduced to $\displaystyle \Theta(n^2\log(n))$ by introducing a min-heap to efficiently keep track of cluster distances.
+\section{Partitional clustering}
+Partitional clustering is an unsupervised learning algorithm that, given a dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$, with $\displaystyle \mathbf{x}_i \in \mathbb{R}^d \text{ } \forall i$, and an integer $\displaystyle K > 0$, aims to split the dataset into a $\displaystyle K$-partition. \newline
+In particular, a $\displaystyle K$-partition over a dataset $\displaystyle \mathcal{D}$ is defined as a collection of (non-empty) sets $\displaystyle C_1, \dots, C_K \subseteq \mathcal{D}$ such that $\displaystyle C_i \cap C_j = \emptyset \text{ } \forall i \neq j$ and $\displaystyle C_1 \cup \dots \cup C_K = \mathcal{D}$. \newline
+Generally speaking, partitional clustering is performed through the $\displaystyle K$-means optimization problem, which, for a dataset $\displaystyle \mathcal{D}$, aims to find a $\displaystyle K$-partition and a sequence of representatives $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_K \in \mathbb{R}^d$ that minimize the objective function
+\[\mathcal{L} = \sum_{j = 1}^K\sum_{\mathbf{x}_i \in C_j} \lVert \mathbf{x}_i - \mathbf{c}_j \rVert_2^2\]
+More specifically, it is possible to show that the optimal solution to this problem corresponds to the centroids of each cluster, which are defined as
+\[\mathbf{c}_j = \frac{1}{|C_j|}\sum_{\mathbf{x}_i \in C_j} \mathbf{x}_i\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/partitional_clustering.png}
+    \caption{Example of partitional clustering using $\displaystyle K$-means.}
+    \label{fig:partitional_clustering}
+\end{figure}
+\begin{proofbox}
+    Since clusters are independent of one another, it is sufficient to optimize
+    \begin{align*}
+        \mathcal{L}_j &= \sum_{\mathbf{x}_i \in C_j} \lVert \mathbf{x}_i - \mathbf{c}_j \rVert_2^2 \text{ for each centroid $\mathbf{c}_j$, resulting in} \\
+        \frac{\partial\mathcal{L}_j}{\partial\mathbf{c}_j} &= \sum_{\mathbf{x}_i \in C_j} -2(\mathbf{x}_i - \mathbf{c}_j) \\
+            &= -2\sum_{\mathbf{x}_i \in C_j} \mathbf{x}_i + 2\sum_{\mathbf{x}_i \in C_j} \mathbf{c}_j = 2|C_j|\mathbf{c}_j - 2\sum_{\mathbf{x}_i \in C_j} \mathbf{x}_i = 0 \Leftrightarrow \mathbf{c}_j = \frac{1}{|C_j|}\sum_{\mathbf{x}_i \in C_j} \mathbf{x}_i
+    \end{align*}
+\end{proofbox}
+\noindent Overall, the main issue of partitional clustering lies in the fact that $\displaystyle K$-means is an $\displaystyle \mathbf{NP}$-hard problem because the optimization procedure requires $\displaystyle O(K^n)$ time. \newline
+For this reason, partitional clustering is often performed using $\displaystyle (1 + \varepsilon)$-approximation algorithms whose running time is $\displaystyle O(n^{\frac{1}{\varepsilon}})$, requiring to consider a trade-off between computational complexity and approximation quality. \newline
+Special exceptions in which the $\displaystyle K$-means algorithm is guaranteed to run in polynomial time include choosing $\displaystyle K = 1$ and $\displaystyle K = n$, where the optimal solution is trivial, as well as running the algorithm for one-dimensional data points, where polynomial time can be achieved using dynamic programming.
+
 \end{document}

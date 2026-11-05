@@ -936,7 +936,7 @@ A function $\displaystyle r: \mathbb{R} \to \mathbb{R}$ is said to be convex on 
             &= \log(p_{\mathbf{\Theta}}(x)) - \Bigg(\int_{S_Y} q(y)\log\Bigg(\frac{p_{\mathbf{\Theta}}(y|x)}{q(y)}\Bigg) \ dy + \log(p_{\mathbf{\Theta}}(x))\Bigg) \\
             &= -\int_{S_Y} q(y)\log\Bigg(\frac{p_{\mathbf{\Theta}}(y|x)}{q(y)}\Bigg) \ dy = \int_{S_Y} q(y)\log\Bigg(\frac{q(y)}{p_{\mathbf{\Theta}}(y|x)}\Bigg) \ dy
     \end{align*}
-    The computations reveal that the information gap can be expressed as a Kullback-Leiber divergence, which can be proved to be minimum for $\displaystyle p_{\mathbf{\Theta}} = q$ using the expectation maximization algorithm.
+    The computations reveal that the information gap can be expressed as a Kullback-Leiber divergence, which can be proved to be minimum for $\displaystyle q(y) = p_{\mathbf{\Theta}}(y|x)$ using the expectation maximization algorithm on the parametric model $\displaystyle \mathcal{F}(q, \mathbf{\Theta})$.
 \end{examplebox}
 \noindent An interesting application of Jensen's inequality consists of finding an upper bound for the deviation between the mean and median of a (well-defined) random variable.
 \begin{proofbox}
