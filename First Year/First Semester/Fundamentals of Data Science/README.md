@@ -44,6 +44,7 @@
 | October 29 | Paths in networks. |
 | October 30 | Exercises on linear models. |
 | November 2 | Shallow neural networks. |
+| ~~November 5~~ | This lecture was cancelled. |
 
 </details>
 
