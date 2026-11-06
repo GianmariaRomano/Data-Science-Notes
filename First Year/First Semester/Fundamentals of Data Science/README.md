@@ -45,6 +45,7 @@
 | October 30 | Exercises on linear models. |
 | November 2 | Shallow neural networks. |
 | ~~November 5~~ | This lecture was cancelled. |
+| November 6 | **Discussion about the Kaggle Challenge** |
 
 </details>
 
