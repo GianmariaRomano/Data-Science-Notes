@@ -40,6 +40,7 @@
 | October 30 | Causal inference and the expectation of a random variable. |
 | November 4 | Jensen's inequality. |
 | November 5 | Examples of expectation maximization on Gaussian Mixture Models. |
+| November 6 | The variance of a random variable, summaries of random vectors and the law of total expectation. |
 
 </details>
 
