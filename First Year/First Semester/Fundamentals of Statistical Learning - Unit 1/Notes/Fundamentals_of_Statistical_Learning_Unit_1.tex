@@ -880,7 +880,7 @@ In fact, the expected value of a random variable $\displaystyle X: \Omega \to S_
     \caption{Comparing the mean, median and mode of a distribution.}
     \label{fig:distribution_central_summary}
 \end{figure}
-\noindent Furthermore, for some distributions, the expected value may not even exist because it is not well-defined.
+\noindent Furthermore, whenever the expected value of a distribution does not exist because it is not well-defined, it can be more convenient to analyse the median instead.
 \begin{examplebox}[The Cauchy distribution]
     A continuous random variable $\displaystyle X$ is said to follow a Cauchy distribution if $\displaystyle X \sim t(1)$, meaning that its probability density function will be given by
     \[f_X(x) = \frac{1}{\pi(x^2 + 1)} \text{, for $x \in \mathbb{R}$.}\]
@@ -938,7 +938,30 @@ A function $\displaystyle r: \mathbb{R} \to \mathbb{R}$ is said to be convex on 
     \end{align*}
     The computations reveal that the information gap can be expressed as a Kullback-Leiber divergence, which can be proved to be minimum for $\displaystyle q(y) = p_{\mathbf{\Theta}}(y|x)$ using the expectation maximization algorithm on the parametric model $\displaystyle \mathcal{F}(q, \mathbf{\Theta})$.
 \end{examplebox}
-\noindent An interesting application of Jensen's inequality consists of finding an upper bound for the deviation between the mean and median of a (well-defined) random variable.
+\subsection{Variational characterizations for random variables}
+Suppose you want to predict a value $\displaystyle d$ for a random variable $\displaystyle X$, which is assumed to have finite mean $\displaystyle \mu$ and median $\displaystyle m$. \newline
+Generally speaking, the quality of a prediction can be measured using a loss function $\displaystyle \mathcal{L}(X, d)$ that quantifies the resulting prediction error. \newline
+By considering the risk function, it is possible to identify the optimal prediction as the value $\displaystyle d^*$ that minimizes the average prediction error, meaning that
+\[d^* = \arg\min_d \mathbb{E}(\mathcal{L}(X, d))\]
+For instance, whenever the mean squared error is used to evaluate a regression model, it is possible to show that $\displaystyle \mathbb{E}((X - \mu)^2) \leq \mathbb{E}((X - d)^2) \Rightarrow d^* = \mu$.
+\begin{proofbox}
+    Using the linearity of expectation, let
+    \[\mathbb{E}((X - d)^2) = \mathbb{E}(X^2 - 2dX + d^2) = \mathbb{E}(X^2) + \mathbb{E}(-2dX) + \mathbb{E}(d^2) = \mathbb{E}(X^2) - 2d\mu + d^2\]
+    Optimizing the mean squared error with respect to $\displaystyle d$ results in
+    \[\frac{\partial\mathbb{E}((X - d)^2)}{\partial d} = -2\mu + 2d = 0 \Leftrightarrow d^* = \mu\]
+\end{proofbox}
+\noindent On the other hand, whenever the model is evaluated using the mean absolute error, one has $\displaystyle \mathbb{E}(|X - m|) \leq \mathbb{E}(|X - d|) \Rightarrow d^* = m$.
+\begin{proofbox}
+    Let $\displaystyle X$ be a continuous random variable with probability density function $\displaystyle f_X$: assuming $\displaystyle d > m$, consider
+    \begin{align*}
+        \mathbb{E}(|X - d|) - \mathbb{E}(|X - m|)
+            &= \int_{-\infty}^{+\infty} (|x - d| + |x - m|)f_X(x) \ dx \\
+            &\ge \int_{-\infty}^m (d - m)f_X(x)dx + \int_m^d (m - d)f_X(x)dx + \int_d^{+\infty} (m - d)f_X(x)dx \\
+            &= (d - m)(\mathbb{P}(X \leq m) - \mathbb{P}(X > m)) \stackrel{\mathbb{P}(X \leq m) \ge \frac{1}{2} \ge \mathbb{P}(X > m)}{\ge} 0
+    \end{align*}
+    This result suggests that $\displaystyle \mathbb{E}(|X - m|) \leq \mathbb{E}(|X - d|)$, meaning that $\displaystyle d^* = m$ acts as a minimum for the mean absolute error.
+\end{proofbox}
+\noindent Overall, variational characterizations come in handy to define an upper bound for the deviation between the mean and median of a (well-defined) random variable.
 \begin{proofbox}
     For a well-defined random variable $\displaystyle X$, which has mean equal to $\displaystyle \mathbb{E}(X) = \mu$ and median $\displaystyle m$, it is possible to state that
     \begin{align*}
@@ -948,6 +971,125 @@ A function $\displaystyle r: \mathbb{R} \to \mathbb{R}$ is said to be convex on 
     \end{align*}
     Therefore, the standard deviation of the random variable also acts as an upper bound for the fluctuation between its mean and median.
 \end{proofbox}
+\section{The variance of a random variable}
+Intuitively, the variance of a random variable can describe how a representative for its distribution, such as the expected value, tends to deviate from the typical behaviour. \newline
+In fact, if a random variable $\displaystyle X: \Omega \to S_X$ with cumulative distribution function $\displaystyle F_X$ has finite mean $\displaystyle \mathbb{E}(X) = \mu$, then its variance is formally defined as
+\[\mathbb{V}(X) = \mathbb{E}((X - \mathbb{E}(X))^2) = \int_{\mathbb{R}} (x - \mu)^2 \ dF_X(x) \Rightarrow SD(X) = \sqrt{\mathbb{V}(X)}\]
+\begin{examplebox}[Modelling price variability]
+    Suppose that the prices of two services are modelled using the random variables $\displaystyle X \sim Unif(25, 35)$ and $\displaystyle Y \sim Unif(15, 45)$: one can see that
+    \[\mathbb{E}(X) = \frac{25 + 35}{2} = 30 = \frac{15 + 45}{2} = \mathbb{E}(Y)\]
+    However, looking at the variance of each variable reveals that
+    \begin{align*}
+        \mathbb{V}(X) &= \int_{\mathbb{R}} (x - 30)^2\frac{1}{10}\mathbb{I}_{[25, 35]}(x) \ dx = \int_{25}^{35} \frac{(x - 30)^2}{10} \ dx = \frac{25}{3} \\
+        \mathbb{V}(Y) &= \int_{\mathbb{R}} (x - 30)^2\frac{1}{30}\mathbb{I}_{[15, 45]}(x) \ dx = \int_{15}^{45} \frac{(x - 30)^2}{30} \ dx = 75
+    \end{align*}
+\end{examplebox}
+\noindent Alternatively, one can use the linearity property to express the variance of a random variable as
+\begin{align*}
+    \mathbb{V}(X) = \mathbb{E}((X - \mathbb{E}(X))^2)
+        &= \mathbb{E}(X^2 - 2X\mathbb{E}(X) + \mathbb{E}^2(X)) \\
+        &= \mathbb{E}(X^2) - 2\mathbb{E}(X)\mathbb{E}(X) + \mathbb{E}^2(X) = \mathbb{E}(X^2) - \mathbb{E}^2(X)
+\end{align*}
+In particular, if $\displaystyle Y = \alpha + \beta X$, then it is possible to state that $\displaystyle \mathbb{V}(Y) = \beta^2\mathbb{V}(X)$.
+\begin{proofbox}
+    If $\displaystyle Y = \alpha + \beta X$, where $\displaystyle X$ has (finite) mean $\displaystyle \mathbb{E}(X)$, then its variance is given by
+    \begin{align*}
+        \mathbb{V}(Y) = \mathbb{V}(\alpha + \beta X)
+            &= \mathbb{E}((\alpha + \beta X - \mathbb{E}(\alpha + \beta X))^2) = \mathbb{E}((\alpha + \beta X - \alpha - \beta\mathbb{E}(X))^2) \\
+            &= \mathbb{E}((\beta(X - \mathbb{E}(X)))^2) = \mathbb{E}(\beta^2(X - \mathbb{E}(X))^2) = \beta^2\mathbb{V}(X)
+    \end{align*}
+\end{proofbox}
+\noindent Furthermore, if $\displaystyle X$ is a bounded random variable, then its variance must exist and be finite, with $\displaystyle \mathbb{V}(X) = 0$ if and only if $\displaystyle X = \mathbb{E}(X)$.
+\begin{proofbox}
+    If $\displaystyle X = \mathbb{E}(X)$, then, trivially, one has
+    \[\mathbb{V}(X) = \mathbb{E}((X - \mathbb{E}(X))^2) = \mathbb{E}((\mathbb{E}(X) - \mathbb{E}(X))^2) = \mathbb{E}(0) = 0\]
+    Conversely, if $\displaystyle \mathbb{V}(X) = 0$, one can fix $\displaystyle a > 0$ and consider
+    \begin{align*}
+        0 = \mathbb{V}(X) = \mathbb{E}((X - \mathbb{E}(X))^2)
+            &\ge \mathbb{E}((X - \mathbb{E}(X))^2\mathbb{I}_{|X - \mathbb{E}(X)| \ge a}(x)) \\
+            &\ge a^2(\mathbb{E}(\mathbb{I}_{|X - \mathbb{E}(X)| \ge a}(x)) \\
+            &= a^2\mathbb{P}(|X - \mathbb{E}(X)| \ge a) \stackrel{a > 0}{\Rightarrow} \mathbb{P}(|X - \mathbb{E}(X)| \ge a) = 0
+    \end{align*}
+    Knowing that $\displaystyle \mathbb{V}(X) = 0$, it must be the case that
+    \begin{align*}
+        \mathbb{P}(X = \mathbb{E}(X)) = \mathbb{P}(X - \mathbb{E}(X) = 0)
+            &= 1 - \mathbb{P}(|X - \mathbb{E}(X)| > 0) \\
+            &= \lim_{a \to 0^+} 1 - \mathbb{P}(|X - \mathbb{E}(X)| \ge a) = 1 \Rightarrow X = \mathbb{E}(X)
+    \end{align*}
+\end{proofbox}
+\noindent Overall, the variance of a random variable depends solely on its distribution, implying that it may not exist under some circumstances in which it is not well-defined. \newline
+For this reason, the mean absolute deviation can provide a more robust measure for spread.
+\section{The moment of a random variable}
+The $\displaystyle k^{th}$ moment of a random variable $\displaystyle X$ with cumulative distribution function $\displaystyle F_X$ is defined as the quantity $\displaystyle \mu_k = \mathbb{E}(X^k)$, provided $\displaystyle \mathbb{E}(|X|^k) < +\infty$.
+\begin{examplebox}[Moments as distribution summaries]
+    If well-defined, the first moment of any random variable $\displaystyle X$ corresponds to its expected value. \newline
+    Additionally, the third moment of a random variable allows to describe the asymmetry of its distributions, while the fourth moment comes in handy to measure the heaviness of the tails of the distribution.
+\end{examplebox}
+\noindent In particular, if the $\displaystyle k^{th}$ moment of a random variable $\displaystyle X$ exists, then, for any $\displaystyle j < k$, the $\displaystyle j^{th}$ moment exists as well.
+\begin{proofbox}
+    Assuming $\displaystyle X$ has cumulative distribution function $\displaystyle F_X$, define
+    \begin{align*}
+        \mathbb{E}(|X|^j) = \int_{\mathbb{R}} |x|^j \ dF_X(x)
+            &= \int_{|x| \leq 1} |x|^j \ dF_X(x) + \int_{|x| > 1} |x|^j \ dF_X(x) \\
+            &\leq \int_{|x| \leq 1} \ dF_X(x) + \int_{|x| > 1} |x|^k \ dF_X(x) \leq 1 + \mathbb{E}(|X|^k) < +\infty
+    \end{align*}
+\end{proofbox}
+\section{The (marginal) expected value of a random vector}
+The expected value of a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$ with joint cumulative distribution function $\displaystyle F_{\mathbf{X}}$ can be trivially expressed by the coordinate-wise mean vector, meaning that
+\[\mathbf{\mu} = \mathbb{E}(\mathbf{X}) = \begin{pmatrix}
+    \mathbb{E}(X_1) \\
+    \vdots \\
+    \mathbb{E}(X_p) \\
+\end{pmatrix} = \begin{pmatrix}
+    \mu_1 \\
+    \vdots \\
+    \mu_p \\
+\end{pmatrix}\]
+In particular, the expected value of a (continuous) multivariate distribution is linear. \newline
+In fact, given a linear predictor $\displaystyle Y = \mathbf{\alpha}^T\mathbf{X}$, the law of the lazy statistician allows to state that
+\begin{align*}
+    \mathbb{E}(Y) = \mathbb{E}(r(X_1, \dots, X_p))
+        &= \int\dots\int r(x_1, \dots, x_p) \ dF_{\mathbf{X}}(x_1, \dots, x_p) \\
+        &= \int\dots\int \mathbf{\alpha}^T\mathbf{x}f_{\mathbf{X}}(\mathbf{x}) \ d\mathbf{x} \\
+        &= \sum_{j = 1}^p \int_{\mathbb{R}} \alpha_jx_jf_{X_j}(x_j) \ dx_j = \sum_{j = 1}^p \alpha_j\mathbb{E}(X_j) = \mathbf{\alpha}^T\mathbf{\mu}
+\end{align*}
+Furthermore, if all the components of a random vector are independent, then it is the case that
+\[\mathbb{E}(Y) = \mathbb{E}\Bigg(\prod_{j = 1}^p X_i\Bigg) = \int\dots\int\prod_{j = 1}^p x_jf_{\mathbf{X}}(\mathbf{x}) \ d\mathbf{x} = \prod_{j = 1}^p\int_{\mathbb{R}} x_jf_{X_j}(x_j) \ dx_j = \prod_{j = 1}^p \mathbb{E}(X_j)\]
+\subsection{The law of total expectation}
+For a bivariate distribution involving two random variables $\displaystyle X$ and $\displaystyle Y$, the conditional expectations given fixed values of the conditioning variable are defined as
+\begin{align*}
+    \mathbb{E}(Y|X = x) &= \int y \ dF_{Y|X}(y|x) \\
+    \mathbb{E}(X|Y = y) &= \int x \ dF_{X|Y}(x|y)
+\end{align*}
+Whenever the conditioning variable acts as a random object, the law of total expectation allows to recover the marginal expectations by considering
+\begin{align*}
+    \mathbb{E}_Y(Y) &= \mathbb{E}_X(\mathbb{E}_{Y|X}(Y|X)) \\
+    \mathbb{E}_X(X) &= \mathbb{E}_Y(\mathbb{E}_{X|Y}(X|Y))
+\end{align*}
+\begin{proofbox}
+    Assuming $\displaystyle X$ and $\displaystyle Y$ are continuous random variables, let
+    \begin{align*}
+        \mathbb{E}_X(\mathbb{E}_{Y|X}(Y|X))
+            &= \int r(x)f_X(x) \ dx = \int\Bigg(\int yf_{Y|X}(y|x) \ dy\Bigg) \ f_X(x) \ dx \\
+            &= \int\Bigg(\int y \frac{f_{X, Y}(x, y)}{f_X(x)} \ dy\Bigg) \ f_X(x) \ dx = \int\Bigg(\int yf_{X, Y}(x, y) \ dx\Bigg) \ dy \\
+            &\stackrel{\text{Marginalization}}{=} \int yf_Y(y) \ dy = \mathbb{E}_Y(Y)
+    \end{align*}
+    Note that, without loss of generality, the same strategy can be used for $\displaystyle \mathbb{E}_X(X)$.
+\end{proofbox}
+\section{The (marginal) variance of a random vector}
+The variance of a random vector often comes in handy to model the variability of its components or to study how they interact. \newline
+In fact, given a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$ with component-wise mean $\displaystyle \mathbf{\mu}$, if $\displaystyle Y = \mathbf{\alpha}^T\mathbf{X}$, then one has
+\begin{align*}
+    \mathbb{V}(Y) = \mathbb{V}(\mathbf{\alpha}^T\mathbf{X})
+        &= \mathbb{E}((\mathbf{\alpha}^T\mathbf{X})^2) - \mathbb{E}^2(\mathbf{\alpha}^T\mathbf{X}) \\
+        &= \mathbb{E}((\mathbf{\alpha}^T\mathbf{X})^2) - (\mathbf{\alpha}^T\mathbf{X})^2 = \mathbb{E}(\mathbf{\alpha}^T\mathbf{XX}^T\mathbf{\alpha}) - \mathbf{\alpha}^T\mathbf{\mu\mu}^T\mathbf{\alpha} \\
+        &= \mathbf{\alpha}^T(\mathbb{E}(\mathbf{XX}^T))\mathbf{\alpha} - \mathbf{\alpha}^T(\mathbf{\mu\mu}^T)\mathbf{\alpha} = \mathbf{\alpha}^T(\mathbb{E}(\mathbf{XX}^T) - \mathbf{\mu\mu}^T)\mathbf{\alpha} \\
+        &= \mathbf{\alpha}^TCov(\mathbf{X})\mathbf{\alpha} \text{, where $Cov(\mathbf{X})$ is a $(p \times p)$ symmetric ``covariance matrix''.}
+\end{align*}
+Knowing that $\displaystyle (\mathbf{\mu\mu}^T)_{ij} = \mu_i\mu_j$ and $\displaystyle (\mathbb{E}(\mathbf{XX}^T))_{ij} = \mathbb{E}(X_iX_j)$, a generic entry of the covariance matrix will be given by
+\[Cov(X_i, X_j) = \mathbb{E}(X_iX_j) - \mu_i\mu_j = \mathbb{E}((X_i - \mu_i)(X_j - \mu_j))\]
+Therefore, the variance of a many-to-one linear predictor can be expressed as
+\[\mathbb{V}(Y) = \mathbb{V}(\mathbf{\alpha}^T\mathbf{X}) = \mathbf{\alpha}^TCov(\mathbf{X})\mathbf{\alpha} = \sum_{j = 1}^p \alpha_j^2\mathbb{V}(X_j) + 2\sum_{i < j} \alpha_i\alpha_jCov(X_i, X_j)\]
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
