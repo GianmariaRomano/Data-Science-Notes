@@ -976,7 +976,7 @@ Intuitively, the variance of a random variable can describe how a representative
 In fact, if a random variable $\displaystyle X: \Omega \to S_X$ with cumulative distribution function $\displaystyle F_X$ has finite mean $\displaystyle \mathbb{E}(X) = \mu$, then its variance is formally defined as
 \[\mathbb{V}(X) = \mathbb{E}((X - \mathbb{E}(X))^2) = \int_{\mathbb{R}} (x - \mu)^2 \ dF_X(x) \Rightarrow SD(X) = \sqrt{\mathbb{V}(X)}\]
 \begin{examplebox}[Modelling price variability]
-    Suppose that the prices of two services are modelled using the random variables $\displaystyle X \sim Unif(25, 35)$ and $\displaystyle Y \sim Unif(15, 45)$: one can see that
+    Assuming the prices of two services are modelled using the random variables $\displaystyle X \sim Unif(25, 35)$ and $\displaystyle Y \sim Unif(15, 45)$, one can see that
     \[\mathbb{E}(X) = \frac{25 + 35}{2} = 30 = \frac{15 + 45}{2} = \mathbb{E}(Y)\]
     However, looking at the variance of each variable reveals that
     \begin{align*}
@@ -999,7 +999,7 @@ In particular, if $\displaystyle Y = \alpha + \beta X$, then it is possible to s
             &= \mathbb{E}((\beta(X - \mathbb{E}(X)))^2) = \mathbb{E}(\beta^2(X - \mathbb{E}(X))^2) = \beta^2\mathbb{V}(X)
     \end{align*}
 \end{proofbox}
-\noindent Furthermore, if $\displaystyle X$ is a bounded random variable, then its variance must exist and be finite, with $\displaystyle \mathbb{V}(X) = 0$ if and only if $\displaystyle X = \mathbb{E}(X)$.
+\noindent Furthermore, if $\displaystyle X$ is a bounded random variable, then its variance must exist and be non-negative, with $\displaystyle \mathbb{V}(X) = 0$ if and only if $\displaystyle X = \mathbb{E}(X)$.
 \begin{proofbox}
     If $\displaystyle X = \mathbb{E}(X)$, then, trivially, one has
     \[\mathbb{V}(X) = \mathbb{E}((X - \mathbb{E}(X))^2) = \mathbb{E}((\mathbb{E}(X) - \mathbb{E}(X))^2) = \mathbb{E}(0) = 0\]

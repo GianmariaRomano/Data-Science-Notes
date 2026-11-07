@@ -893,7 +893,7 @@ Generally speaking, one can implement arbitrarily complex models using a ``shall
 In fact, the ``universal approximation theorem'' states that a shallow neural network with enough hidden units can describe any continuous function on a compact subset of $\displaystyle \mathbb{R}^D$ to arbitrary precision. \newline
 From a broader perspective, a shallow neural network with $\displaystyle D_i$ inputs, $\displaystyle D$ hidden units and $\displaystyle D_o$ outputs can be described using the following equations:
 \[h_d = Act\Bigg(\theta_{d0} + \sum_{i = 1}^{D_i} \theta_{di}x_i\Bigg) \quad y_j = \phi_{j0} + \sum_{d = 1}^D \phi_{jd}h_d \text{, with $Act(z) = ReLU(z) = \max\{0, z\}$.}\]
-Therefore, learning a shallow neural network is equivalent to learning a total of $\displaystyle D(D_i + 1) + D_o(D_i + 1)$ parameters, assuming the bias terms are considered.
+Therefore, learning a shallow neural network is equivalent to learning a total of $\displaystyle D(D_i + 1) + D_o(D + 1)$ parameters, assuming the bias terms are considered.
 \begin{examplebox}[Implementing a shallow neural network based on linear regression]
     A shallow neural network is implemented as follows:
     \[y = f(x, \phi) = \phi_0 + \phi_1Act(\theta_{10} + \theta_{11}x) + \phi_2Act(\theta_{20} + \theta_{21}x) + \phi_3Act(\theta_{30} + \theta_{31}x)\]
