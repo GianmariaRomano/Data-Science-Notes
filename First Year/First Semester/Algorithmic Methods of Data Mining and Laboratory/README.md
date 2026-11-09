@@ -38,7 +38,8 @@
 | October 29 | Data structures: Lists, Priority Queues, Heaps. |
 | November 2 | Data structures: Dictionaries. |
 | November 3 | Measuring the performance of an algorithm. |
-| November 5 | Clustering. |
+| November 5 | Clustering methods. |
+| November 9 | Approximation algorithms for the $K$-means problem. |
 
 </details>
 
