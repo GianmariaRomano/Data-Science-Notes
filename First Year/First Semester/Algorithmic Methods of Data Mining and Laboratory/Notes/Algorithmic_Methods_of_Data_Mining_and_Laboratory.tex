@@ -673,7 +673,7 @@ However, this complexity can be reduced to $\displaystyle \Theta(n^2\log(n))$ by
 Partitional clustering is an unsupervised learning algorithm that, given a dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$, with $\displaystyle \mathbf{x}_i \in \mathbb{R}^d \text{ } \forall i$, and an integer $\displaystyle K > 0$, aims to split the dataset into a $\displaystyle K$-partition. \newline
 In particular, a $\displaystyle K$-partition over a dataset $\displaystyle \mathcal{D}$ is defined as a collection of (non-empty) sets $\displaystyle C_1, \dots, C_K \subseteq \mathcal{D}$ such that $\displaystyle C_i \cap C_j = \emptyset \text{ } \forall i \neq j$ and $\displaystyle C_1 \cup \dots \cup C_K = \mathcal{D}$. \newline
 Generally speaking, partitional clustering is performed through the $\displaystyle K$-means optimization problem, which, for a dataset $\displaystyle \mathcal{D}$, aims to find a $\displaystyle K$-partition and a sequence of representatives $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_K \in \mathbb{R}^d$ that minimize the objective function
-\[\mathcal{L} = \sum_{j = 1}^K\sum_{\mathbf{x}_i \in C_j} \lVert \mathbf{x}_i - \mathbf{c}_j \rVert_2^2\]
+\[\mathcal{L}(C_1, \dots, C_K, \mathbf{c}_1, \dots, \mathbf{c}_k) = \sum_{j = 1}^K\sum_{\mathbf{x}_i \in C_j} \lVert \mathbf{x}_i - \mathbf{c}_j \rVert_2^2\]
 More specifically, it is possible to show that the optimal solution to this problem corresponds to the centroids of each cluster, which are defined as
 \[\mathbf{c}_j = \frac{1}{|C_j|}\sum_{\mathbf{x}_i \in C_j} \mathbf{x}_i\]
 \begin{figure}[H]
@@ -691,7 +691,72 @@ More specifically, it is possible to show that the optimal solution to this prob
     \end{align*}
 \end{proofbox}
 \noindent Overall, the main issue of partitional clustering lies in the fact that $\displaystyle K$-means is an $\displaystyle \mathbf{NP}$-hard problem because the optimization procedure requires $\displaystyle O(K^n)$ time. \newline
-For this reason, partitional clustering is often performed using $\displaystyle (1 + \varepsilon)$-approximation algorithms whose running time is $\displaystyle O(n^{\frac{1}{\varepsilon}})$, requiring to consider a trade-off between computational complexity and approximation quality. \newline
-Special exceptions in which the $\displaystyle K$-means algorithm is guaranteed to run in polynomial time include choosing $\displaystyle K = 1$ and $\displaystyle K = n$, where the optimal solution is trivial, as well as running the algorithm for one-dimensional data points, where polynomial time can be achieved using dynamic programming.
+For this reason, partitional clustering is often performed using $\displaystyle (1 + \varepsilon)$-approximation algorithms whose running time is $\displaystyle O(n^{\frac{1}{\varepsilon}})$, often requiring to consider a trade-off between computational complexity and approximation quality.
+\subsection{Approximating $K$-means using Lloyd's method}
+Lloyd's method is a popular greedy approximation algorithm for the $\displaystyle K$-means problem. \newline
+This algorithm starts with an initialization phase, where $\displaystyle K$ representatives are chosen at random, followed by an iterative phase that consists of an assignment step, where each data point is assigned to the cluster represented by its nearest centroid, and an update step, where each centroid is updated to minimize the objective function, going on until convergence.
+
+\begin{algorithm}[H]
+    \caption{Lloyd's method.}
+    \KwData{A dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$ and an integer $\displaystyle K > 0$.}
+    \KwResult{A $K$-partition $\displaystyle C_1, \dots, C_K$ of the dataset and a sequence of centroids $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_K$.}
+
+    Choose $\displaystyle K$ random centroids $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_K$\;
+    \While{not converged}{
+        \ForEach{$\displaystyle \mathbf{x} \in \mathcal{D}$}{
+            Assign $\displaystyle \mathbf{x}$ to the cluster $\displaystyle C_j$ corresponding to $\displaystyle \arg\min_{j \in \{1, \dots, K\}} \lVert \mathbf{x} - \mathbf{c}_j \rVert_2^2$\;
+        }
+        \For{$j \gets 1, \dots, K$}{
+            $\mathbf{c}_j \leftarrow \frac{1}{|C_j|} \sum_{\mathbf{x} \in C_j} \mathbf{x}$\;
+        }
+    }
+    \Return{$C_1, \dots, C_K$, $\mathbf{c}_1, \dots, \mathbf{c}_K$}\;
+\end{algorithm}
+\noindent While several criteria for convergence can be defined, this algorithm considers convergence to be reached when the objective function $\displaystyle \mathcal{L}$ does not change significantly across iterations. \newline
+In fact, since $\displaystyle \mathcal{L}$ is defined to be a non-negative function and Lloyd's method ensures that the objective function does not increase across iterations, the algorithm is guaranteed to terminate. \newline
+However, this approximation algorithm is not optimal because the solution is locally optimal depending on the initialization phase.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{images/lloyds_method_solutions.png}
+    \caption{Different solutions provided by Lloyd's method for the same $\displaystyle K$-means problem.}
+    \label{fig:lloyds_method_solns}
+\end{figure}
+\noindent Overall, while the worst-case scenario requires exponential time, Lloyd's method normally converges in $\displaystyle O(TnK)$ time if convergence is reached after $\displaystyle T$ iterations.
+\subsection{Approximating $K$-means using the $K$-means$++$ algorithm}
+$\displaystyle K$-means$\displaystyle ++$ is an approximation algorithm that aims to improve the initialization phase of Lloyd's method by ensuring that the initial centroids are as far as possible from each other. \newline
+In fact, if the set $\displaystyle A = \{\mathbf{c}_1, \dots, \mathbf{c}_m\}$ keeps track of the already selected centroids, the next centroid $\displaystyle \mathbf{c}_{m + 1}$ will be chosen according to the following probability distribution:
+\[\mathbb{P}(\mathbf{c}_{m + 1} = \mathbf{x}) = \frac{d_A(\mathbf{x})^2}{\sum_{\mathbf{y} \in \mathcal{D}} d_A(\mathbf{y})^2} \text{, where $d_A(\mathbf{x}) = \min_{\mathbf{c} \in A}\{\lVert \mathbf{x} - \mathbf{c} \rVert_2\}$.}\]
+After selecting the initial centroids, this algorithm proceeds with the same iterative phase implemented Lloyd's method, going on until convergence.
+
+\begin{algorithm}[H]
+    \caption{The $\displaystyle K$-means$\displaystyle ++$ algorithm.}
+    \KwData{A dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$ and an integer $\displaystyle K > 0$.}
+    \KwResult{A $K$-partition $\displaystyle C_1, \dots, C_K$ of the dataset and a sequence of centroids $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_K$.}
+
+    Choose a centroid $\displaystyle \mathbf{c}_1$ uniformly at random\;
+    $\displaystyle A \gets \{\mathbf{c}_1\}$
+    \For{$\displaystyle j \gets 2, \dots, K$}{
+        Choose $\displaystyle \mathbf{c}_j = \mathbf{x}$ with probability $\mathbb{P}({\mathbf{x}}) = \frac{d_A(\mathbf{x})^2}{\sum_{\mathbf{y} \in \mathcal{D}} d_A(\mathbf{y})^2}$\;
+        $\displaystyle A \gets A \cup \{\mathbf{c}_j\}$\;
+    }
+    \While{not converged}{
+        \ForEach{$\displaystyle \mathbf{x} \in \mathcal{D}$}{
+            Assign $\displaystyle \mathbf{x}$ to the cluster $\displaystyle C_j$ corresponding to $\displaystyle \arg\min_{j \in \{1, \dots, K\}} \lVert \mathbf{x} - \mathbf{c}_j \rVert_2^2$\;
+        }
+        \For{$j \gets 1, \dots, K$}{
+            $\mathbf{c}_j \leftarrow \frac{1}{|C_j|} \sum_{\mathbf{x} \in C_j} \mathbf{x}$\;
+        }
+    }
+    \Return{$C_1, \dots, C_K$, $\mathbf{c}_1, \dots, \mathbf{c}_K$}\;
+\end{algorithm}
+\noindent For an instance of the $\displaystyle K$-means problem where $\displaystyle \mathcal{O}$ denotes the cost of the optimal solution while the random variable $\displaystyle \mathcal{L}$ indicates the cost of a solution returned by the $\displaystyle K$-means$\displaystyle ++$ algorithm, it is possible to prove that $\displaystyle \mathbb{E}(\mathcal{L}) \leq \mathcal{O}\log(K)$.
+\subsection{Special cases of the $K$-means problem}
+When choosing $\displaystyle K = 1$ or $\displaystyle K = n$, the $\displaystyle K$-means algorithm is guaranteed to run in polynomial time because the optimal solution is trivial.
+\begin{proofbox}
+    Consider a dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$: when performing $\displaystyle K$-means with one cluster, all the data points are assigned to the same cluster, which corresponds to the dataset, meaning that
+    \[\mathcal{L}(\mathcal{D}, \mathbf{c}) = \sum_{i = 1}^n \lVert \mathbf{x}_i - \mathbf{c} \rVert_2^2 \text{, resulting in } \frac{d\mathcal{L}}{d\mathbf{c}} = \sum_{i = 1}^n -2(\mathbf{x}_i - \mathbf{c}) = 0 \Leftrightarrow \mathbf{c} = \frac{1}{n}\sum_{i = 1}^n \mathbf{x}_i\]
+    For $\displaystyle K = n$, each data point acts as an individual cluster, meaning that the loss function is trivially minimized by considering $\displaystyle \mathbf{c} = \mathbf{x} \text{ } \forall \mathbf{x} \in \mathcal{D}$.
+\end{proofbox}
+\noindent Additionally, whenever the data points are one-dimensional, an optimal solution can be found in polynomial time using a dynamic programming algorithm.
 
 \end{document}
