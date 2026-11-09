@@ -15,7 +15,7 @@
     * **Fridays:** 11:00-13:00 at Aula 2L, Via del Castro Laurenziano.
 
 > [!NOTE]
-> If you are a student taking the *Foundations of Data Science* course from the **Master's Degree in Computer Science**, you can refer to these materials, but you can skip the Network Science part as it is not part of your syllabus.
+> If you are a student taking the *Foundations of Data Science* course from the **Master's Degree in *Computer Science***, you can refer to these materials, but you can skip the Network Science part as it is not part of your syllabus.
 
 ---
 
@@ -46,6 +46,7 @@
 | November 2 | Shallow neural networks. |
 | ~~November 5~~ | This lecture was cancelled. |
 | November 6 | **Discussion about the Kaggle Challenge** |
+| ~~November 9~~ | This lecture was cancelled. |
 
 </details>
 
