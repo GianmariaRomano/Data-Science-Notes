@@ -726,15 +726,14 @@ However, this approximation algorithm is not optimal because the solution is loc
 $\displaystyle K$-means$\displaystyle ++$ is an approximation algorithm that aims to improve the initialization phase of Lloyd's method by ensuring that the initial centroids are as far as possible from each other. \newline
 In fact, if the set $\displaystyle A = \{\mathbf{c}_1, \dots, \mathbf{c}_m\}$ keeps track of the already selected centroids, the next centroid $\displaystyle \mathbf{c}_{m + 1}$ will be chosen according to the following probability distribution:
 \[\mathbb{P}(\mathbf{c}_{m + 1} = \mathbf{x}) = \frac{d_A(\mathbf{x})^2}{\sum_{\mathbf{y} \in \mathcal{D}} d_A(\mathbf{y})^2} \text{, where $d_A(\mathbf{x}) = \min_{\mathbf{c} \in A}\{\lVert \mathbf{x} - \mathbf{c} \rVert_2\}$.}\]
-After selecting the initial centroids, this algorithm proceeds with the same iterative phase implemented Lloyd's method, going on until convergence.
+After selecting the initial centroids, this algorithm proceeds with the same iterative phase implemented in Lloyd's method, going on until convergence.
 
 \begin{algorithm}[H]
     \caption{The $\displaystyle K$-means$\displaystyle ++$ algorithm.}
     \KwData{A dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$ and an integer $\displaystyle K > 0$.}
     \KwResult{A $K$-partition $\displaystyle C_1, \dots, C_K$ of the dataset and a sequence of centroids $\displaystyle \mathbf{c}_1, \dots, \mathbf{c}_K$.}
 
-    Choose a centroid $\displaystyle \mathbf{c}_1$ uniformly at random\;
-    $\displaystyle A \gets \{\mathbf{c}_1\}$
+    Choose a centroid $\displaystyle \mathbf{c}_1$ uniformly at random and set $\displaystyle A \gets \{\mathbf{c}_1\}$\;
     \For{$\displaystyle j \gets 2, \dots, K$}{
         Choose $\displaystyle \mathbf{c}_j = \mathbf{x}$ with probability $\mathbb{P}({\mathbf{x}}) = \frac{d_A(\mathbf{x})^2}{\sum_{\mathbf{y} \in \mathcal{D}} d_A(\mathbf{y})^2}$\;
         $\displaystyle A \gets A \cup \{\mathbf{c}_j\}$\;
@@ -758,5 +757,60 @@ When choosing $\displaystyle K = 1$ or $\displaystyle K = n$, the $\displaystyle
     For $\displaystyle K = n$, each data point acts as an individual cluster, meaning that the loss function is trivially minimized by considering $\displaystyle \mathbf{c} = \mathbf{x} \text{ } \forall \mathbf{x} \in \mathcal{D}$.
 \end{proofbox}
 \noindent Additionally, whenever the data points are one-dimensional, an optimal solution can be found in polynomial time using a dynamic programming algorithm.
+\begin{proofbox}
+    Assuming the data points are sorted, the optimal partition intuitively consists of a sequence of contiguous sub-segments of the real line. \newline
+    In particular, let $\displaystyle \mathcal{O}(j, i)$ denote the optimal cost obtained by partitioning the data points $\displaystyle x_1, \dots, x_i$ using $\displaystyle j \leq K$ clusters: trivially, one has $\displaystyle \mathcal{O}(j, i) = 0$ whenever $\displaystyle i \leq j$ because, in this scenario, there would be (at least) as many clusters as data points. \newline
+    If $\displaystyle C(x_a, x_b)$ represents the cost obtained by grouping $\displaystyle x_a, \dots, x_b$ into the same cluster, then
+    \[C(x_a, x_b) = \sum_{i = a}^b \lVert x_i - c \rVert_2^2 \text{, with $c = \frac{1}{b - a + 1}\sum_{i = a}^b x_i$.}\]
+    Therefore, the recurrence of this instance of the $\displaystyle K$-means problem can be formulated as
+    \[\mathcal{O}(j, i) = \begin{cases}
+        0 &\quad\text{if $j \ge i$} \\
+        C(1, i) &\quad\text{if $j = 1$} \\
+        \min_{j - 1 \leq l \leq i - 1}\{\mathcal{O}(j - 1, l) + C(l + 1, i)\} &\quad\text{otherwise} \\
+    \end{cases}\]
+    Overall, the dynamic programming table for this problem contains $\displaystyle nK$ entries, each requiring $\displaystyle O(n)$ time to be computed, resulting in a total complexity of $\displaystyle O(n^2K)$.
+\end{proofbox}
+
+\chapter{Principal component analysis}
+\section{Representing a dataset as a design matrix}
+Generally speaking, a dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$, with $\displaystyle \mathbf{x}_i \in \mathbb{R}^D \text{ } \forall i$, can be represented as a ``design matrix'' $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ whose rows represent data points and whose columns indicate data features.
+\subsection{The rank of a matrix}
+The rank of a matrix denotes the maximum number of linearly independent rows or columns, meaning that, for a matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times m}$, one has $\displaystyle rank(\mathbf{A}) \leq \min\{n, m\}$.
+\begin{examplebox}[The rank of a rectangular matrix]
+    Consider the following rectangular matrix:
+    \[\mathbf{A} = \begin{pmatrix}
+        1 & 2 & 3 \\
+        1 & 5 & 9 \\
+    \end{pmatrix} \Rightarrow \mathbf{A} \in \mathbb{R}^{2 \times 3}\]
+    While the row vectors of the matrix are linearly independent, the same cannot be said for its column vectors as it is possible to find the relation $\displaystyle \mathbf{c}_3 = 2\mathbf{c}_2 - \mathbf{c}_1$. \newline
+    For this reason, it will be the case that $\displaystyle rank(\mathbf{A}) = 2$.
+\end{examplebox}
+\noindent When analysing a dataset's design matrix, it is common for the matrix not to be full-rank because the number of samples tends to exceed the number of features.
+\section{Projecting vectors with respect to another vector}
+When projecting a unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$ onto a vector $\displaystyle \mathbf{x} \in \mathbb{R}^D$, the length of the resulting vector $\displaystyle \mathbf{y}$ will be equal to
+\[\lVert \mathbf{y} \rVert = \lVert \mathbf{x} \rVert\cos(\theta) = \lVert \mathbf{x} \rVert\frac{\mathbf{v}^T\mathbf{x}}{\lVert \mathbf{v} \rVert\lVert \mathbf{x} \rVert} \stackrel{\lVert \mathbf{v} \rVert = 1}{=} \mathbf{v}^T\mathbf{x}\]
+For this reason, the projection vector can be formulated as $\displaystyle \mathbf{y} = \mathbf{v}\lVert \mathbf{y} \rVert = \mathbf{v}(\mathbf{v}^T\mathbf{x}) = \mathbf{vv}^T\mathbf{x}$. \newline
+Moreover, one can define a ``leftover'' part, which lies within a $\displaystyle (D - 1)$-dimensional subspace of $\displaystyle \mathbb{R}^D$ that is orthogonal to $\displaystyle \mathbf{v}$, by considering
+\[\mathbf{z} = \mathbf{x} - \mathbf{y} = \begin{cases}
+    (\mathbf{I} - \mathbf{vv}^T)\mathbf{x} &\quad\text{if $\mathbf{x}$ and $\mathbf{y}$ are column vectors} \\
+    \mathbf{x}(\mathbf{vv}^T - \mathbf{I}) &\quad\text{if $\mathbf{x}$ and $\mathbf{y}$ are row vectors} \\
+\end{cases}\]
+This procedure can be extended to project each data point in a design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ by taking
+\[\mathbf{M} = \mathbf{Avv}^T \text{, whose leftover part is given by $\mathbf{A} - \mathbf{M} = \mathbf{A}(\mathbf{I} - \mathbf{vv}^T)$.}\]
+\section{Projecting vectors with respect to a vector subspace}
+A $\displaystyle k$-dimensional subspace of $\displaystyle \mathbb{R}^D$ can be defined as a sequence of $\displaystyle k$ unit vectors $\displaystyle \mathbf{v}_1, \dots, \mathbf{v}_k$ that are mutually orthogonal, meaning that
+\[\mathbf{v}_i^T\mathbf{v}_j = \begin{cases}
+    1 &\quad\text{if $i = j$} \\
+    0 &\quad\text{if $i \neq j$} \\
+\end{cases}\]
+In particular, the projection of a row vector $\displaystyle \mathbf{x}_i \in \mathbb{R}^{1 \times D}$ onto the subspace can be defined as
+\[\mathbf{x}_i\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}_i\mathbf{v}_k\mathbf{v}_k^T = \mathbf{v}_i\mathbf{V}_k\mathbf{V}_k^T \text{, with $\mathbf{V}_k = \begin{pmatrix}
+    \mathbf{v}_1 \dots \mathbf{v}_k \\
+\end{pmatrix} \in \mathbb{R}^{D \times k}$.}\]
+\begin{proofbox}
+    Assuming $\displaystyle \mathbf{V}_{k_{(j)}}$ and $\displaystyle \mathbf{V}_k^{(j)}$ denote the $\displaystyle j^{th}$ row and $\displaystyle j^{th}$ column, respectively, of the matrix $\displaystyle \mathbf{V}_k$, the rules of matrix algebra allow to formulate
+    \[\mathbf{x}_i\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}_i\mathbf{v}_k\mathbf{v}_k^T = \mathbf{x}_i\Bigg(\sum_{j = 1}^k \mathbf{V}_k^{(j)}\mathbf{V}_{k_{(j)}}\Bigg) = \mathbf{x}_i\mathbf{V}_k\mathbf{V}_k^T\]
+\end{proofbox}
+\noindent In this case, the resulting leftover part will lie within a $\displaystyle (D - k)$-dimensional subspace that is orthogonal to the subspace defined by $\displaystyle \mathbf{V}_k$.
 
 \end{document}
