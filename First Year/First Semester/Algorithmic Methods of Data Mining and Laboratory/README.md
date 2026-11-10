@@ -40,6 +40,7 @@
 | November 3 | Measuring the performance of an algorithm. |
 | November 5 | Clustering methods. |
 | November 9 | Approximation algorithms for the $K$-means problem. |
+| November 10 | Introduction to principal component analysis. |
 
 </details>
 
