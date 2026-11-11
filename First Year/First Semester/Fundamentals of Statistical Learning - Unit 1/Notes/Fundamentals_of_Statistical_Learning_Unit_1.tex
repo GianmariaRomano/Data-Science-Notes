@@ -901,7 +901,7 @@ The law of the lazy statistician states that, if $\displaystyle X$ is a (continu
 \end{examplebox}
 \noindent However, one has $\displaystyle \mathbb{E}(r(X)) = r(\mathbb{E}(X))$ if and only if $\displaystyle r$ is an affine map. \newline
 In fact, if $\displaystyle Y = r(X) = \alpha + \beta X$, it is possible to state that
-\[\mathbb{E}(Y) = \mathbb{E}(r(X)) = \mathbb{E}(\alpha + \beta X) = \alpha + \beta X = r(\mathbb{E}(X))\]
+\[\mathbb{E}(Y) = \mathbb{E}(r(X)) = \mathbb{E}(\alpha + \beta X) = \alpha + \beta\mathbb{E}(X) = r(\mathbb{E}(X))\]
 \begin{proofbox}
     If $\displaystyle Y = \alpha + \beta X$, where $\displaystyle X$ is a random variable with cumulative distribution function $\displaystyle F_X(x)$, then, by the law of the lazy statistician, one has
     \begin{align*}
@@ -1025,7 +1025,7 @@ The $\displaystyle k^{th}$ moment of a random variable $\displaystyle X$ with cu
     If well-defined, the first moment of any random variable $\displaystyle X$ corresponds to its expected value. \newline
     Additionally, the third moment of a random variable allows to describe the asymmetry of its distributions, while the fourth moment comes in handy to measure the heaviness of the tails of the distribution.
 \end{examplebox}
-\noindent In particular, if the $\displaystyle k^{th}$ moment of a random variable $\displaystyle X$ exists, then, for any $\displaystyle j < k$, the $\displaystyle j^{th}$ moment exists as well.
+\noindent In particular, if the $\displaystyle k^{th}$ moment of a random variable $\displaystyle X$ exists, then, for any $\displaystyle j < k$, the $\displaystyle j^{th}$ moment of $\displaystyle X$ must exist as well.
 \begin{proofbox}
     Assuming $\displaystyle X$ has cumulative distribution function $\displaystyle F_X$, define
     \begin{align*}
@@ -1046,15 +1046,23 @@ The expected value of a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p
     \mu_p \\
 \end{pmatrix}\]
 In particular, the expected value of a (continuous) multivariate distribution is linear. \newline
-In fact, given a linear predictor $\displaystyle Y = \mathbf{\alpha}^T\mathbf{X}$, the law of the lazy statistician allows to state that
+In fact, given a linear combination $\displaystyle Y = \mathbf{\alpha}^T\mathbf{X}$, the law of the lazy statistician allows to state that
 \begin{align*}
     \mathbb{E}(Y) = \mathbb{E}(r(X_1, \dots, X_p))
         &= \int\dots\int r(x_1, \dots, x_p) \ dF_{\mathbf{X}}(x_1, \dots, x_p) \\
         &= \int\dots\int \mathbf{\alpha}^T\mathbf{x}f_{\mathbf{X}}(\mathbf{x}) \ d\mathbf{x} \\
         &= \sum_{j = 1}^p \int_{\mathbb{R}} \alpha_jx_jf_{X_j}(x_j) \ dx_j = \sum_{j = 1}^p \alpha_j\mathbb{E}(X_j) = \mathbf{\alpha}^T\mathbf{\mu}
 \end{align*}
-Furthermore, if all the components of a random vector are independent, then it is the case that
-\[\mathbb{E}(Y) = \mathbb{E}\Bigg(\prod_{j = 1}^p X_i\Bigg) = \int\dots\int\prod_{j = 1}^p x_jf_{\mathbf{X}}(\mathbf{x}) \ d\mathbf{x} = \prod_{j = 1}^p\int_{\mathbb{R}} x_jf_{X_j}(x_j) \ dx_j = \prod_{j = 1}^p \mathbb{E}(X_j)\]
+\begin{examplebox}[Modelling the sum of Bernoulli trials]
+    Given a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^n$ containing a sequence of Bernoulli random variables, define the random variable $\displaystyle Y$ as the sum of the components of $\displaystyle \mathbf{X}$. \newline
+    Assuming all components are independent and identically distributed, meaning that $\displaystyle X_1, \dots, X_n \sim Ber(p)$, applying the linearity property gives
+    \[\mathbb{E}(Y) = \mathbb{E}\Bigg(\sum_{i = 1}^n X_i\Bigg) = \sum_{i = 1}^n \mathbb{E}(X_i) \stackrel{\mathbb{E}(Ber(p)) = p}{=} np \Rightarrow Y \sim Binom(n, p)\]
+    If the components are independent but not identically distributed, meaning that $\displaystyle X_i \sim Ber(p_i)$, applying the linearity property results in
+    \[\mathbb{E}(Y) = \mathbb{E}\Bigg(\sum_{i = 1}^n X_i \Bigg) = \sum_{i = 1}^n \mathbb{E}(X_i) \stackrel{\mathbb{E}(Ber(p)) = p}{=} \sum_{i = 1}^n p_i\]
+    Additionally, this same result holds even if the components are not independent.
+\end{examplebox}
+\noindent Furthermore, if all the components of a random vector are independent, then it is the case that
+\[\mathbb{E}\Bigg(\prod_{j = 1}^p X_j\Bigg) = \int\dots\int\prod_{j = 1}^p x_jf_{\mathbf{X}}(\mathbf{x}) \ d\mathbf{x} = \prod_{j = 1}^p\int_{\mathbb{R}} x_jf_{X_j}(x_j) \ dx_j = \prod_{j = 1}^p \mathbb{E}(X_j)\]
 \subsection{The law of total expectation}
 For a bivariate distribution involving two random variables $\displaystyle X$ and $\displaystyle Y$, the conditional expectations given fixed values of the conditioning variable are defined as
 \begin{align*}
@@ -1076,6 +1084,12 @@ Whenever the conditioning variable acts as a random object, the law of total exp
     \end{align*}
     Note that, without loss of generality, the same strategy can be used for $\displaystyle \mathbb{E}_X(X)$.
 \end{proofbox}
+\noindent Overall, this strategy allows to simplify cumbersome computations in terms of latent variables.
+\begin{examplebox}[The mixing trick on a scale mixture of Gaussians]
+    A scale mixture of Gaussians is defined using two random variables $\displaystyle X$ and $\displaystyle \lambda$ such that $(X|\lambda) \sim \mathcal{N}(\mu, \frac{\sigma^2}{\lambda})$ and $\lambda \sim Gamma(\frac{\nu}{2}, \frac{\nu}{2})$: marginalizing the joint distribution over the latent variable $\displaystyle \lambda$ reveals that $\displaystyle X \sim t(\nu)$. \newline
+    Since computing the mean of a $\displaystyle t$ distribution tends to be cumbersome, one can consider
+    \[\mathbb{E}_X(X) = \int_{\mathbb{R}} xf_X(x) \ dx \stackrel{\text{LTE}}{=} \mathbb{E}_{\lambda}(\mathbb{E}_{X|\lambda}(X|\lambda)) \stackrel{\mathbb{E}(\mathcal{N}(\mu, \frac{\sigma^2}{\lambda})) = \mu}{=} \mathbb{E}_{\lambda}(\mu) = \mu \text{, provided $\mu > 1$.}\]
+\end{examplebox}
 \section{The (marginal) variance of a random vector}
 The variance of a random vector often comes in handy to model the variability of its components or to study how they interact. \newline
 In fact, given a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$ with component-wise mean $\displaystyle \mathbf{\mu}$, if $\displaystyle Y = \mathbf{\alpha}^T\mathbf{X}$, then one has
@@ -1090,6 +1104,98 @@ Knowing that $\displaystyle (\mathbf{\mu\mu}^T)_{ij} = \mu_i\mu_j$ and $\display
 \[Cov(X_i, X_j) = \mathbb{E}(X_iX_j) - \mu_i\mu_j = \mathbb{E}((X_i - \mu_i)(X_j - \mu_j))\]
 Therefore, the variance of a many-to-one linear predictor can be expressed as
 \[\mathbb{V}(Y) = \mathbb{V}(\mathbf{\alpha}^T\mathbf{X}) = \mathbf{\alpha}^TCov(\mathbf{X})\mathbf{\alpha} = \sum_{j = 1}^p \alpha_j^2\mathbb{V}(X_j) + 2\sum_{i < j} \alpha_i\alpha_jCov(X_i, X_j)\]
+\begin{examplebox}[Modelling the sum of Bernoulli trials]
+    Given a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^n$ containing a sequence of Bernoulli random variables, define the random variable $\displaystyle Y$ as the sum of the components of $\displaystyle \mathbf{X}$. \newline
+    Assuming all components are independent and identically distributed, meaning that $\displaystyle X_1, \dots, X_n \sim Ber(p)$, it is possible to state that
+    \[\mathbb{V}(Y) = \mathbb{V}\Bigg(\sum_{i = 1}^n X_i\Bigg) \stackrel{\text{IID}}{=} \sum_{i = 1}^n \mathbb{V}(X_i) \stackrel{\mathbb{V}(Ber(p)) = p(1 - p)}{=} np(1 - p) \Rightarrow Y \sim Binom(n, p)\]
+    If the component are independent but not identically distributed, meaning that $\displaystyle X_i \sim Ber(p_i)$, the result changes to
+    \[\mathbb{E}(Y) = \mathbb{E}\Bigg(\sum_{i = 1}^n X_i\Bigg) \stackrel{\text{Independence}}{=} \sum_{i = 1}^n \mathbb{V}(X_i) \stackrel{\mathbb{V}(Ber(p)) = p(1 - p)}{=} \sum_{i = 1}^n p_i(1 - p_1)\]
+    However, if the components of the vector are not independent, it is necessary to consider the interactions between variables because the variance of $\displaystyle Y$ will be given by
+    \[\mathbb{V}(Y) = \mathbb{V}\Bigg(\sum_{i = 1}^n X_i\Bigg) = \sum_{i = 1}^n \mathbb{V}(X_i) + 2\sum_{j < i} Cov(X_i, X_j)\]
+\end{examplebox}
+\subsection{The law of total variance}
+For a bivariate distribution involving two random variables $\displaystyle X$ and $\displaystyle Y$, the conditional variances given fixed values of the conditioning variable are defined as
+\begin{align*}
+    \mathbb{V}(Y|X = x) &= \mathbb{E}(Y^2|X = x) - \mathbb{E}^2(Y|X = x) \\
+    \mathbb{V}(X|Y = y) &= \mathbb{E}(X^2|Y = y) - \mathbb{E}^2(X|Y = y)
+\end{align*}
+Whenever the conditioning variable acts as a random object, the law of total variance allows to recover the marginal variances by considering
+\begin{align*}
+    \mathbb{V}_Y(Y) &= \mathbb{E}_X(\mathbb{V}_{Y|X}(Y|X)) + \mathbb{V}_X(\mathbb{E}_{Y|X}(Y|X)) \\
+    \mathbb{V}_X(X) &= \mathbb{E}_Y(\mathbb{V}_{X|Y}(X|Y)) + \mathbb{V}_Y(\mathbb{E}_{X|Y}(X|Y))
+\end{align*}
+\begin{proofbox}
+    Given the random variables $\displaystyle X$ and $\displaystyle Y$, consider
+    \begin{align*}
+        \mathbb{V}_Y(Y) = \mathbb{E}_Y(Y^2) - \mathbb{E}_Y^2(Y)
+            &\stackrel{\text{LTE}}{=} \mathbb{E}_X(\mathbb{E}_{Y|X}(Y^2|X)) - (\mathbb{E}_X(\mathbb{E}_{Y|X}(Y|X)))^2 \\
+            &= \mathbb{E}_X(\mathbb{V}_{Y|X}(Y|X) + (\mathbb{E}_{Y|X}(Y|X))^2) - (\mathbb{E}_X(\mathbb{E}_{Y|X}(Y|X)))^2 \\
+            &= \mathbb{E}_X(\mathbb{V}_{Y|X}(Y|X)) + \mathbb{E}_X((\mathbb{E}_{Y|X}(Y|X))^2)) - (\mathbb{E}_X(\mathbb{E}_{Y|X}(Y|X)))^2 \\
+            &= \mathbb{E}_X(\mathbb{V}_{Y|X}(Y|X)) + \mathbb{V}_X(\mathbb{E}_{Y|X}(Y|X))
+    \end{align*}
+    Note that, without loss of generality, the same strategy can be used for $\displaystyle \mathbb{V}_X(X)$.
+\end{proofbox}
+\noindent Overall, this strategy allows to simplify cumbersome computations in terms of latent variables.
+\begin{examplebox}[The mixing trick on a scale mixture of Gaussians]
+    A scale mixture of Gaussians is defined using two random variables $\displaystyle X$ and $\displaystyle \lambda$ such that $(X|\lambda) \sim \mathcal{N}(\mu, \frac{\sigma^2}{\lambda})$ and $\lambda \sim Gamma(\frac{\nu}{2}, \frac{\nu}{2})$: marginalizing the joint distribution over the latent variable $\displaystyle \lambda$ reveals that $\displaystyle X \sim t(\nu)$. \newline
+    Therefore, applying the law of total variance results in
+    \begin{align*}
+        \mathbb{V}_X(X)
+            &= \mathbb{E}_{\lambda}(\mathbb{V}_{X|\lambda}(X|\lambda)) + \mathbb{V}_{\lambda}(\mathbb{E}_{X|\lambda}(X|\lambda)) \\
+            &\stackrel{(X|\lambda) \sim \mathcal{N}(\mu, \frac{\sigma^2}{\lambda})}{=} \mathbb{E}_{\lambda}\Bigg(\frac{\sigma^2}{\lambda}\Bigg) + \mathbb{V}_{\lambda}(\mu) \\
+            &\stackrel{\mathbb{V}(\mu) = 0}{=} \sigma^2\mathbb{E}_{\lambda}\Bigg(\frac{1}{\lambda}\Bigg) \stackrel{\mathbb{E}(InvGamma(\alpha, \beta)) = \frac{\beta}{\alpha - 1}}{=} \frac{\sigma^2\nu}{\nu - 2} \text{, provided $\nu > 2$.}
+    \end{align*}
+\end{examplebox}
+
+\chapter{Correlation and independence}
+\section{The covariance between two random variables}
+The covariance measures the direction of the relationship, if any, between two random variables. \newline
+In fact, let $\displaystyle X$ and $\displaystyle Y$ be two random variables with (finite) means $\displaystyle \mathbb{E}(X) = \mu_X$ and $\displaystyle \mathbb{E}(Y) = \mu_Y$, respectively: the covariance between the two variables is formally defined as
+\[Cov(X, Y) = \mathbb{E}((X - \mathbb{E}(X)(Y - \mathbb{E}(Y))) = \mathbb{E}(XY) - \mathbb{E}(X)\mathbb{E}(Y) = \mathbb{E}(XY) - \mu_X\mu_Y\]
+In particular, it is possible to state that $\displaystyle X \bot Y$ implies $\displaystyle Cov(X, Y) = 0$, although the converse statement is not true in general.
+\begin{examplebox}[Zero covariance does not guarantee independence]
+    Let $\displaystyle X$ be a discrete random variable that is uniform on its support $\displaystyle S_X = \{-1, 0, 1\}$ and define the random variable $\displaystyle Y = X^2$: under this setting, it will be the case that
+    \begin{align*}
+        \mathbb{E}(X) &= \sum_{x \in S_X} xp_X(x) = 0 \text{ by symmetry.} \\
+        \mathbb{E}(XY) &= \mathbb{E}(X^3) \stackrel{\text{LLS}}{=} \sum_{x \in S_X} x^3p_X(x) = 0 \text{, again by symmetry.}
+    \end{align*}
+    Even though $\displaystyle \mathbb{E}(XY) = \mathbb{E}(X)\mathbb{E}(Y) = 0$ ensures that $\displaystyle Cov(X, Y) = 0$, the two variables are not independent because several counterexamples in their joint distribution violate the condition for independence.
+\end{examplebox}
+\section{Multivariate distributions}
+A multivariate distribution describes the joint behaviour of a sequence of (at least) two random variables, which typically belong to a random vector. \newline
+These distributions are typically summarized using a row vector, which stores the expected value of each component, and a covariance matrix, which describes the relationship between the components of the distribution.
+\subsection{The multinomial distribution}
+A fully discrete random vector $\displaystyle \mathbf{X} \in \mathbb{R}^k$ is said to follow a multinomial distribution with parameters $\displaystyle n \in \mathbb{N}$ and $\displaystyle \mathbf{p} \in \mathbb{R}^k$, which is written as $\displaystyle \mathbf{X} \sim Mult_k(n, \mathbf{p})$, if its joint probability mass function is defined as
+\[p_{\mathbf{X}}(\mathbf{x}) = \frac{n!}{x_1! \dots x_k!}\prod_{i = 1}^k p_i^{x_i} \text{, for $\displaystyle \mathbf{x} \in \Bigg\{(x_1, \dots, x_k) \in \mathbb{R}^k : \sum_{i = 1}^k x_i = n, x_1, \dots, x_k \ge 0 \Bigg\}$.}\]
+This distribution can be seen as a multivariate generalization of the binomial distribution. \newline
+In fact, if $\displaystyle \mathbf{X} \sim Mult_k(n, \mathbf{p})$, then $\displaystyle X_i \sim Binom(n, p_i) \text{ } \forall X_i \in \mathbf{X}$.
+\begin{proofbox}
+    If the random variable $\displaystyle X_i$ counts the number of trials whose outcome happens to be $\displaystyle i$, define a sequence of variables $\displaystyle Z_{i_1}, \dots, Z_{i_n}$ indicating whether each trial showed outcome $\displaystyle i$ or not. \newline
+    Knowing that $\displaystyle Z_{i_1}, \dots, Z_{i_n} \sim Ber(p_i)$ are independent and identically distributed, it is possible to express $\displaystyle X_i$ as the sum of independent and identically distributed Bernoulli trials with success probability $\displaystyle p_i$, meaning that $\displaystyle X_i \sim Binom(n, p_i)$.
+\end{proofbox}
+\noindent Additionally, if $\displaystyle \mathbf{X} \sim Mult_k(n, \mathbf{p})$, then $\displaystyle (X_i + X_j) \sim Binom(n, p_i + p_j) \text{ } \forall X_i \neq X_j \in \mathbf{X}$.
+\begin{proofbox}
+    If the random variable $\displaystyle Y = X_i + X_j$ counts the number of trials whose outcome is either $\displaystyle i$ or $\displaystyle j$, define a sequence of variables $\displaystyle Z_{(i, j)_1}, \dots, Z_{(i, j)_n}$ indicating whether each trial resulted in outcome $\displaystyle i$ or $\displaystyle j$. \newline
+    Since the two outcomes are mutually exclusive, it holds that $\displaystyle Z_{(i, j)_1}, \dots, Z_{(i, j)_n} \sim Ber(p_i + p_j)$. \newline
+    Knowing that $\displaystyle Z_{(i, j)_1}, \dots, Z_{(i, j)_n}$ will be independent and identically distributed, it is possible to express $\displaystyle Y = X_i + X_j$ as the sum of independent and identically distributed Bernoulli trials with success probability $\displaystyle p_i + p_j$, meaning that $\displaystyle Y = X_i + X_j \sim Binom(n, p_i + p_j)$.
+\end{proofbox}
+\noindent Furthermore, for any couple of components in the random vector, it is possible to state that
+\[Cov(X_i, X_j) = \begin{cases}
+    np_i(1 - p_i) &\quad\text{if $i = j$} \\
+    -np_ip_j &\quad\text{if $i \neq j$} \\
+\end{cases}\]
+\begin{proofbox}
+    If $\displaystyle i = j$, one trivially has $\displaystyle Cov(X_i, X_i) = \mathbb{V}(X_i) = np_i(1 - p_i)$. \newline
+    On the other hand, if $\displaystyle i \neq j$, consider
+    \[\mathbb{V}(X_i + X_j) = \mathbb{V}(X_i) + \mathbb{V}(X_j) + 2Cov(X_i, X_j)\]
+    Since $\displaystyle X_i$ and $\displaystyle X_j$ are part of a multinomial distribution, rearranging the equation allows to discover that
+    \begin{align*}
+        Cov(X_i, X_j)
+            &= \frac{\mathbb{V}(X_i + X_j) - \mathbb{V}(X_i) - \mathbb{V}(X_j)}{2} \\
+            &= \frac{n(p_i + p_j)(1 - p_i - p_j) - np_i(1 - p_i) - np_j(1 - p_j)}{2} \\
+            &= \frac{n}{2}(-2p_ip_j) = -np_ip_j
+    \end{align*}
+\end{proofbox}
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
