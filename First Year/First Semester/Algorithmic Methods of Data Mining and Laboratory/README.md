@@ -41,6 +41,7 @@
 | November 5 | Clustering methods. |
 | November 9 | Approximation algorithms for the $K$-means problem. |
 | November 10 | Introduction to principal component analysis. |
+| November 12 | Finding data variability through vector projections. |
 
 </details>
 
