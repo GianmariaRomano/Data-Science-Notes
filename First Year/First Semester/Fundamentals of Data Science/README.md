@@ -47,6 +47,7 @@
 | ~~November 5~~ | This lecture was cancelled. |
 | November 6 | **Discussion about the Kaggle Challenge** |
 | ~~November 9~~ | This lecture was cancelled. |
+| November 12 | Network descriptives and the Erdős-Rényi random graph model. |
 
 </details>
 
