@@ -43,6 +43,7 @@
 | November 6 | The variance of a random variable, summaries of random vectors and the law of total expectation. |
 | November 11 | Covariance and the law of total variance. |
 | November 12 | **Classwork 01** |
+| November 13 | Covariance and correlation, causal estimands. |
 
 </details>
 
