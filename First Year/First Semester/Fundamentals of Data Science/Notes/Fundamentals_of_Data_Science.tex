@@ -1176,5 +1176,67 @@ In particular, it is possible to make a distinction between ``weakly connected c
 \end{examplebox}
 \subsection{Random walks}
 On a graph $\displaystyle G = (V, E)$, a random walk is a stochastic process in which an agent starts from a source node and iteratively moves to a randomly chosen neighbour until a target node is reached.
+\section{Network descriptives}
+Network descriptives can be grouped into global descriptives, which capture features relating to the whole network, and local metrics, which describe features for a single node.
+\subsection{The clustering coefficient}
+The clustering coefficient measures node cohesiveness within a network. \newline
+Since the simplest structural graph is a triangle, the global clustering coefficient is defined as the proportion of triangles to connected triples, meaning that
+\[C = \frac{\text{Number of Triangles}}{\text{Number of Connected Triples}}\]
+Alternatively, it is possible to exploit the $\displaystyle l^{th}$ power of the adjacency matrix, which indicates the number of distinct paths of length $\displaystyle l$ from node $\displaystyle i$ to node $\displaystyle j$, to formulate the the global clustering coefficient as
+\[C = \frac{tr(A^3)}{\sum_{i \neq j} A_{ij}^2}\]
+By contrast, the local clustering of a node represents the density of the subgraph formed by its neighbours, meaning that
+\[c_i = \frac{2m_i}{k_i(k_i - 1)}, \text{with $c_i = 0$ if $k_i \leq 1$.}\]
+In particular, it is possible to express the global clustering coefficient of a network as the average local clustering coefficient of its nodes, resulting in
+\[C = \frac{1}{|V|}\sum_{i=1}^{|V|} c_i\]
+\subsection{The centrality of a node}
+Centrality measures allow to identify structurally important nodes within a network. \newline
+In particular, node centrality can be evaluated according to one of the following metrics:
+\begin{itemize}
+    \item \textbf{Closeness: }Closeness centrality measures how close a node is to the other nodes based on shortest paths between them. \newline
+    For this reason, closeness centrality is expressed as
+    \[Closeness(i) = \frac{|V| - 1}{\sum_{j \in V \setminus \{i\}} d_{i, j}}\]
+    If a network is not (strongly) connected, the harmonic closeness centrality metric considers $\displaystyle d_{i, j} = 0$ if no path between nodes $\displaystyle i$ and $\displaystyle j$ exists.
+    \item \textbf{Betweenness: }Betweenness centrality measures the extent to which a node can act as a bridge along the shortest paths between pairs of nodes. \newline
+    Assuming $\displaystyle \sigma_{st}$ denotes the number of shortest paths between nodes $\displaystyle s$ and $\displaystyle t$, with $\displaystyle \sigma_{st}(i)$ indicating the number of paths passing through node $\displaystyle i$, the betweenness centrality of a node is defined as
+    \[Betweenness(i) = \sum_{s \neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}\]
+\end{itemize}
+
+\chapter{Random networks}
+\section{The purpose of random graph models}
+Random graph models come in handy to construct ensembles, which represent probability distributions over possible network configurations that feature specific structural properties encoded by fixed parameters. \newline
+In fact, one can assess the statistical significance of a property observed in a real network by comparing it against synthetic random graphs.
+\section{The Erdős-Rényi model}
+The Erdős-Rényi model is an ensemble $\displaystyle G(n, p)$ that fixes the number of nodes $\displaystyle n$ and the independent probability $\displaystyle p$ of having an edge between any two nodes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/erdos_renyi_graphs.png}
+    \caption{Examples of Erdős-Rényi networks from the ensemble $\displaystyle G(n = 25, p = 0.1)$.}
+    \label{fig:er_np}
+\end{figure}
+\noindent Alternatively, the Erdős-Rényi model can be defined using an ensemble $\displaystyle G(n, m)$ that fixes the number of nodes $\displaystyle n$ and the number of edges $\displaystyle m$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/erdos_renyi_graphs_2.png}
+    \caption{Examples of Erdős-Rényi networks from the ensemble $\displaystyle G(n = 25, m = 29)$.}
+    \label{fig:er_nm}
+\end{figure}
+\subsection{The edge and degree distribution of an Erdős-Rényi network}
+Since edges may or may not be added through independent and identically distributed Bernoulli trials, it is possible to discover that the edges in an Erdős-Rényi network follow a binomial distribution defined by
+\[\mathbb{P}(m) = p^m(1 - p)^{\binom{n}{2} - m} \Rightarrow \langle m \rangle = \binom{m}{2}p\]
+This phenomenon implies that the degree distribution of an Erdős-Rényi network is also binomial, meaning that
+\[p_k = \binom{n - 1}{k}p^k(1 - p)^{n - 1 - k} \Rightarrow \langle k \rangle = (n - 1)p\]
+However, as $\displaystyle n \to +\infty$ for real networks, the degree distribution tends to be approximated by a Poisson distribution with rate $\displaystyle \lambda = \langle k \rangle = (n - 1)p$, resulting in
+\[p_k = \frac{e^{-\langle k \rangle}\langle k \rangle^k}{k!}\]
+However, since the binomial and Poisson distributions lack heavy tails, the Erdős-Rényi model fails to reproduce the heavy-tailed degree distributions observed in real networks.
+\subsection{Analysing components in an Erdős-Rényi network}
+While the Erdős-Rényi model fails to capture real degree distributions, it automatically encodes the small-world property. \newline
+In fact, it is possible to show inductively that the average number of nodes located at distance $\displaystyle s$ from a source node is equal to $\displaystyle \langle k \rangle^s$. \newline
+Therefore, assuming an Erdős-Rényi network has diameter $\displaystyle d$, it will be the case that
+\[\langle k \rangle^d \approx n \Rightarrow d = \frac{\ln(n)}{\ln(\langle k \rangle)}\]
+This phenomenon implies that the size of the largest connected component in an Erdős-Rényi network depends on the probability of having an edge between any two nodes. \newline
+More specifically, when $\displaystyle p = 0$, the network consists of a set of small isolated components that do not depend on the size of the network. \newline
+By contrast, if $\displaystyle p = 1$, the network acts as a single $\displaystyle n$-clique whose structure does depend on the size of the network. \newline
+Overall, for an Erdős-Rényi network, it is possible to prove that, if $\displaystyle S$ is the proportion of nodes that belong to the largest connected component, the following relation holds:
+\[S = 1 - e^{S\langle k \rangle} \Rightarrow \langle k \rangle = \frac{\ln(1 - S)}{S}\]
 
 \end{document}

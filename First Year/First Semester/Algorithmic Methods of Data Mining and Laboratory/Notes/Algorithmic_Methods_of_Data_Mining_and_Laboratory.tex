@@ -786,6 +786,9 @@ The rank of a matrix denotes the maximum number of linearly independent rows or 
     For this reason, it will be the case that $\displaystyle rank(\mathbf{A}) = 2$.
 \end{examplebox}
 \noindent When analysing a dataset's design matrix, it is common for the matrix not to be full-rank because the number of samples tends to exceed the number of features.
+\subsection{Matrix decompositions}
+Given a square matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times n}$, $\displaystyle \lambda$ and $\displaystyle \mathbf{v}$ are said to form an ``eigenvalue-eigenvector'' pair if $\displaystyle \mathbf{Av} = \lambda\mathbf{v}$. \newline
+In particular, if $\displaystyle \mathbf{A}$ is a symmetric matrix, meaning that $\displaystyle \mathbf{A}^T = \mathbf{A}$, the spectral theorem ensures that all the eigenvalues of the matrix will be real-valued.
 \section{Projecting vectors with respect to another vector}
 When projecting a unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$ onto a vector $\displaystyle \mathbf{x} \in \mathbb{R}^D$, the length of the resulting vector $\displaystyle \mathbf{y}$ will be equal to
 \[\lVert \mathbf{y} \rVert = \lVert \mathbf{x} \rVert\cos(\theta) = \lVert \mathbf{x} \rVert\frac{\mathbf{v}^T\mathbf{x}}{\lVert \mathbf{v} \rVert\lVert \mathbf{x} \rVert} \stackrel{\lVert \mathbf{v} \rVert = 1}{=} \mathbf{v}^T\mathbf{x}\]
@@ -796,7 +799,7 @@ Moreover, one can define a ``leftover'' part, which lies within a $\displaystyle
     \mathbf{x}(\mathbf{vv}^T - \mathbf{I}) &\quad\text{if $\mathbf{x}$ and $\mathbf{y}$ are row vectors} \\
 \end{cases}\]
 This procedure can be extended to project each data point in a design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ by taking
-\[\mathbf{M} = \mathbf{Avv}^T \text{, whose leftover part is given by $\mathbf{A} - \mathbf{M} = \mathbf{A}(\mathbf{I} - \mathbf{vv}^T)$.}\]
+\[\mathbf{M} = \mathbf{Xvv}^T \text{, whose leftover part is given by $\mathbf{X} - \mathbf{M} = \mathbf{X}(\mathbf{I} - \mathbf{vv}^T)$.}\]
 \section{Projecting vectors with respect to a vector subspace}
 A $\displaystyle k$-dimensional subspace of $\displaystyle \mathbb{R}^D$ can be defined as a sequence of $\displaystyle k$ unit vectors $\displaystyle \mathbf{v}_1, \dots, \mathbf{v}_k$ that are mutually orthogonal, meaning that
 \[\mathbf{v}_i^T\mathbf{v}_j = \begin{cases}
@@ -804,7 +807,7 @@ A $\displaystyle k$-dimensional subspace of $\displaystyle \mathbb{R}^D$ can be 
     0 &\quad\text{if $i \neq j$} \\
 \end{cases}\]
 In particular, the projection of a row vector $\displaystyle \mathbf{x}_i \in \mathbb{R}^{1 \times D}$ onto the subspace can be defined as
-\[\mathbf{x}_i\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}_i\mathbf{v}_k\mathbf{v}_k^T = \mathbf{v}_i\mathbf{V}_k\mathbf{V}_k^T \text{, with $\mathbf{V}_k = \begin{pmatrix}
+\[\mathbf{x}_i\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}_i\mathbf{v}_k\mathbf{v}_k^T = \mathbf{x}_i\mathbf{V}_k\mathbf{V}_k^T \text{, with $\mathbf{V}_k = \begin{pmatrix}
     \mathbf{v}_1 \dots \mathbf{v}_k \\
 \end{pmatrix} \in \mathbb{R}^{D \times k}$.}\]
 \begin{proofbox}
@@ -812,5 +815,21 @@ In particular, the projection of a row vector $\displaystyle \mathbf{x}_i \in \m
     \[\mathbf{x}_i\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}_i\mathbf{v}_k\mathbf{v}_k^T = \mathbf{x}_i\Bigg(\sum_{j = 1}^k \mathbf{V}_k^{(j)}\mathbf{V}_{k_{(j)}}\Bigg) = \mathbf{x}_i\mathbf{V}_k\mathbf{V}_k^T\]
 \end{proofbox}
 \noindent In this case, the resulting leftover part will lie within a $\displaystyle (D - k)$-dimensional subspace that is orthogonal to the subspace defined by $\displaystyle \mathbf{V}_k$.
+\section{Projection and variance}
+For a dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$, the mean of the corresponding design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ can be formulated as the vector
+\[\mathbf{\mu} = \frac{1}{n}\sum_{i = 1}^n \mathbf{x}_i \text{, which stores the mean over each feature of the dataset.}\]
+To find the variance of the dataset along a direction represented by a unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$, it is possible to consider
+\[\mathbb{V}_{\mathbf{v}}(\mathbf{X}) = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v} - \mathbf{\mu}^T\mathbf{v})^2 = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v})^2 - (\mathbf{\mu}^T\mathbf{v})^2\]
+However, if the dataset is mean-centered, meaning that $\displaystyle \mu = \mathbf{0}$, this quantity simplifies to
+\[\mathbb{V}_{\mathbf{v}}(\mathbf{X}) = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v})^2 = \frac{1}{n}\lVert \mathbf{Xv} \rVert_2^2\]
+In general, assuming the design matrix of a dataset is mean-centered, it is possible to analyse data variance over multiple directions by finding an orthonormal basis $\displaystyle \mathbf{v}_1, \dots, \mathbf{v}_D \in \mathbb{R}^D$ and computing
+\[\mathbb{V}(\mathbf{X}) = \frac{1}{n}\sum_{j = 1}^D \mathbb{V}_{\mathbf{v}_j}(\mathbf{X}) = \frac{1}{n}\sum_{j = 1}^D \lVert \mathbf{Xv}_j \rVert_2^2\]
+\begin{examplebox}[The Frobenius norm]
+    Analysing the variance of a design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ over the orthonormal basis defined by the canonical vectors $\displaystyle \{\mathbf{v}_j\}_{j = 1}^D = \{\mathbf{e}_j\}_{j = 1}^D$ results in
+    \[\mathbb{V}(\mathbf{X}) = \frac{1}{n}\lVert \mathbf{X} \rVert_F^2 = \frac{1}{n}\sum_{i = 1}^n\sum_{j = 1}^D \mathbf{X}_{ij}^2\]
+\end{examplebox}
+\section{Principal component analysis as an optimization problem}
+In order to capture as much information as possible, it is necessary to project a design matrix $\displaystyle \mathbf{X}$ onto the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
+\[\max_{\lVert \mathbf{v} \rVert = 1} \lVert \mathbf{Xv} \rVert_2\]
 
 \end{document}

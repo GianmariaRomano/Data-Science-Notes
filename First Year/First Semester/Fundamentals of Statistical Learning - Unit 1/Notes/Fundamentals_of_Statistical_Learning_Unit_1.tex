@@ -1151,7 +1151,7 @@ Whenever the conditioning variable acts as a random object, the law of total var
 \section{The covariance between two random variables}
 The covariance measures the direction of the relationship, if any, between two random variables. \newline
 In fact, let $\displaystyle X$ and $\displaystyle Y$ be two random variables with (finite) means $\displaystyle \mathbb{E}(X) = \mu_X$ and $\displaystyle \mathbb{E}(Y) = \mu_Y$, respectively: the covariance between the two variables is formally defined as
-\[Cov(X, Y) = \mathbb{E}((X - \mathbb{E}(X)(Y - \mathbb{E}(Y))) = \mathbb{E}(XY) - \mathbb{E}(X)\mathbb{E}(Y) = \mathbb{E}(XY) - \mu_X\mu_Y\]
+\[\sigma_{X, Y} = Cov(X, Y) = \mathbb{E}((X - \mathbb{E}(X)(Y - \mathbb{E}(Y))) = \mathbb{E}(XY) - \mathbb{E}(X)\mathbb{E}(Y) = \mathbb{E}(XY) - \mu_X\mu_Y\]
 In particular, it is possible to state that $\displaystyle X \bot Y$ implies $\displaystyle Cov(X, Y) = 0$, although the converse statement is not true in general.
 \begin{examplebox}[Zero covariance does not guarantee independence]
     Let $\displaystyle X$ be a discrete random variable that is uniform on its support $\displaystyle S_X = \{-1, 0, 1\}$ and define the random variable $\displaystyle Y = X^2$: under this setting, it will be the case that
@@ -1161,6 +1161,59 @@ In particular, it is possible to state that $\displaystyle X \bot Y$ implies $\d
     \end{align*}
     Even though $\displaystyle \mathbb{E}(XY) = \mathbb{E}(X)\mathbb{E}(Y) = 0$ ensures that $\displaystyle Cov(X, Y) = 0$, the two variables are not independent because several counterexamples in their joint distribution violate the condition for independence.
 \end{examplebox}
+\noindent In general, the relationship between two random variables $\displaystyle X$ and $\displaystyle Y$, which have (finite) means $\displaystyle \mu_X$ and $\displaystyle \mu_Y$ and standard deviation $\displaystyle \sigma_X$ and $\displaystyle \sigma_Y$, can be summarized using the Pearson linear correlation coefficient, which is defined as
+\[\rho_{X, Y} = \frac{Cov(X, Y)}{\sqrt{\mathbb{V}(X)}\sqrt{\mathbb{V}(Y)}} = \frac{\sigma_{X, Y}}{\sigma_X\sigma_Y} \text{, meaning that $X \bot Y \Rightarrow \rho_{X, Y} = 0$.}\]
+In particular, if $\displaystyle Z_X$ and $\displaystyle Z_Y$ are the standardized versions of $\displaystyle X$ and $\displaystyle Y$, one has $\displaystyle \rho_{X, Y} = Cov(X, Y)$. \newline
+Furthermore, it is always the case that $\displaystyle \rho_{X, Y} \in [-1, 1]$, with $\displaystyle \rho_{X, Y} = \pm 1$ if and only if $\displaystyle Y = \alpha + \beta X$.
+\begin{proofbox}
+    Without loss of generality, consider the standardized random variables $\displaystyle Z_X$ and $\displaystyle Z_Y$, which have zero mean and unit variance, and observe that
+    \begin{align*}
+        0 \leq \mathbb{V}(Z_X + Z_Y)
+            &= \mathbb{V}(Z_X) + \mathbb{V}(Z_Y) + 2Cov(Z_X, Z_Y) = 2 + 2Cov(Z_X, Z_Y) \\
+            &\Rightarrow 2Cov(Z_X, Z_Y) = 2\rho_{X, Y} = -2 + \mathbb{V}(Z_X + Z_Y) \Rightarrow \rho_{X, Y} \ge -1 \\
+        0 \leq \mathbb{V}(Z_X - Z_Y)
+            &= \mathbb{V}(Z_X) + \mathbb{V}(Z_Y) - 2Cov(Z_X, Z_Y) = 2 - 2Cov(Z_X, Z_Y) \\
+            &\Rightarrow -2Cov(Z_X, Z_Y) = -2\rho_{X, Y} = -2 + \mathbb{V}(Z_X - Z_Y) \Rightarrow \rho_{X, Y} \leq 1
+    \end{align*}
+    Assuming now that $\displaystyle \rho_{X, Y} = -1$, the following equivalence holds:
+    \begin{align*}
+        \rho_{X, Y} = -1 \Leftrightarrow \mathbb{V}(Z_X + Z_Y) = 0
+            &\Leftrightarrow Z_X + Z_Y = 0 \\
+            &\Leftrightarrow \frac{X - \mu_X}{\sigma_X} = -\frac{Y - \mu_Y}{\sigma_Y} \\
+            &\Leftrightarrow Y = \Bigg(\mu_Y - \frac{\sigma_Y}{\sigma_X}\mu_X\Bigg) + \Bigg(-\frac{\sigma_Y}{\sigma_X}\Bigg)X \stackrel{\beta < 0}{=} \alpha + \beta X
+    \end{align*}
+    Note that, without loss of generality, this equivalence can be adjusted for the case where $\displaystyle \rho_{X, Y} = 1$.
+\end{proofbox}
+\subsection{The geometric interpretation of correlation}
+Generally speaking, correlation is not transitive. \newline
+In fact, if the random variables $\displaystyle X$ and $\displaystyle Y$ are positively correlated and, at the same time, $\displaystyle Y$ and $\displaystyle Z$ are also positively correlated, $\displaystyle X$ and $\displaystyle Z$ are not necessarily positively correlated.
+\begin{examplebox}[Positive correlation is not necessarily transitive]
+    Given three non-trivial and independent random variables $\displaystyle U$, $\displaystyle V$ and $\displaystyle W$, define the following random variables:
+    \[X = U + V \quad\quad Y = W + V \quad\quad Z = W - U\]
+    The definition of the new random variables implies that $\displaystyle \rho_{X, Y} > 0$ and $\displaystyle \rho_{Y, Z} > 0$, but $\displaystyle \rho_{Y, Z} < 0$.
+\end{examplebox}
+\noindent From a geometric perspective, let $\displaystyle X$, $\displaystyle Y$ and $\displaystyle Z$ be random variables that, on a common finite sample space $\displaystyle \Omega = \{\omega_1, \dots, \omega_k\}$, have a finite support: each random variable is defined as a mapping $\displaystyle X: \Omega \to \mathbb{R}$ that can be summarized using the following vector:
+\[\mathbf{x} = \begin{pmatrix}
+    x_1 \\
+    \vdots \\
+    x_k \\
+\end{pmatrix} = \begin{pmatrix}
+    X(\omega_1) \\
+    \vdots \\
+    X(\omega_k) \\
+\end{pmatrix}\]
+In particular, it is possible to analyse the geometric relationship between two vectors $\displaystyle \mathbf{x}, \mathbf{y} \in \mathbb{R}^k$ by means of their dot product, which is defined as
+\[\mathbf{x}^T\mathbf{y} = \sum_{j = 1}^k x_jy_j = \lVert \mathbf{x} \rVert\lVert \mathbf{y} \rVert \cos(\theta_{X, Y})\]
+Assuming $\displaystyle \Omega$ supports a uniform probability measure and $\displaystyle \mathbb{E}(X) = \mathbb{E}(Y) = \mathbb{E}(Z) = 0$, it is possible to observe that
+\begin{align*}
+    \rho_{X, Y} = \frac{Cov(X, Y)}{\sqrt{\mathbb{V}(X)}\sqrt{\mathbb{V}(Y)}}
+        &= \frac{\mathbb{E}(XY)}{\sqrt{\mathbb{E}(X^2)}\sqrt{\mathbb{E}(Y)^2}} \\
+        &= \frac{\sum_{j} \frac{1}{k} X(\omega_j)Y(\omega_j)}{\sqrt{\sum_j \frac{1}{k} X^2(\omega_j)}\sqrt{\sum_j \frac{1}{k} Y^2(\omega_j)}} \\
+        &= \frac{\sum_j x_iy_i}{\sqrt{\sum_j x_j^2}\sqrt{\sum_j y_j^2}} = \frac{\mathbf{x}^T\mathbf{y}}{\lVert \mathbf{x} \rVert\lVert \mathbf{y} \rVert} = \cos(\theta_{X, Y})
+\end{align*}
+\noindent Therefore, whenever $\displaystyle X$ and $\displaystyle Y$ are positively correlated and, at the same time, $\displaystyle Y$ and $\displaystyle Z$ are also positively correlated, if $\displaystyle \rho_{X, Y}^2 + \rho_{Y, Z}^2 > 0$, then $\displaystyle X$ and $\displaystyle Z$ will be positively correlated as well. \newline
+In general, the correlation over three random variables $\displaystyle X$, $\displaystyle Y$ and $\displaystyle Z$ satisfies the following inequality:
+\[\rho_{X, Y}^2 + \rho_{Y, Z}^2 + \rho_{X, Z}^2 - 1 \leq 2 - \rho_{X, Y}\rho_{Y, Z}\rho_{X, Z}\]
 \section{Multivariate distributions}
 A multivariate distribution describes the joint behaviour of a sequence of (at least) two random variables, which typically belong to a random vector. \newline
 These distributions are typically summarized using a row vector, which stores the expected value of each component, and a covariance matrix, which describes the relationship between the components of the distribution.
