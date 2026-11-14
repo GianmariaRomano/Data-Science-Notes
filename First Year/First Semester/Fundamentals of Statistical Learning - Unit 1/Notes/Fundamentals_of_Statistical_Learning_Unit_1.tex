@@ -1215,8 +1215,21 @@ Assuming $\displaystyle \Omega$ supports a uniform probability measure and $\dis
 In general, the correlation over three random variables $\displaystyle X$, $\displaystyle Y$ and $\displaystyle Z$ satisfies the following inequality:
 \[\rho_{X, Y}^2 + \rho_{Y, Z}^2 + \rho_{X, Z}^2 - 1 \leq 2 - \rho_{X, Y}\rho_{Y, Z}\rho_{X, Z}\]
 \section{Multivariate distributions}
-A multivariate distribution describes the joint behaviour of a sequence of (at least) two random variables, which typically belong to a random vector. \newline
-These distributions are typically summarized using a row vector, which stores the expected value of each component, and a covariance matrix, which describes the relationship between the components of the distribution.
+A multivariate distribution describes the joint behaviour of a sequence of (at least) two random variables belonging to a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$. \newline
+More specifically, the interactions between the various components of a random vector are summarized using a $\displaystyle (p \times p)$ symmetric and positive (semi-)definite covariance matrix that is structured as follows:
+\[Cov(\mathbf{X}) = \mathbf{\Sigma} = \begin{pmatrix}
+    \mathbb{V}(X_1) & Cov(X_1, X_2) & \dots & Cov(X_1, X_p) \\
+    Cov(X_1, X_2) & \mathbb{V}(X_2) & \dots & Cov(X_2, X_p) \\
+    \vdots & \vdots & \ddots & \vdots \\
+    Cov(X_1, X_p) & Cov(X_2, X_p) & \dots & \mathbb{V}(X_p) \\
+\end{pmatrix}\]
+The construction of a covariance matrix allows to retrieve the overall variability in a random vector through a spectral decomposition. \newline
+In fact, if $\displaystyle \lambda_1 \ge \dots \ge \lambda_p \ge 0$ are the ordered eigenvalues of the covariance matrix and $\displaystyle \mathbf{u}_1, \dots, \mathbf{u}_p$ are the corresponding (orthonormal) eigenvectors, it is possible to construct a diagonal matrix $\displaystyle \mathbf{D} = diag(\lambda_1, \dots, \lambda_p)$ and an orthogonal matrix $\displaystyle \mathbf{D} = \mathbf{u}_1\dots\mathbf{u}_p$ such that $\displaystyle \mathbf{\Sigma} = \mathbf{UDU}^T$. \newline
+Therefore, by exploiting the circularity of the trace, the total variance of a random vector can be formulated as
+\[\sum_{j = 1}^p \mathbb{V}(X_j) = tr(\mathbf{\Sigma}) = tr(\mathbf{UDU}^T) = tr(\mathbf{U}^T\mathbf{UD}) \stackrel{\mathbf{U}^T\mathbf{U} = \mathbf{I}}{=} tr(\mathbf{D}) = \sum_{j = 1}^p \lambda_p\]
+Alternatively, the relationships between the components of a random vector can be summarized using a correlation matrix that stores the correlation coefficients between pairs of random variables. \newline
+Assuming $\displaystyle diag(\mathbf{\Sigma})$ is a diagonal matrix storing the variances of the single components, the correlation matrix can be defined as
+\[\rho(\mathbf{X}) = \mathbf{R} = (diag(\mathbf{\Sigma}))^{-\frac{1}{2}}\mathbf{\Sigma}(diag(\mathbf{\Sigma}))^{-\frac{1}{2}}\]
 \subsection{The multinomial distribution}
 A fully discrete random vector $\displaystyle \mathbf{X} \in \mathbb{R}^k$ is said to follow a multinomial distribution with parameters $\displaystyle n \in \mathbb{N}$ and $\displaystyle \mathbf{p} \in \mathbb{R}^k$, which is written as $\displaystyle \mathbf{X} \sim Mult_k(n, \mathbf{p})$, if its joint probability mass function is defined as
 \[p_{\mathbf{X}}(\mathbf{x}) = \frac{n!}{x_1! \dots x_k!}\prod_{i = 1}^k p_i^{x_i} \text{, for $\displaystyle \mathbf{x} \in \Bigg\{(x_1, \dots, x_k) \in \mathbb{R}^k : \sum_{i = 1}^k x_i = n, x_1, \dots, x_k \ge 0 \Bigg\}$.}\]
@@ -1728,8 +1741,47 @@ More specifically, while the association between $\displaystyle X$ and $\display
 
 \noindent In fact, using the point mass distribution $\displaystyle \delta_X(x)$, the causal distribution can be retrieved by computing
 \[\mathbb{P}(y|\text{Set } X = x) = \int \mathbb{P}(y|x, \mathbf{u})\mathbb{P}(\mathbf{u}) \ d\mathbf{u}\]
-Overall, an association indicates a passive conditioning based on observations, whereas a causal distribution describes an active conditioning based on intervention. \newline
-However, a causal distribution cannot be estimated directly because it depends on a collection of not (entirely) observable variables, requiring to collect data in order to measure (some elements) of $\displaystyle \mathbf{U}$.
+Overall, an association indicates a passive conditioning based on observations, whereas a causal distribution describes an active conditioning based on intervention.
+\begin{lstlisting}[
+  language=R,
+  captionpos=b,
+  caption={R pseudocodes for sampling from an active or passive conditioning.},
+  label={lst:conditioning}
+]
+    # Forward Sampling - Association.
+    for (m in 1:M){
+        u[i] ~ p(u)
+        x[i] ~ p(x|u[i])
+        y[i] ~ p(y, u[i], x[i])
+    }
+    
+    # Forward Sampling - Causation.
+    set X <- x
+    for (m in 1:M){
+        u[i] ~ p(u)
+        y[i] ~ p(y, u[i], x)
+    }
+\end{lstlisting}
+\noindent However, a causal distribution cannot be estimated directly because it depends on a collection of not (entirely) observable variables, requiring to collect data in order to measure (some elements) of $\displaystyle \mathbf{U}$.
+\section{Causal estimands}
+A causal estimand is a population-level summary of the effect of a treatment $\displaystyle X$ that is measured during causal inference. \newline
+Assuming the treatment is modelled as a discrete binary variable, the ``average treatment effect'' measures the difference in the average outcome $\displaystyle Y$ between a treated population and an untreated population, meaning that
+\[\psi = \mathbb{E}(Y|\text{Set } X = 1) - \mathbb{E}(Y|\text{Set } X = 0) \text{, which is based on the causal distribution.}\]
+However, inferential settings typically focus on an estimate given by
+\[\delta = \mathbb{E}(Y|\text{Observe } X = 1) - \mathbb{E}(Y|\text{Observe } X = 1) \text{, which is based on an association.}\]
+Overall, one can achieve $\displaystyle \psi \equiv \delta$ under randomization, although this procedure is not always feasible in practice. \newline
+Under an ideal setting in which the confounder $\displaystyle \mathbf{U}$ is fully observable, it is possible to estimate the average treatment effect by considering
+\begin{align*}
+    \mathbb{E}(Y|\text{Set }X = x) &= \int y \Bigg(\int \mathbb{P}(y|x, \mathbf{u})\mathbb{P}(\mathbf{u}) \ d\mathbf{u}\Bigg) \ dy = \int\Bigg(\int y\mathbb{P}(y|x, \mathbf{u}) \ dy\Bigg) \mathbb{P}(\mathbf{u}) \ d\mathbf{u} = \int \mu_X\mathbb{P}(\mathbf{u}) \ d\mathbf{u} \\
+    \psi &= \mathbb{E}(Y|\text{Set }X = 1) - \mathbb{E}(Y|\text{Set }X = 0) = \int (\mu_1 - \mu_0)\mathbb{P}(\mathbf{u}) \ d\mathbf{u}
+\end{align*}
+Alternatively, one can estimate the average treatment effect in terms of the propensity score, which measures how likely a subject with profile $\displaystyle \mathbf{u}$ receives the treatment, meaning that
+\[\pi(\mathbf{u}) = \mathbb{E}(X|\mathbf{U} = \mathbf{u}) = \mathbb{P}(X = 1|\mathbf{U} = \mathbf{u}) \stackrel{\mathbb{P}(y, 1, \mathbf{u})}{\Rightarrow} \begin{cases}
+    \mathbb{E}(Y|\text{Set }X = 1) = \mathbb{E}_{X, Y, \mathbf{U}}\bigg(\frac{YX}{\pi(\mathbf{U})}\bigg) \\
+    \mathbb{E}(Y|\text{Set }X = 0) = \mathbb{E}_{X, Y, \mathbf{U}}\bigg(\frac{Y(1 - X)}{1 - \pi(\mathbf{U})}\bigg)
+\end{cases}\]
+In fact, this formulation allows to make the following estimate:
+\[\psi = \mathbb{E}(Y|\text{Set }X = 1) - \mathbb{E}(Y|\text{Set }X = 0) = \mathbb{E}_{X, Y, \mathbf{U}}\Bigg(\frac{YX}{\pi(\mathbf{U})} - \frac{Y(1 - X)}{1 - \pi(\mathbf{U})}\Bigg)\]
 
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}

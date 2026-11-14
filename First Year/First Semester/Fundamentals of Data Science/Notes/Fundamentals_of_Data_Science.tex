@@ -511,7 +511,7 @@ More specifically, the scaled eigenvector is known as the ``first principal comp
 For a real-valued and symmetric covariance matrix $\mathbf{\Sigma}$, one can compute an orthonormal matrix $\displaystyle \mathbf{V} = [\mathbf{v}_1, \dots, \mathbf{v}_d]$, which is obtained by stacking the eigenvectors of the covariance matrix, and a diagonal matrix $\displaystyle \mathbf{\Lambda}$, which contains the eigenvalues of the covariance matrix, to formulate
 \[\mathbf{\Sigma} = \mathbf{V\Lambda V}^T \text{, implying that $\mathbf{\Sigma}$ is always positive semi-definite.}\]
 \section{Applications of principal component analysis}
-Principal component analysis can be used as an unsupervised learning algorithm that allows to compress high-dimensional data onto a lower-dimensional space, such as a linear manifold, by using the $\displaystyle k << d$ most relevant components to create uncorrelated features that can be exploited to simplify learning tasks or discover data patterns.
+Principal component analysis can be used as an unsupervised learning algorithm that allows to compress high-dimensional data onto a lower-dimensional space, such as a linear manifold, by using the $\displaystyle k \ll d$ most relevant components to create uncorrelated features that can be exploited to simplify learning tasks or discover data patterns.
 
 \chapter{Linear models}
 \section{The risk minimization problem in supervised learning}
@@ -1204,7 +1204,8 @@ In particular, node centrality can be evaluated according to one of the followin
 \chapter{Random networks}
 \section{The purpose of random graph models}
 Random graph models come in handy to construct ensembles, which represent probability distributions over possible network configurations that feature specific structural properties encoded by fixed parameters. \newline
-In fact, one can assess the statistical significance of a property observed in a real network by comparing it against synthetic random graphs.
+In fact, one can assess the statistical significance of a property observed in a real network by comparing it against synthetic random graphs. \newline
+In general, random graph models can be classified as mechanistic models, which represent causality through fixed structural rules, or generative models, whose structure is generated according to some free parameters.
 \section{The Erdős-Rényi model}
 The Erdős-Rényi model is an ensemble $\displaystyle G(n, p)$ that fixes the number of nodes $\displaystyle n$ and the independent probability $\displaystyle p$ of having an edge between any two nodes.
 \begin{figure}[H]
@@ -1222,12 +1223,18 @@ The Erdős-Rényi model is an ensemble $\displaystyle G(n, p)$ that fixes the nu
 \end{figure}
 \subsection{The edge and degree distribution of an Erdős-Rényi network}
 Since edges may or may not be added through independent and identically distributed Bernoulli trials, it is possible to discover that the edges in an Erdős-Rényi network follow a binomial distribution defined by
-\[\mathbb{P}(m) = p^m(1 - p)^{\binom{n}{2} - m} \Rightarrow \langle m \rangle = \binom{m}{2}p\]
+\[\mathbb{P}(m) = p^m(1 - p)^{\binom{n}{2} - m} \Rightarrow \langle m \rangle = \binom{n}{2}p\]
 This phenomenon implies that the degree distribution of an Erdős-Rényi network is also binomial, meaning that
 \[p_k = \binom{n - 1}{k}p^k(1 - p)^{n - 1 - k} \Rightarrow \langle k \rangle = (n - 1)p\]
 However, as $\displaystyle n \to +\infty$ for real networks, the degree distribution tends to be approximated by a Poisson distribution with rate $\displaystyle \lambda = \langle k \rangle = (n - 1)p$, resulting in
 \[p_k = \frac{e^{-\langle k \rangle}\langle k \rangle^k}{k!}\]
-However, since the binomial and Poisson distributions lack heavy tails, the Erdős-Rényi model fails to reproduce the heavy-tailed degree distributions observed in real networks.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{images/erdos_renyi_distributions.png}
+    \caption{Degree and edge distribution of Erdős-Rényi networks from $\displaystyle G(n = 25, p = 0.1)$.}
+    \label{fig:er_distributions}
+\end{figure}
+\noindent However, since the binomial and Poisson distributions lack heavy tails, the Erdős-Rényi model fails to reproduce the heavy-tailed degree distributions observed in real networks.
 \subsection{Analysing components in an Erdős-Rényi network}
 While the Erdős-Rényi model fails to capture real degree distributions, it automatically encodes the small-world property. \newline
 In fact, it is possible to show inductively that the average number of nodes located at distance $\displaystyle s$ from a source node is equal to $\displaystyle \langle k \rangle^s$. \newline
@@ -1237,6 +1244,67 @@ This phenomenon implies that the size of the largest connected component in an E
 More specifically, when $\displaystyle p = 0$, the network consists of a set of small isolated components that do not depend on the size of the network. \newline
 By contrast, if $\displaystyle p = 1$, the network acts as a single $\displaystyle n$-clique whose structure does depend on the size of the network. \newline
 Overall, for an Erdős-Rényi network, it is possible to prove that, if $\displaystyle S$ is the proportion of nodes that belong to the largest connected component, the following relation holds:
-\[S = 1 - e^{S\langle k \rangle} \Rightarrow \langle k \rangle = \frac{\ln(1 - S)}{S}\]
+\[S = 1 - e^{-S\langle k \rangle} \Rightarrow \langle k \rangle = \frac{\ln(1 - S)}{S}\]
+\section{The Watts-Strogatz model}
+The Watts-Strogatz model aims to overcome a key limitation of the Erdős-Rényi model, whose low transitivity does not represent the behaviour observed in many real networks. \newline
+For this reason, a Watts-Strogatz network is built starting from a (one-dimensional) regular ring lattice with $\displaystyle n$ nodes and, while each nodes is initially connected to a fixed number $\displaystyle k_n$ of nearest neighbours, each edge in the network can be randomly rewired to another node with probability $\displaystyle p$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/watts_strogatz_graph.png}
+    \caption{A Watts-Strogatz network with parameters $\displaystyle n = 20$, $\displaystyle k_n = 2$ and $\displaystyle p = 0.05$.}
+    \label{fig:ws_np}
+\end{figure}
+\subsection{The degree distribution of a Watts-Strogatz network}
+The structure of a Watts-Strogatz network implies that its degree distribution ranges between two edge case that occur when $\displaystyle p = 0$, where the network follows a uniform degree distribution with mean degree $\displaystyle \langle k \rangle = 2k_n$, or if $\displaystyle p = 1$, where the degree distribution mirrors the Poisson approximation of the Erdős-Rényi model.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.35\linewidth]{images/watts_strogatz_distributions.png}
+    \caption{Degree distribution of a Watts-Strogatz network for various choices of $\displaystyle p$.}
+    \label{fig:ws_distributions}
+\end{figure}
+\subsection{Analysing components in a Watts-Strogatz network}
+It is possible to show that, for a Watts-Strogatz network such that $\displaystyle n \gg \langle k \rangle \gg \ln(n) \gg 1$, the small-world property can coexist with node cohesiveness. \newline
+In fact, for $\displaystyle p \to 0$, the network's average path length and global clustering coefficients are given by
+\[L(p) \approx \frac{n}{2\langle k \rangle} \gg 1 \quad\quad C(p) \approx \frac{3}{4}\]
+By contrast, as $\displaystyle p \to 1$, these metrics become closer to those of a random network as one has
+\[L(p) \approx \frac{\ln(n)}{\ln(\langle k \rangle)} \quad\quad C(p) = \frac{\langle k \rangle}{n} \ll 1\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/watts_strogatz_small_world.png}
+    \caption{The small-world property in a Watts-Strogatz network.}
+    \label{fig:ws_small_world}
+\end{figure}
+\noindent However, the usefulness of the Watts-Strogatz network as a null model tends to be limited because it requires making ``guesses'' for the rewiring probability, which cannot be estimated from the data.
+\section{The Barabási-Albert model}
+The Barabási-Albert model comes in handy to generate scale-free networks through a probabilistic mechanism. \newline
+Assuming a network starts with $\displaystyle m_0$ nodes and arbitrarily chosen edges, provided each node has at least one link, the Barabási-Albert model develops the network through an iterative mechanism based on growth and preferential attachment. \newline
+At each step, a new node with $\displaystyle m \leq m_0$ links is added to the network and the probability that a link of the new node connects to node $\displaystyle i$, which has degree $\displaystyle k_i$, is defined as
+\[\pi(k_i) = \frac{k_i}{\sum_{j = 1}^n k_j} \text{ for each node in the network.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/barabasi_albert_graph.png}
+    \caption{Creating a Barabási-Albert network by introducing $\displaystyle m_0 = 2$ edges every round.}
+    \label{fig:ba_m}
+\end{figure}
+\noindent Therefore, after $\displaystyle t$ steps, the Barabási-Albert model generates a network with $\displaystyle n = t + m_0$ nodes and $\displaystyle (m_0 + mt)$ total edges.
+\subsection{The degree distribution of a Barabási-Albert network}
+An interesting property of the Barabási-Albert model lies in the fact that, for sufficiently large network sizes, its degree distribution follows a power law with exponent $\displaystyle \gamma = 3$, meaning that $\displaystyle p(k) = \alpha k^{-3}$, where $\displaystyle \alpha > 0$ acts as a coefficient. \newline
+Moreover, by construction, the average degree of the resulting network is always equal to $\displaystyle \langle k \rangle = 2m$. \newline
+In general, the coefficient $\displaystyle \alpha$ can be estimated through linear regression, although this approach may introduce a bias because the low-frequency region is in the tail of the degree distribution.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/barabasi_albert_linear_regression.png}
+    \caption{Estimating a power law using linear regression.}
+    \label{fig:ba_regression}
+\end{figure}
+\noindent
+For this reason, the coefficient is typically estimated using the logarithmic binning method, which groups observations into bins whose sizes increase exponentially, allowing for a more reliable fit. \newline
+In fact, it the fitted linear model is expressed as $\displaystyle \hat{y} = a + bx$, it can be shown that the estimated coefficient $\displaystyle \hat{\alpha}$ satisfies $\displaystyle \hat{\alpha} = \alpha - 1$.
+\subsection{Analysing components in a Barabási-Albert network}
+Generally speaking, the diameter of a Barabási-Albert network is given by
+\[d_{\max} \approx \frac{\ln(n)}{\ln(\ln(n))}\]
+This means that the Barabási-Albert model exhibits the ``ultra-small-world'' property because distances tend to be smaller compared to those in an Erdős-Rényi network of similar size. \newline
+Additionally, for moderate network sizes, a Barabási-Albert network tends to be locally more clustered than an Erdős-Rényi network as its global clustering coefficient is given by
+\[C \approx \frac{\ln^2(n)}{n} \ge p \text{ , which is the clustering coefficient of an Erdős-Rényi network.}\]
 
 \end{document}
