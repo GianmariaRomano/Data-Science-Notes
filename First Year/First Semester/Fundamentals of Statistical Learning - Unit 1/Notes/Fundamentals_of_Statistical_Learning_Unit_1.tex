@@ -1088,7 +1088,7 @@ Whenever the conditioning variable acts as a random object, the law of total exp
 \begin{examplebox}[The mixing trick on a scale mixture of Gaussians]
     A scale mixture of Gaussians is defined using two random variables $\displaystyle X$ and $\displaystyle \lambda$ such that $(X|\lambda) \sim \mathcal{N}(\mu, \frac{\sigma^2}{\lambda})$ and $\lambda \sim Gamma(\frac{\nu}{2}, \frac{\nu}{2})$: marginalizing the joint distribution over the latent variable $\displaystyle \lambda$ reveals that $\displaystyle X \sim t(\nu)$. \newline
     Since computing the mean of a $\displaystyle t$ distribution tends to be cumbersome, one can consider
-    \[\mathbb{E}_X(X) = \int_{\mathbb{R}} xf_X(x) \ dx \stackrel{\text{LTE}}{=} \mathbb{E}_{\lambda}(\mathbb{E}_{X|\lambda}(X|\lambda)) \stackrel{\mathbb{E}(\mathcal{N}(\mu, \frac{\sigma^2}{\lambda})) = \mu}{=} \mathbb{E}_{\lambda}(\mu) = \mu \text{, provided $\mu > 1$.}\]
+    \[\mathbb{E}_X(X) = \int_{\mathbb{R}} xf_X(x) \ dx \stackrel{\text{LTE}}{=} \mathbb{E}_{\lambda}(\mathbb{E}_{X|\lambda}(X|\lambda)) \stackrel{\mathbb{E}(\mathcal{N}(\mu, \frac{\sigma^2}{\lambda})) = \mu}{=} \mathbb{E}_{\lambda}(\mu) = \mu \text{, provided $\nu > 1$.}\]
 \end{examplebox}
 \section{The (marginal) variance of a random vector}
 The variance of a random vector often comes in handy to model the variability of its components or to study how they interact. \newline
@@ -1151,7 +1151,7 @@ Whenever the conditioning variable acts as a random object, the law of total var
 \section{The covariance between two random variables}
 The covariance measures the direction of the relationship, if any, between two random variables. \newline
 In fact, let $\displaystyle X$ and $\displaystyle Y$ be two random variables with (finite) means $\displaystyle \mathbb{E}(X) = \mu_X$ and $\displaystyle \mathbb{E}(Y) = \mu_Y$, respectively: the covariance between the two variables is formally defined as
-\[\sigma_{X, Y} = Cov(X, Y) = \mathbb{E}((X - \mathbb{E}(X)(Y - \mathbb{E}(Y))) = \mathbb{E}(XY) - \mathbb{E}(X)\mathbb{E}(Y) = \mathbb{E}(XY) - \mu_X\mu_Y\]
+\[\sigma_{X, Y} = Cov(X, Y) = \mathbb{E}((X - \mathbb{E}(X))(Y - \mathbb{E}(Y))) = \mathbb{E}(XY) - \mathbb{E}(X)\mathbb{E}(Y) = \mathbb{E}(XY) - \mu_X\mu_Y\]
 In particular, it is possible to state that $\displaystyle X \bot Y$ implies $\displaystyle Cov(X, Y) = 0$, although the converse statement is not true in general.
 \begin{examplebox}[Zero covariance does not guarantee independence]
     Let $\displaystyle X$ be a discrete random variable that is uniform on its support $\displaystyle S_X = \{-1, 0, 1\}$ and define the random variable $\displaystyle Y = X^2$: under this setting, it will be the case that
@@ -1163,7 +1163,7 @@ In particular, it is possible to state that $\displaystyle X \bot Y$ implies $\d
 \end{examplebox}
 \noindent In general, the relationship between two random variables $\displaystyle X$ and $\displaystyle Y$, which have (finite) means $\displaystyle \mu_X$ and $\displaystyle \mu_Y$ and standard deviation $\displaystyle \sigma_X$ and $\displaystyle \sigma_Y$, can be summarized using the Pearson linear correlation coefficient, which is defined as
 \[\rho_{X, Y} = \frac{Cov(X, Y)}{\sqrt{\mathbb{V}(X)}\sqrt{\mathbb{V}(Y)}} = \frac{\sigma_{X, Y}}{\sigma_X\sigma_Y} \text{, meaning that $X \bot Y \Rightarrow \rho_{X, Y} = 0$.}\]
-In particular, if $\displaystyle Z_X$ and $\displaystyle Z_Y$ are the standardized versions of $\displaystyle X$ and $\displaystyle Y$, one has $\displaystyle \rho_{X, Y} = Cov(X, Y)$. \newline
+In particular, if $\displaystyle Z_X$ and $\displaystyle Z_Y$ are the standardized versions of $\displaystyle X$ and $\displaystyle Y$, one has $\displaystyle \rho_{X, Y} = Cov(Z_X, Z_Y)$. \newline
 Furthermore, it is always the case that $\displaystyle \rho_{X, Y} \in [-1, 1]$, with $\displaystyle \rho_{X, Y} = \pm 1$ if and only if $\displaystyle Y = \alpha + \beta X$.
 \begin{proofbox}
     Without loss of generality, consider the standardized random variables $\displaystyle Z_X$ and $\displaystyle Z_Y$, which have zero mean and unit variance, and observe that
@@ -1209,11 +1209,11 @@ Assuming $\displaystyle \Omega$ supports a uniform probability measure and $\dis
     \rho_{X, Y} = \frac{Cov(X, Y)}{\sqrt{\mathbb{V}(X)}\sqrt{\mathbb{V}(Y)}}
         &= \frac{\mathbb{E}(XY)}{\sqrt{\mathbb{E}(X^2)}\sqrt{\mathbb{E}(Y)^2}} \\
         &= \frac{\sum_{j} \frac{1}{k} X(\omega_j)Y(\omega_j)}{\sqrt{\sum_j \frac{1}{k} X^2(\omega_j)}\sqrt{\sum_j \frac{1}{k} Y^2(\omega_j)}} \\
-        &= \frac{\sum_j x_iy_i}{\sqrt{\sum_j x_j^2}\sqrt{\sum_j y_j^2}} = \frac{\mathbf{x}^T\mathbf{y}}{\lVert \mathbf{x} \rVert\lVert \mathbf{y} \rVert} = \cos(\theta_{X, Y})
+        &= \frac{\sum_j x_jy_j}{\sqrt{\sum_j x_j^2}\sqrt{\sum_j y_j^2}} = \frac{\mathbf{x}^T\mathbf{y}}{\lVert \mathbf{x} \rVert\lVert \mathbf{y} \rVert} = \cos(\theta_{X, Y})
 \end{align*}
 \noindent Therefore, whenever $\displaystyle X$ and $\displaystyle Y$ are positively correlated and, at the same time, $\displaystyle Y$ and $\displaystyle Z$ are also positively correlated, if $\displaystyle \rho_{X, Y}^2 + \rho_{Y, Z}^2 > 0$, then $\displaystyle X$ and $\displaystyle Z$ will be positively correlated as well. \newline
 In general, the correlation over three random variables $\displaystyle X$, $\displaystyle Y$ and $\displaystyle Z$ satisfies the following inequality:
-\[\rho_{X, Y}^2 + \rho_{Y, Z}^2 + \rho_{X, Z}^2 - 1 \leq 2 - \rho_{X, Y}\rho_{Y, Z}\rho_{X, Z}\]
+\[\rho_{X, Y}^2 + \rho_{Y, Z}^2 + \rho_{X, Z}^2 - 1 \leq 2\rho_{X, Y}\rho_{Y, Z}\rho_{X, Z}\]
 \section{Multivariate distributions}
 A multivariate distribution describes the joint behaviour of a sequence of (at least) two random variables belonging to a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$. \newline
 More specifically, the interactions between the various components of a random vector are summarized using a $\displaystyle (p \times p)$ symmetric and positive (semi-)definite covariance matrix that is structured as follows:
