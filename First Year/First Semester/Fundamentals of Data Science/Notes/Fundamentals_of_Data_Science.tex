@@ -1180,11 +1180,11 @@ On a graph $\displaystyle G = (V, E)$, a random walk is a stochastic process in 
 Network descriptives can be grouped into global descriptives, which capture features relating to the whole network, and local metrics, which describe features for a single node.
 \subsection{The clustering coefficient}
 The clustering coefficient measures node cohesiveness within a network. \newline
-Since the simplest structural graph is a triangle, the global clustering coefficient is defined as the proportion of triangles to connected triples, meaning that
+Since the simplest structural component that can be formed in a graph is a triangle, the global clustering coefficient is defined as the proportion of triangles to connected triples, meaning that
 \[C = \frac{\text{Number of Triangles}}{\text{Number of Connected Triples}}\]
 Alternatively, it is possible to exploit the $\displaystyle l^{th}$ power of the adjacency matrix, which indicates the number of distinct paths of length $\displaystyle l$ from node $\displaystyle i$ to node $\displaystyle j$, to formulate the the global clustering coefficient as
 \[C = \frac{tr(A^3)}{\sum_{i \neq j} A_{ij}^2}\]
-By contrast, the local clustering of a node represents the density of the subgraph formed by its neighbours, meaning that
+By contrast, the local clustering coefficient of a node represents the density of the subgraph formed by its neighbours, meaning that
 \[c_i = \frac{2m_i}{k_i(k_i - 1)}, \text{with $c_i = 0$ if $k_i \leq 1$.}\]
 In particular, it is possible to express the global clustering coefficient of a network as the average local clustering coefficient of its nodes, resulting in
 \[C = \frac{1}{|V|}\sum_{i=1}^{|V|} c_i\]
@@ -1223,10 +1223,10 @@ The Erdős-Rényi model is an ensemble $\displaystyle G(n, p)$ that fixes the nu
 \end{figure}
 \subsection{The edge and degree distribution of an Erdős-Rényi network}
 Since edges may or may not be added through independent and identically distributed Bernoulli trials, it is possible to discover that the edges in an Erdős-Rényi network follow a binomial distribution defined by
-\[\mathbb{P}(m) = p^m(1 - p)^{\binom{n}{2} - m} \Rightarrow \langle m \rangle = \binom{n}{2}p\]
+\[p_m = p^m(1 - p)^{\binom{n}{2} - m} \Rightarrow \langle m \rangle = \binom{n}{2}p\]
 This phenomenon implies that the degree distribution of an Erdős-Rényi network is also binomial, meaning that
 \[p_k = \binom{n - 1}{k}p^k(1 - p)^{n - 1 - k} \Rightarrow \langle k \rangle = (n - 1)p\]
-However, as $\displaystyle n \to +\infty$ for real networks, the degree distribution tends to be approximated by a Poisson distribution with rate $\displaystyle \lambda = \langle k \rangle = (n - 1)p$, resulting in
+However, for real networks where $\displaystyle n \to +\infty$, the degree distribution tends to be approximated by a Poisson distribution with rate $\displaystyle \lambda = \langle k \rangle = (n - 1)p$, resulting in
 \[p_k = \frac{e^{-\langle k \rangle}\langle k \rangle^k}{k!}\]
 \begin{figure}[H]
     \centering
@@ -1240,14 +1240,14 @@ While the Erdős-Rényi model fails to capture real degree distributions, it aut
 In fact, it is possible to show inductively that the average number of nodes located at distance $\displaystyle s$ from a source node is equal to $\displaystyle \langle k \rangle^s$. \newline
 Therefore, assuming an Erdős-Rényi network has diameter $\displaystyle d$, it will be the case that
 \[\langle k \rangle^d \approx n \Rightarrow d = \frac{\ln(n)}{\ln(\langle k \rangle)}\]
-This phenomenon implies that the size of the largest connected component in an Erdős-Rényi network depends on the probability of having an edge between any two nodes. \newline
+Since the clustering coefficient of an Erdős-Rényi network is equal to $\displaystyle p$, it is possible to observe that the size of the largest connected component depends on this parameter. \newline
 More specifically, when $\displaystyle p = 0$, the network consists of a set of small isolated components that do not depend on the size of the network. \newline
 By contrast, if $\displaystyle p = 1$, the network acts as a single $\displaystyle n$-clique whose structure does depend on the size of the network. \newline
 Overall, for an Erdős-Rényi network, it is possible to prove that, if $\displaystyle S$ is the proportion of nodes that belong to the largest connected component, the following relation holds:
 \[S = 1 - e^{-S\langle k \rangle} \Rightarrow \langle k \rangle = \frac{\ln(1 - S)}{S}\]
 \section{The Watts-Strogatz model}
 The Watts-Strogatz model aims to overcome a key limitation of the Erdős-Rényi model, whose low transitivity does not represent the behaviour observed in many real networks. \newline
-For this reason, a Watts-Strogatz network is built starting from a (one-dimensional) regular ring lattice with $\displaystyle n$ nodes and, while each nodes is initially connected to a fixed number $\displaystyle k_n$ of nearest neighbours, each edge in the network can be randomly rewired to another node with probability $\displaystyle p$.
+For this reason, a Watts-Strogatz network is built starting from a (one-dimensional) regular ring lattice with $\displaystyle n$ nodes and, while each node is initially connected to a fixed number $\displaystyle k_n$ of nearest neighbours, each edge in the network can be randomly rewired to another node with probability $\displaystyle p$.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.35\linewidth]{images/watts_strogatz_graph.png}
@@ -1255,7 +1255,7 @@ For this reason, a Watts-Strogatz network is built starting from a (one-dimensio
     \label{fig:ws_np}
 \end{figure}
 \subsection{The degree distribution of a Watts-Strogatz network}
-The structure of a Watts-Strogatz network implies that its degree distribution ranges between two edge case that occur when $\displaystyle p = 0$, where the network follows a uniform degree distribution with mean degree $\displaystyle \langle k \rangle = 2k_n$, or if $\displaystyle p = 1$, where the degree distribution mirrors the Poisson approximation of the Erdős-Rényi model.
+The structure of a Watts-Strogatz network implies that its degree distribution ranges between two edge cases that occur when $\displaystyle p = 0$, where the network follows a uniform degree distribution with mean degree $\displaystyle \langle k \rangle = 2k_n$, or if $\displaystyle p = 1$, where the degree distribution mirrors the Poisson approximation of the Erdős-Rényi model.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.35\linewidth]{images/watts_strogatz_distributions.png}
@@ -1299,12 +1299,12 @@ In general, the coefficient $\displaystyle \alpha$ can be estimated through line
 \end{figure}
 \noindent
 For this reason, the coefficient is typically estimated using the logarithmic binning method, which groups observations into bins whose sizes increase exponentially, allowing for a more reliable fit. \newline
-In fact, it the fitted linear model is expressed as $\displaystyle \hat{y} = a + bx$, it can be shown that the estimated coefficient $\displaystyle \hat{\alpha}$ satisfies $\displaystyle \hat{\alpha} = \alpha - 1$.
+In fact, if the fitted linear model is expressed as $\displaystyle \hat{y} = a + bx$, it can be shown that the estimated coefficient $\displaystyle \hat{\alpha}$ satisfies $\displaystyle \hat{\alpha} = \alpha - 1$.
 \subsection{Analysing components in a Barabási-Albert network}
 Generally speaking, the diameter of a Barabási-Albert network is given by
 \[d_{\max} \approx \frac{\ln(n)}{\ln(\ln(n))}\]
 This means that the Barabási-Albert model exhibits the ``ultra-small-world'' property because distances tend to be smaller compared to those in an Erdős-Rényi network of similar size. \newline
 Additionally, for moderate network sizes, a Barabási-Albert network tends to be locally more clustered than an Erdős-Rényi network as its global clustering coefficient is given by
-\[C \approx \frac{\ln^2(n)}{n} \ge p \text{ , which is the clustering coefficient of an Erdős-Rényi network.}\]
+\[C \approx \frac{\ln^2(n)}{n} \ge p \text{, which is the clustering coefficient of an Erdős-Rényi network.}\]
 
 \end{document}

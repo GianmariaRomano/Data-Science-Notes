@@ -765,8 +765,8 @@ When choosing $\displaystyle K = 1$ or $\displaystyle K = n$, the $\displaystyle
     Therefore, the recurrence of this instance of the $\displaystyle K$-means problem can be formulated as
     \[\mathcal{O}(j, i) = \begin{cases}
         0 &\quad\text{if $j \ge i$} \\
-        C(1, i) &\quad\text{if $j = 1$} \\
-        \min_{j - 1 \leq l \leq i - 1}\{\mathcal{O}(j - 1, l) + C(l + 1, i)\} &\quad\text{otherwise} \\
+        C(x_1, x_i) &\quad\text{if $j = 1$} \\
+        \min_{j - 1 \leq l \leq i - 1}\{\mathcal{O}(j - 1, l) + C(x_{l + 1}, x_i)\} &\quad\text{otherwise} \\
     \end{cases}\]
     Overall, the dynamic programming table for this problem contains $\displaystyle nK$ entries, each requiring $\displaystyle O(n)$ time to be computed, resulting in a total complexity of $\displaystyle O(n^2K)$.
 \end{proofbox}
@@ -806,13 +806,13 @@ A $\displaystyle k$-dimensional subspace of $\displaystyle \mathbb{R}^D$ can be 
     1 &\quad\text{if $i = j$} \\
     0 &\quad\text{if $i \neq j$} \\
 \end{cases}\]
-In particular, the projection of a row vector $\displaystyle \mathbf{x}_i \in \mathbb{R}^{1 \times D}$ onto the subspace can be defined as
-\[\mathbf{x}_i\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}_i\mathbf{v}_k\mathbf{v}_k^T = \mathbf{x}_i\mathbf{V}_k\mathbf{V}_k^T \text{, with $\mathbf{V}_k = \begin{pmatrix}
+In particular, the projection of a row vector $\displaystyle \mathbf{x} \in \mathbb{R}^{1 \times D}$ onto the subspace can be defined as
+\[\mathbf{x}\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}\mathbf{v}_k\mathbf{v}_k^T = \mathbf{x}\mathbf{V}_k\mathbf{V}_k^T \text{, with $\mathbf{V}_k = \begin{pmatrix}
     \mathbf{v}_1 \dots \mathbf{v}_k \\
 \end{pmatrix} \in \mathbb{R}^{D \times k}$.}\]
 \begin{proofbox}
     Assuming $\displaystyle \mathbf{V}_{k_{(j)}}$ and $\displaystyle \mathbf{V}_k^{(j)}$ denote the $\displaystyle j^{th}$ row and $\displaystyle j^{th}$ column, respectively, of the matrix $\displaystyle \mathbf{V}_k$, the rules of matrix algebra allow to formulate
-    \[\mathbf{x}_i\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}_i\mathbf{v}_k\mathbf{v}_k^T = \mathbf{x}_i\Bigg(\sum_{j = 1}^k \mathbf{V}_k^{(j)}\mathbf{V}_{k_{(j)}}\Bigg) = \mathbf{x}_i\mathbf{V}_k\mathbf{V}_k^T\]
+    \[\mathbf{x}\mathbf{v}_1\mathbf{v}_1^T + \dots + \mathbf{x}\mathbf{v}_k\mathbf{v}_k^T = \mathbf{x}\Bigg(\sum_{j = 1}^k \mathbf{V}_k^{(j)}\mathbf{V}_{k_{(j)}}\Bigg) = \mathbf{x}\mathbf{V}_k\mathbf{V}_k^T\]
 \end{proofbox}
 \noindent In this case, the resulting leftover part will lie within a $\displaystyle (D - k)$-dimensional subspace that is orthogonal to the subspace defined by $\displaystyle \mathbf{V}_k$.
 \section{Projection and variance}
@@ -829,7 +829,7 @@ In general, assuming the design matrix of a dataset is mean-centered, it is poss
     \[\mathbb{V}(\mathbf{X}) = \frac{1}{n}\lVert \mathbf{X} \rVert_F^2 = \frac{1}{n}\sum_{i = 1}^n\sum_{j = 1}^D \mathbf{X}_{ij}^2\]
 \end{examplebox}
 \section{Principal component analysis as an optimization problem}
-In order to capture as much information as possible, it is necessary to project a design matrix $\displaystyle \mathbf{X}$ onto the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
+In order to capture as much information as possible, it is necessary to project a design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ onto the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
 \[\max_{\lVert \mathbf{v} \rVert = 1} \lVert \mathbf{Xv} \rVert_2\]
 
 \end{document}
