@@ -787,8 +787,50 @@ The rank of a matrix denotes the maximum number of linearly independent rows or 
 \end{examplebox}
 \noindent When analysing a dataset's design matrix, it is common for the matrix not to be full-rank because the number of samples tends to exceed the number of features.
 \subsection{Matrix decompositions}
-Given a square matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times n}$, $\displaystyle \lambda$ and $\displaystyle \mathbf{v}$ are said to form an ``eigenvalue-eigenvector'' pair if $\displaystyle \mathbf{Av} = \lambda\mathbf{v}$. \newline
-In particular, if $\displaystyle \mathbf{A}$ is a symmetric matrix, meaning that $\displaystyle \mathbf{A}^T = \mathbf{A}$, the spectral theorem ensures that all the eigenvalues of the matrix will be real-valued.
+Given a square matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times n}$, a scalar $\displaystyle \lambda \in \mathbb{R}$ and a vector $\displaystyle \mathbf{v} \in \mathbb{R}^n$ are said to be an eigenvalue and an eigenvector, respectively, if $\displaystyle \mathbf{Av} = \lambda\mathbf{v}$. \newline
+In particular, the spectral theorem states that, if a matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times n}$ is symmetric, meaning that $\displaystyle \mathbf{A}^T = \mathbf{A}$, all its eigenvalues will be real-valued. \newline
+This statement comes in handy to perform an eigendecomposition of the matrix by finding a diagonal matrix $\displaystyle \mathbf{\Sigma} \in \mathbb{R}^{n \times n}$ and an orthogonal matrix $\displaystyle \mathbf{U} \in \mathbb{R}^{n \times n}$ such that
+\[\mathbf{A} = \begin{pmatrix}
+    \mathbf{u}_1 & \dots & \mathbf{u}_n \\
+\end{pmatrix}\begin{pmatrix}
+    \lambda_1 & 0 & \dots & 0 \\
+    0 & \lambda_2 & \dots & 0 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & \dots & \lambda_n \\
+\end{pmatrix}\begin{pmatrix}
+    \mathbf{u}_1^T \\
+    \vdots \\
+    \mathbf{u}_n^T \\
+\end{pmatrix} = \mathbf{U\Sigma U}^T\]
+However, this strategy can only be used to decompose square matrices. \newline
+For a generic matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times m}$, a scalar $\displaystyle \sigma \in \mathbb{R}$ is said to be a singular value corresponding to the left singular vector $\displaystyle \mathbf{u} \in \mathbb{R}^n$ and the right singular vector $\displaystyle \mathbf{v} \in \mathbb{R}^m$ if
+\[\mathbf{Av} = \sigma\mathbf{u} \text{ and } \mathbf{A}^T\mathbf{u} = \sigma\mathbf{v} \Leftrightarrow \mathbf{u}^T\mathbf{A} = \sigma\mathbf{v}^T\]
+Moreover, if $\displaystyle \mathbf{v}$ is a right singular vector of a matrix $\displaystyle \mathbf{A}$ corresponding to the singular value $\displaystyle \sigma$, then $\displaystyle \mathbf{v}$ is also an eigenvector of the matrix $\displaystyle \mathbf{A}^T\mathbf{A}$ and its corresponding eigenvalue is given by $\displaystyle \lambda = \sigma^2$.
+\begin{proofbox}
+    By assumption, one has
+    \[\mathbf{A}^T\mathbf{Av} = \mathbf{A}^T(\sigma\mathbf{u}) = \sigma\mathbf{A}^T\mathbf{u} = \sigma \cdot \sigma\mathbf{v} = \sigma^2\mathbf{v}\]
+    By definition, $\displaystyle \sigma^2$ will be an eigenvalue of $\displaystyle \mathbf{A}^T\mathbf{A}$ corresponding to the eigenvector $\displaystyle \mathbf{v}$.
+\end{proofbox}
+\noindent In general, given a matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times m}$ with rank $\displaystyle r = \min\{n, m\}$, there exist $\displaystyle r$ triplets $\displaystyle \{(\sigma_i, \mathbf{u}_i, \mathbf{v}_i)\}_{i = 1}^r$ such that $\displaystyle \sigma_1 \ge \dots \ge \sigma_r > 0$ are singular values and the sets $\displaystyle \{\mathbf{u}_i\}_{i = 1}^r$ and $\displaystyle \{\mathbf{v}_i\}_{i = 1}^r$ contain mutually orthogonal left and right singular vectors, respectively. \newline
+Using these triplets, it is possible to perform a singular value decomposition that is defined by
+\[\mathbf{A} = \sum_{i = 1}^r \sigma_i\mathbf{u}_i\mathbf{v}_i^T = \begin{pmatrix}
+    \mathbf{u}_1 & \dots & \mathbf{u}_r \\
+\end{pmatrix}\begin{pmatrix}
+    \sigma_1\mathbf{v}_1^T \\
+    \vdots \\
+    \sigma_r\mathbf{v}_r^T \\
+\end{pmatrix} = \begin{pmatrix}
+    \mathbf{u}_1 & \dots & \mathbf{u}_r \\
+\end{pmatrix}\begin{pmatrix}
+    \sigma_1 & 0 & \dots & 0 \\
+    0 & \sigma_2 & \dots & 0 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & \dots & \sigma_r \\
+\end{pmatrix}\begin{pmatrix}
+    \mathbf{v}_1^T \\
+    \vdots \\
+    \mathbf{v}_r^T \\
+\end{pmatrix} = \mathbf{U}_r\mathbf{\Sigma}_r\mathbf{V}_r^T\]
 \section{Projecting vectors with respect to another vector}
 When projecting a unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$ onto a vector $\displaystyle \mathbf{x} \in \mathbb{R}^D$, the length of the resulting vector $\displaystyle \mathbf{y}$ will be equal to
 \[\lVert \mathbf{y} \rVert = \lVert \mathbf{x} \rVert\cos(\theta) = \lVert \mathbf{x} \rVert\frac{\mathbf{v}^T\mathbf{x}}{\lVert \mathbf{v} \rVert\lVert \mathbf{x} \rVert} \stackrel{\lVert \mathbf{v} \rVert = 1}{=} \mathbf{v}^T\mathbf{x}\]
@@ -818,10 +860,8 @@ In particular, the projection of a row vector $\displaystyle \mathbf{x} \in \mat
 \section{Projection and variance}
 For a dataset $\displaystyle \mathcal{D} = \{\mathbf{x}_i\}_{i = 1}^n$, the mean of the corresponding design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ can be formulated as the vector
 \[\mathbf{\mu} = \frac{1}{n}\sum_{i = 1}^n \mathbf{x}_i \text{, which stores the mean over each feature of the dataset.}\]
-To find the variance of the dataset along a direction represented by a unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$, it is possible to consider
-\[\mathbb{V}_{\mathbf{v}}(\mathbf{X}) = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v} - \mathbf{\mu}^T\mathbf{v})^2 = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v})^2 - (\mathbf{\mu}^T\mathbf{v})^2\]
-However, if the dataset is mean-centered, meaning that $\displaystyle \mu = \mathbf{0}$, this quantity simplifies to
-\[\mathbb{V}_{\mathbf{v}}(\mathbf{X}) = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v})^2 = \frac{1}{n}\lVert \mathbf{Xv} \rVert_2^2\]
+Assuming the dataset is mean-centered, meaning that $\displaystyle \mathbf{\mu} = \mathbf{0}$, the variance along a direction represented by a unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$ can be found by considering
+\[\mathbb{V}_{\mathbf{v}}(\mathbf{X}) = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v} - \mathbf{\mu}^T\mathbf{v})^2 = \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v})^2 - (\mathbf{\mu}^T\mathbf{v})^2 \stackrel{\mathbf{\mu} = \mathbf{0}}{=} \frac{1}{n}\sum_{i = 1}^n (\mathbf{x}_i^T\mathbf{v})^2 = \frac{1}{n}\lVert \mathbf{Xv} \rVert_2^2\]
 In general, assuming the design matrix of a dataset is mean-centered, it is possible to analyse data variance over multiple directions by finding an orthonormal basis $\displaystyle \mathbf{v}_1, \dots, \mathbf{v}_D \in \mathbb{R}^D$ and computing
 \[\mathbb{V}(\mathbf{X}) = \frac{1}{n}\sum_{j = 1}^D \mathbb{V}_{\mathbf{v}_j}(\mathbf{X}) = \frac{1}{n}\sum_{j = 1}^D \lVert \mathbf{Xv}_j \rVert_2^2\]
 \begin{examplebox}[The Frobenius norm]
@@ -829,7 +869,22 @@ In general, assuming the design matrix of a dataset is mean-centered, it is poss
     \[\mathbb{V}(\mathbf{X}) = \frac{1}{n}\lVert \mathbf{X} \rVert_F^2 = \frac{1}{n}\sum_{i = 1}^n\sum_{j = 1}^D \mathbf{X}_{ij}^2\]
 \end{examplebox}
 \section{Principal component analysis as an optimization problem}
-In order to capture as much information as possible, it is necessary to project a design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ onto the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
-\[\max_{\lVert \mathbf{v} \rVert = 1} \lVert \mathbf{Xv} \rVert_2\]
+In order to capture as much information as possible from a dataset, it is necessary to project the corresponding design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ along the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
+\[\max_{\lVert \mathbf{v} \rVert = 1} \frac{1}{n}\lVert \mathbf{Xv} \rVert_2^2 = \max_{\lVert \mathbf{v} \rVert = 1} \lVert \mathbf{Xv} \rVert_2\]
+Using singular value decomposition, it is possible to prove that this direction is represented by the right singular vector $\displaystyle \mathbf{v}_1$, with $\displaystyle \lVert \mathbf{Av}_1 \rVert_2^2 = \sigma_1^2$.
+\begin{proofbox}
+    Let $\displaystyle \lVert \mathbf{Xv}_1 \rVert_2^2 = (\mathbf{Xv}_1)^T(\mathbf{Xv}_1) = \mathbf{v}_1\mathbf{X}^T\mathbf{Xv}_1 = \mathbf{v}_1^T(\sigma_1^2\mathbf{v}_1) = \sigma_1^2\mathbf{v}_1^T\mathbf{v}_1 = \sigma_1^2$: to prove that this quantity is maximum, consider the complete matrices $\displaystyle \mathbf{U} \in \mathbb{R}^{n \times n}$ and $\displaystyle \mathbf{V} \in \mathbb{R}^{D \times D}$ and reformulate singular value decomposition as follows:
+    \[\mathbf{X} = \sum_{i = 1}^D \sigma_i\mathbf{u}_i\mathbf{v}_i^T \text{, with $\sigma_1 \ge \dots \sigma_r > \sigma_{r + 1} = \sigma_{r + 2} = \dots = 0$.}\]
+    Since the vectors $\displaystyle \mathbf{v}_1, \dots, \mathbf{v}_D$ for an orthonormal basis of $\displaystyle \mathbb{R}^D$, every unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$ can be expressed as a linear combination of these vectors, resuting in
+    \begin{align*}
+        1 = \mathbf{v}^T\mathbf{v} = \Bigg(\sum_{i = 1}^D c_i\mathbf{v}_i\Bigg)^T\Bigg(\sum_{j = 1}^D c_j\mathbf{v}_j\Bigg) = \sum_{i = 1}^D\sum_{j = 1}^D c_ic_j\mathbf{v}_i^T\mathbf{v}_j &\stackrel{\text{Orthonormality}}{=} \sum_{i = 1}^D c_i^2 \\
+        \mathbf{Xv} = \Bigg(\sum_{k = 1}^D \sigma_k\mathbf{u}_k\mathbf{v}_k\Bigg)\Bigg(\sum_{l = 1}^D c_l\mathbf{v}_l\Bigg) = \sum_{k = 1}^D\sum_{l = 1}^D \sigma_k\mathbf{u}_k\mathbf{v}_k^Tc_l\mathbf{v}_l &\stackrel{\text{Orthonormality}}{=} \sum_{k = 1}^D c_k\sigma_k\mathbf{u}_k \\
+        \lVert \mathbf{Xv} \rVert_2^2 = (\mathbf{Xv})^T(\mathbf{Xv}) = \Bigg(\sum_{k = 1}^D c_k\sigma_k\mathbf{u}_k\Bigg)^T\Bigg(\sum_{l = 1}^D c_l\sigma_l\mathbf{u}_l\Bigg) &\stackrel{\text{Orthonormality}}{=} \sum_{k = 1}^D c_k^2\sigma_k^2 \\
+        &\leq \sum_{k = 1}^D c_k^2\sigma_1^2 = \sigma_1^2\sum_{k = 1}^D c_k^2 = \sigma_1^2
+    \end{align*}
+\end{proofbox}
+\noindent Overall, the components associated to the largest singular values tend to capture the greatest amount of variance, whereas the components associated to small singular values are often discarded as uninformative features or noise. \newline
+In fact, dimensionality reduction focuses on retaining the $\displaystyle k$ most relevant components through an approximation $\displaystyle \mathbf{X}_k \in \mathbb{R}^{n \times D}$ that can be found by solving the following optimization problem:
+\[\min_{\mathbf{X}_k \in \mathbb{R}^{n \times D} \text{, } rank(\mathbf{X}_k) = k} \lVert \mathbf{X} - \mathbf{X}_k \rVert_F^2 \stackrel{\text{SVD}}{\Rightarrow} \mathbf{X}_k = \sum_{i = 1}^k \sigma_i\mathbf{u}_i\mathbf{v}_i^T\]
 
 \end{document}
