@@ -49,6 +49,7 @@
 | ~~November 9~~ | This lecture was cancelled. |
 | November 12 | Network descriptives and the Erdős-Rényi random graph model. |
 | November 13 | The Watts-Strogatz and the Barabási-Albert random graph models. |
+| November 16 | **Introduction to the Final Project** |
 
 </details>
 
