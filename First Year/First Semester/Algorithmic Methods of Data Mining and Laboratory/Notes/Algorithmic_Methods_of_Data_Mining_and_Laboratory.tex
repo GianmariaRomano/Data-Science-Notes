@@ -501,7 +501,7 @@ A dictionary is an abstract data type that stores pairs of keys, which are uniqu
 \end{itemize}
 Assuming all keys in a dictionary are numeric values, this data type can efficiently be implemented using an array, which stores each key in the dictionary, and a linked list, which points each key to the corresponding value. \newline
 On the other hand, generic non-numeric keys first need to be mapped onto numeric representations, although it is necessary to discard letter case and avoid collisions, which occur when different items are mapped onto the same value. \newline
-Therefore, dictionaries are organized using a hash function $\displaystyle h: [0, \dots, 2^m - 1] \to [0, \dots, 2^n - 1]$, typically having $\displaystyle m >> n$, that minimizes the risk of collisions between keys. \newline
+Therefore, dictionaries are organized using a hash function $\displaystyle h: [0, \dots, 2^m - 1] \to [0, \dots, 2^n - 1]$, typically having $\displaystyle m \gg n$, that minimizes the risk of collisions between keys. \newline
 For instance, when using a random hash map, the probability of a collision between two keys $\displaystyle x \neq y$ is given by
 \[\mathbb{P}(h(x) = h(y)) = \frac{1}{2^n} \text{ } \forall x, y \in [0, \dots, 2^m - 1]\]
 However, a random function cannot be used as a hash map because, since it returns a different value upon every call, it is not compatible with the deterministic nature of hash functions.
@@ -871,14 +871,14 @@ In general, assuming the design matrix of a dataset is mean-centered, it is poss
 \section{Principal component analysis as an optimization problem}
 In order to capture as much information as possible from a dataset, it is necessary to project the corresponding design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ along the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
 \[\max_{\lVert \mathbf{v} \rVert = 1} \frac{1}{n}\lVert \mathbf{Xv} \rVert_2^2 = \max_{\lVert \mathbf{v} \rVert = 1} \lVert \mathbf{Xv} \rVert_2\]
-Using singular value decomposition, it is possible to prove that this direction is represented by the right singular vector $\displaystyle \mathbf{v}_1$, with $\displaystyle \lVert \mathbf{Av}_1 \rVert_2^2 = \sigma_1^2$.
+Using singular value decomposition, it is possible to prove that this direction is represented by the right singular vector $\displaystyle \mathbf{v}_1$, with $\displaystyle \lVert \mathbf{Xv}_1 \rVert_2^2 = \sigma_1^2$.
 \begin{proofbox}
     Let $\displaystyle \lVert \mathbf{Xv}_1 \rVert_2^2 = (\mathbf{Xv}_1)^T(\mathbf{Xv}_1) = \mathbf{v}_1\mathbf{X}^T\mathbf{Xv}_1 = \mathbf{v}_1^T(\sigma_1^2\mathbf{v}_1) = \sigma_1^2\mathbf{v}_1^T\mathbf{v}_1 = \sigma_1^2$: to prove that this quantity is maximum, consider the complete matrices $\displaystyle \mathbf{U} \in \mathbb{R}^{n \times n}$ and $\displaystyle \mathbf{V} \in \mathbb{R}^{D \times D}$ and reformulate singular value decomposition as follows:
-    \[\mathbf{X} = \sum_{i = 1}^D \sigma_i\mathbf{u}_i\mathbf{v}_i^T \text{, with $\sigma_1 \ge \dots \sigma_r > \sigma_{r + 1} = \sigma_{r + 2} = \dots = 0$.}\]
+    \[\mathbf{X} = \sum_{i = 1}^D \sigma_i\mathbf{u}_i\mathbf{v}_i^T \text{, with $\sigma_1 \ge \dots \sigma_r > \sigma_{r + 1} = \sigma_{r + 2} = \dots = \sigma_D = 0$.}\]
     Since the vectors $\displaystyle \mathbf{v}_1, \dots, \mathbf{v}_D$ for an orthonormal basis of $\displaystyle \mathbb{R}^D$, every unit vector $\displaystyle \mathbf{v} \in \mathbb{R}^D$ can be expressed as a linear combination of these vectors, resuting in
     \begin{align*}
         1 = \mathbf{v}^T\mathbf{v} = \Bigg(\sum_{i = 1}^D c_i\mathbf{v}_i\Bigg)^T\Bigg(\sum_{j = 1}^D c_j\mathbf{v}_j\Bigg) = \sum_{i = 1}^D\sum_{j = 1}^D c_ic_j\mathbf{v}_i^T\mathbf{v}_j &\stackrel{\text{Orthonormality}}{=} \sum_{i = 1}^D c_i^2 \\
-        \mathbf{Xv} = \Bigg(\sum_{k = 1}^D \sigma_k\mathbf{u}_k\mathbf{v}_k\Bigg)\Bigg(\sum_{l = 1}^D c_l\mathbf{v}_l\Bigg) = \sum_{k = 1}^D\sum_{l = 1}^D \sigma_k\mathbf{u}_k\mathbf{v}_k^Tc_l\mathbf{v}_l &\stackrel{\text{Orthonormality}}{=} \sum_{k = 1}^D c_k\sigma_k\mathbf{u}_k \\
+        \mathbf{Xv} = \Bigg(\sum_{k = 1}^D \sigma_k\mathbf{u}_k\mathbf{v}_k^T\Bigg)\Bigg(\sum_{l = 1}^D c_l\mathbf{v}_l\Bigg) = \sum_{k = 1}^D\sum_{l = 1}^D \sigma_kc_l\mathbf{u}_k\mathbf{v}_k^T\mathbf{v}_l &\stackrel{\text{Orthonormality}}{=} \sum_{k = 1}^D c_k\sigma_k\mathbf{u}_k \\
         \lVert \mathbf{Xv} \rVert_2^2 = (\mathbf{Xv})^T(\mathbf{Xv}) = \Bigg(\sum_{k = 1}^D c_k\sigma_k\mathbf{u}_k\Bigg)^T\Bigg(\sum_{l = 1}^D c_l\sigma_l\mathbf{u}_l\Bigg) &\stackrel{\text{Orthonormality}}{=} \sum_{k = 1}^D c_k^2\sigma_k^2 \\
         &\leq \sum_{k = 1}^D c_k^2\sigma_1^2 = \sigma_1^2\sum_{k = 1}^D c_k^2 = \sigma_1^2
     \end{align*}
