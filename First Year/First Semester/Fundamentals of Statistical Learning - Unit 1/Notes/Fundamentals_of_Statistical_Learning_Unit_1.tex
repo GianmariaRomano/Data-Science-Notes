@@ -1100,7 +1100,7 @@ In fact, given a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$ with 
         &= \mathbf{\alpha}^T(\mathbb{E}(\mathbf{XX}^T))\mathbf{\alpha} - \mathbf{\alpha}^T(\mathbf{\mu\mu}^T)\mathbf{\alpha} = \mathbf{\alpha}^T(\mathbb{E}(\mathbf{XX}^T) - \mathbf{\mu\mu}^T)\mathbf{\alpha} \\
         &= \mathbf{\alpha}^TCov(\mathbf{X})\mathbf{\alpha} \text{, where $Cov(\mathbf{X})$ is a $(p \times p)$ symmetric ``covariance matrix''.}
 \end{align*}
-Knowing that $\displaystyle (\mathbf{\mu\mu}^T)_{ij} = \mu_i\mu_j$ and $\displaystyle (\mathbb{E}(\mathbf{XX}^T))_{ij} = \mathbb{E}(X_iX_j)$, a generic entry of the covariance matrix will be given by
+Knowing that $\displaystyle (\mathbf{\mu\mu}^T)_{i, j} = \mu_i\mu_j$ and $\displaystyle (\mathbb{E}(\mathbf{XX}^T))_{i, j} = \mathbb{E}(X_iX_j)$, a generic entry of the covariance matrix will be given by
 \[Cov(X_i, X_j) = \mathbb{E}(X_iX_j) - \mu_i\mu_j = \mathbb{E}((X_i - \mu_i)(X_j - \mu_j))\]
 Therefore, the variance of a many-to-one linear predictor can be expressed as
 \[\mathbb{V}(Y) = \mathbb{V}(\mathbf{\alpha}^T\mathbf{X}) = \mathbf{\alpha}^TCov(\mathbf{X})\mathbf{\alpha} = \sum_{j = 1}^p \alpha_j^2\mathbb{V}(X_j) + 2\sum_{i < j} \alpha_i\alpha_jCov(X_i, X_j)\]
@@ -1245,7 +1245,7 @@ In fact, if $\displaystyle \mathbf{X} \sim Mult_k(n, \mathbf{p})$, then $\displa
     Since the two outcomes are mutually exclusive, it holds that $\displaystyle Z_{(i, j)_1}, \dots, Z_{(i, j)_n} \sim Ber(p_i + p_j)$. \newline
     Knowing that $\displaystyle Z_{(i, j)_1}, \dots, Z_{(i, j)_n}$ will be independent and identically distributed, it is possible to express $\displaystyle Y = X_i + X_j$ as the sum of independent and identically distributed Bernoulli trials with success probability $\displaystyle p_i + p_j$, meaning that $\displaystyle Y = X_i + X_j \sim Binom(n, p_i + p_j)$.
 \end{proofbox}
-\noindent Furthermore, for any couple of components in the random vector, it is possible to state that
+\noindent Furthermore, the components of the random vector are always negatively correlated because, for any couple of components, it is possible to state that
 \[Cov(X_i, X_j) = \begin{cases}
     np_i(1 - p_i) &\quad\text{if $i = j$} \\
     -np_ip_j &\quad\text{if $i \neq j$} \\
@@ -1262,6 +1262,101 @@ In fact, if $\displaystyle \mathbf{X} \sim Mult_k(n, \mathbf{p})$, then $\displa
             &= \frac{n}{2}(-2p_ip_j) = -np_ip_j
     \end{align*}
 \end{proofbox}
+\subsection{The multivariate normal distribution}
+A fully continuous random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$ is said to follow a multivariate normal distribution with parameters $\displaystyle \mathbf{\mu} \in \mathbb{R}^p$ and $\displaystyle \mathbf{\Sigma} \in \mathbb{R}^{p \times p}$, which is written as $\displaystyle \mathbf{X} \sim \mathcal{N}_p(\mathbf{\mu}, \mathbf{\Sigma})$, if its joint probability density function is defined as
+\[f_{\mathbf{X}}(\mathbf{x}) = \frac{1}{\sqrt{(2\pi)^pdet(\mathbf{\Sigma})}}e^{-\frac{1}{2}((\mathbf{x} - \mathbf{\mu})^T\mathbf{\Sigma}^{-1}(\mathbf{x} - \mathbf{\mu}))} \text{, for $\mathbf{x} \in \mathbb{R}^p$.}\]
+The main property of this distribution is that, if a random vector follows a multivariate normal distribution, any subset of its components that are uncorrelated are also guaranteed to be independent. \newline
+In addition, if $\displaystyle \mathbf{X} \sim \mathcal{N}_p(\mathbf{\mu}, \mathbf{\Sigma})$, then all the marginal and conditional distributions will follow a normal distribution, meaning that $\displaystyle X_i \sim \mathcal{N}(\mu_i, \sigma_i^2) \text{ } \forall X_i \in \mathbf{X}$. \newline
+In a more general sense, if a random vector $\displaystyle \mathbf{X} \sim \mathcal{N}_p(\mathbf{\mu}, \mathbf{\Sigma})$ is partitioned into two random vectors $\displaystyle \mathbf{X}_1 \in \mathbb{R}^q$ and $\displaystyle \mathbf{X}_2 \in \mathbb{R}^{p - q}$, its parameters can also be partitioned as
+\[\mathbf{\mu} = \begin{pmatrix}
+    \mathbf{\mu}_1 \\
+    \mathbf{\mu}_2 \\
+\end{pmatrix} \quad\quad \mathbf{\Sigma} = \begin{pmatrix}
+    \mathbf{\Sigma}_{11} & \mathbf{\Sigma}_{12} \\
+    \mathbf{\Sigma}_{21} & \mathbf{\mathbf{\Sigma}}_{22} \\
+\end{pmatrix}\]
+Therefore, it will be the case that $\displaystyle \mathbf{X}_1 \sim \mathcal{N}_q(\mathbf{\mu}_1, \mathbf{\Sigma}_{11})$ and $\displaystyle \mathbf{X}_2 \sim \mathcal{N}_{p - q}(\mathbf{\mu}_2, \mathbf{\Sigma}_{22})$. \newline
+Furthermore, the corresponding conditional distributions can also be modelled as multivariate normal distribution, having
+\begin{align*}
+    (\mathbf{X}_1|\mathbf{X}_2 = \mathbf{x}_2) &\sim \mathcal{N}_q(\mathbf{\mu}_{1|2}, \mathbf{\Sigma}_{1|2}) \quad \mathbf{\mu}_{1|2} = \mathbf{\mu}_1 + \mathbf{\Sigma}_{12}\mathbf{\Sigma}_{22}^{-1}(\mathbf{x}_2 - \mathbf{\mu}_2), \quad \mathbf{\Sigma}_{1|2} = \mathbf{\Sigma}_{11} - \mathbf{\Sigma}_{12}\mathbf{\Sigma}_{22}^{-1}\mathbf{\Sigma}_{21} \\
+    (\mathbf{X}_2|\mathbf{X}_1 = \mathbf{x}_1) &\sim \mathcal{N}_{p - q}(\mathbf{\mu}_{2|1}, \mathbf{\Sigma}_{2|1}) \quad \mathbf{\mu}_{2|1} = \mathbf{\mu}_2 + \mathbf{\Sigma}_{21}\mathbf{\Sigma}_{11}^{-1}(\mathbf{x}_1 - \mathbf{\mu}_1), \quad \mathbf{\Sigma}_{2|1} = \mathbf{\Sigma}_{22} - \mathbf{\Sigma}_{21}\mathbf{\Sigma}_{11}^{-1}\mathbf{\Sigma}_{12}
+\end{align*}
+Overall, the shape and orientation of the contours of a bivariate normal distribution involving two random variables $\displaystyle X$ and $\displaystyle Y$ depend exclusively on their correlation coefficient $\displaystyle \rho$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/bivariate_normal_grid.png}
+    \caption{Contours of a bivariate distribution based on the relationship between its components.}
+    \label{fig:bivariate_contours}
+\end{figure}
+\begin{examplebox}[Describing the contours of a bivariate normal distribution]
+    Consider a bivariate normal distribution involving two random variables $\displaystyle X_1$, which has mean $\displaystyle \mu_1$ and variance $\displaystyle \sigma_1^2$, and $\displaystyle X_2$, which has mean $\displaystyle \mu_2$ and variance $\displaystyle \sigma_2^2$, whose correlation coefficient is equal to $\displaystyle \rho$: their joint probability density function will be given by
+    \[f_{\mathbf{X}}(x_1, x_2) = \frac{1}{2\pi\sigma_1\sigma_2\sqrt{1 - \rho^2}}e^{-\frac{1}{2(1 - \rho^2)}\bigg(\frac{(x_1 - \mu_1)^2}{\sigma_1^2} + \frac{x_2 - \mu_2}{\sigma_2^2} - \frac{2\rho(x_1 - \mu_1)(x_2 - \mu_2)}{\sigma_1\sigma_2}\bigg)}\]
+    Assuming that the two variables are still correlated but have zero mean and unit variance, their joint probability density function simplifies to
+    \[f_{\mathbf{X}}(x_1, x_2) = \frac{1}{2\pi\sqrt{1 - \rho^2}}e^{-\frac{1}{2}\bigg(\frac{x_1^2 - 2\rho x_1x_2 + x_2^2}{1 - \rho^2}\bigg)}\]
+    Lastly, if the variables are assumed to be normally distributed and uncorrelated, it will be the case that
+    \begin{align*}
+        f_{\mathbf{X}}(x_1, x_2)
+            &= \frac{1}{2\pi\sigma_1\sigma_2}e^{-\frac{1}{2}\bigg(\frac{(x_1 - \mu_1)^2}{\sigma_1^2} + \frac{(x_2 - \mu_2)^2}{\sigma_2^2}\bigg)} \\
+            &= \frac{1}{\sqrt{2\pi\sigma_1^2}}e^{-\frac{(x_1 - \mu_1)^2}{2\sigma_1^2}}\frac{1}{\sqrt{2\pi\sigma_2^2}}e^{-\frac{(x_2 - \mu_2)^2}{2\sigma_2^2}} = \mathcal{N}(\mu_1, \sigma_1^2)\mathcal{N}(\mu_2, \sigma_2^2) \Rightarrow X \bot Y
+    \end{align*}
+\end{examplebox}
+\noindent Like for the univariate case, it is possible to perform standardization on a multivariate normal distribution through the following transformation:
+\[\mathbf{Z} \sim \mathcal{N}_p(\mathbf{0}, \mathbf{I}_p) \Rightarrow \mathbf{X} = \mathbf{\mu} + \mathbf{\Sigma}^{\frac{1}{2}}\mathbf{Z} \sim \mathcal{N}_p(\mathbf{\mu}, \mathbf{\Sigma}) \text{ and } \mathbf{X} \sim \mathcal{N}_p(\mathbf{\mu}, \mathbf{\Sigma}) \Rightarrow \mathbf{Z} = \mathbf{\Sigma}^{-\frac{1}{2}}(\mathbf{X} - \mathbf{\mu}) \sim \mathcal{N}_p(\mathbf{0}, \mathbf{I}_p)\]
+Moreover, the multivariate normal distribution is closed under linear combination because, if $\displaystyle \mathbf{X} \sim \mathcal{N}_p(\mathbf{\mu}, \mathbf{\Sigma})$, then, given a coefficient vector $\displaystyle \mathbf{\alpha} \in \mathbb{R}^p$, one has $\displaystyle Y = \mathbf{\alpha}^T\mathbf{X} \sim \mathcal{N}(\mathbf{\alpha}^T\mathbf{\mu}, \mathbf{\alpha}^T\mathbf{\Sigma\alpha})$.
+\section{Whitening and principal component analysis}
+Assuming a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$ has a full-rank covariance matrix, the corresponding spectral decomposition $\displaystyle \mathbf{\Sigma} = \mathbf{UDU}^T$ can be reformulated as a linear transformation $\displaystyle \mathbf{T} = \mathbf{RS}$. \newline
+In fact, by choosing the orthogonal rotation matrix $\displaystyle \mathbf{R} = \mathbf{U}$ and the diagonal scaling matrix $\displaystyle \mathbf{S} = \mathbf{D}^{\frac{1}{2}}$, it is possible to express the covariance matrix as
+\[\mathbf{\Sigma} = \mathbf{UDU}^T = (\mathbf{UD}^{\frac{1}{2}})(\mathbf{D}^{\frac{1}{2}}\mathbf{U}^T) = \mathbf{RS}(\mathbf{S}^T\mathbf{R}^T) = \mathbf{TT}^T\]
+For instance, applying the transformation $\displaystyle \mathbf{T}$ to a ``white'' data model with covariance matrix $\displaystyle \mathbf{I}_p$, which describes uncorrelated features with unit variances, yields a scaled and rotated model whose covariance matrix is $\displaystyle \mathbf{\Sigma} = \mathbf{TT}^T$. \newline
+In particular, principal component analysis aims to reverse this transformation: by projecting the centered random vectors onto a sequence of random vectors $\displaystyle \{\mathbf{u}_j\}_{j = 1}^p$, it is possible to define the ``principal components'' as a sequence of (random) coordinates
+\[Z_j = \mathbf{u}_j^T(\mathbf{X} - \mathbf{\mu}) \Rightarrow \mathbf{Z} = \begin{pmatrix}
+    Z_1 \\
+    \vdots \\
+    Z_p \\
+\end{pmatrix} = \mathbf{U}^T(\mathbf{X} - \mathbf{\mu})\]
+Since the resulting principal components are mutually uncorrelated, with each component having variance $\displaystyle \mathbb{V}(Z_j) = \lambda_j$, the first principal component captures the most variance and, in general, the $\displaystyle j^{th}$ principal component explains the most variation not explained by the previous $\displaystyle (j - 1)$ principal components, meaning that
+\[\text{PVE}(Z_j) = \frac{\lambda_j}{\sum_{k = 1}^p \lambda_k}\]
+For this reason, by exploiting the preservation of variance under orthogonal transformation, it is possible to see that
+\[\sum_{j = 1}^p \mathbb{V}(X_j) = tr(\mathbf{\Sigma}) = \sum_{j = 1}^p \lambda_j = tr(\mathbf{D}) = \sum_{j = 1}^p \mathbb{V}(Z_j)\]
+\section{Partial correlation given a confounder}
+If two random variables $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ depend on a confounder $\displaystyle \mathbf{Z}$, describing their relationship using the linear correlation coefficient tends to be misleading. \newline
+In this case, partial correlation allows to measure the association between $\displaystyle X$ and $\displaystyle Y$ after removing the effect of $\displaystyle \mathbf{Z}$. \newline
+This quantity is formally defined as the linear correlation between the residuals $\displaystyle \varepsilon_X = X - \Pi_{\mathbf{Z}}(X)$ and $\displaystyle \varepsilon_Y = Y - \Pi_{\mathbf{Z}}(Y)$, where the projections are defined as
+\begin{align*}
+    \Pi_{\mathbf{Z}}(X) &= \hat{\mathbf{\beta}}^T\mathbf{Z} \quad \hat{\mathbf{\beta}} = \arg\min_{\text{All } \mathbf{\beta}} \mathbb{E}((X - \mathbf{\beta}^T\mathbf{Z})^2) = \mathbb{E}((\mathbf{ZZ}^T)^{-1})\mathbb{E}(X\mathbf{Z}) \\
+    \Pi_{\mathbf{Z}}(Y) &= \hat{\mathbf{\beta}}^T\mathbf{Z} \quad \hat{\mathbf{\beta}} = \arg\min_{\text{All } \mathbf{\beta}} \mathbb{E}((Y - \mathbf{\beta}^T\mathbf{Z})^2) = \mathbb{E}((\mathbf{ZZ}^T)^{-1})\mathbb{E}(Y\mathbf{Z})
+\end{align*}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/partial_correlation_projection.png}
+    \caption{A geometric interpretation of projection onto the linear span of $\displaystyle \mathbf{Z}$.}
+    \label{fig:partial_correlation}
+\end{figure}
+\noindent Therefore, given a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$, let $\displaystyle \rho_{j, k}^{(P)}$ denote the partial correlation between components $\displaystyle X_j$ and $\displaystyle X_k$ given the other variables: it can be shown that a generic entry of matrix of partial correlations is given by
+\[\mathbf{R}_{j, k}^{(P)} = -\frac{\mathbf{\Lambda}_{j, k}}{\sqrt{\mathbf{\Lambda_{j, j}}}\sqrt{\mathbf{\Lambda}_{k, k}}} \text{, where $\mathbf{\Lambda} = \mathbf{\Sigma}^{-1}$ is the precision matrix of $\mathbf{X}$.}\]
+\begin{examplebox}[A single confounding variable]
+    Assuming a single confounding variable $\displaystyle Z$ is introduced, the partial correlation between $\displaystyle X$ and $\displaystyle Y$ will be given by
+    \[\rho_{X, Y|Z} = \frac{\rho_{X, Y} - (\rho_{Y, Z} \cdot \rho_{X, Z})}{\sqrt{1 - \rho_{X, Z}^2}\sqrt{1 - \rho_{Y, Z}^2}}\]
+\end{examplebox}
+\section{Non-linear correlation metrics}
+The main issue of (partial) linear correlation lies in the fact that it fails to properly describe non-linear associations between random variables. \newline
+For this reason, common alternative include rank correlation, which measures monotonic order relationships between two random variables, or distance correlation, which quantifies the dependence between two random vectors.
+\subsection{Kendall's rank correlation coefficient}
+Let $\displaystyle (X, Y)$ be a random vector with joint cumulative distribution function $\displaystyle F_{X, Y}(x, y)$ and define $\displaystyle (X', Y')$ as an independent copy drawn from the same distribution: the two pairs are said to be ``concordant'' if $\displaystyle (X - X')(Y - Y') \ge 0$, and ``discordant'' otherwise. \newline
+Using this information, Kendall's rank correlation coefficient is formally defined as
+\[\tau(X, Y) = \mathbb{P}(\text{Concordant}) - \mathbb{P}(\text{Discordant}) = \mathbb{E}(sign((X - X')(Y - Y')))\]
+Overall, this quantity depends exclusively on the structural dependencies between $\displaystyle X$ and $\displaystyle Y$.
+\subsection{Spearman's rank correlation coefficient}
+Let $\displaystyle (X, Y)$ be a random vector with joint cumulative distribution function $\displaystyle F_{X, Y}$ and marginal cumulative distribution functions $\displaystyle F_X(x)$ and $\displaystyle F_Y(y)$, respectively: if $\displaystyle Z_X = F_X(X)$ and $\displaystyle Z_Y = F_Y(Y)$, then $\displaystyle Z_X, Z_Y \sim Unif(0, 1)$ via quantile transform. \newline
+Therefore, Spearman's rank correlation coefficient can be formally defined as the linear correlation coefficient between the transformed variables, meaning that
+\[\rho^{(S)}(X, Y) = \rho(Z_X, Z_Y)\]
+Overall, this quantity depends solely on the copula function associated to the joint distribution of the random variables.
+\subsection{The distance correlation between two random vectors}
+Given two random vectors $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ and two independent copies $\displaystyle (\mathbf{X}', \mathbf{Y}')$ and $\displaystyle (\mathbf{X}'', \mathbf{Y}'')$, the squared distance covariance between $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ is formally defined as
+\[\gamma^2(\mathbf{X}, \mathbf{Y}) = Cov(\lVert \mathbf{X} - \mathbf{X}' \rVert_2, \lVert \mathbf{Y} - \mathbf{Y}' \rVert_2) - 2Cov(\lVert \mathbf{X} - \mathbf{X}'' \rVert_2, \lVert \mathbf{Y} - \mathbf{Y}'' \rVert_2)\]
+The squared distance covariance can be standardized to obtain the squared distance correlation coefficient, which is formally defined as
+\[\rho^2(X, Y) = \frac{\gamma^2(\mathbf{X}, \mathbf{Y})}{\sqrt{\gamma^2(\mathbf{X}, \mathbf{X})}\sqrt{\gamma^2(\mathbf{Y}, \mathbf{Y})}}\]
+In particular, this quantity provides a strong measure correlation as $\displaystyle \rho^2(X, Y) = 0$ if and only if $\displaystyle X$ and $\displaystyle Y$ are independent.
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
@@ -1473,7 +1568,7 @@ From a broader perspective, two random variables $\displaystyle X$ and $\display
 This concept allows to formulate the first-order Markov assumption, which states that ``the future is independent of the past given the present'', as follows:
 \[p_{\mathbf{X}}(\mathbf{x}) = \mathbb{P}(x_1) \cdot \prod_{d = 2}^D \mathbb{P}(x_d|x_{d - 1})\]
 Overall, this formulation is computationally lighter, although it only works for one-dimensional data sequences, whereas higher-dimensional data sequences require more advanced tools, such as graphical models.
-\section{Formalizing (directed) graphical models}
+\section{Formalizing directed graphical models}
 A graphical model allows to represent conditional independence assumptions using a graph $\displaystyle \mathcal{G} = (V, E)$ that is described by a node set $\displaystyle V$, which represents the components of a random vector, and an edge set $\displaystyle E$, which indicates the conditional independence relations.
 \begin{figure}[H]
     \centering
@@ -1782,6 +1877,8 @@ Alternatively, one can estimate the average treatment effect in terms of the pro
 \end{cases}\]
 In fact, this formulation allows to make the following estimate:
 \[\psi = \mathbb{E}(Y|\text{Set }X = 1) - \mathbb{E}(Y|\text{Set }X = 0) = \mathbb{E}_{X, Y, \mathbf{U}}\Bigg(\frac{YX}{\pi(\mathbf{U})} - \frac{Y(1 - X)}{1 - \pi(\mathbf{U})}\Bigg)\]
+\section{Association graphs}
+Let $\displaystyle \mathbf{X} \in \mathbb{R}^p$ be a random vector and define $\displaystyle \rho_{j, k}$ as a generic measure of association between its components $\displaystyle X_j$ and $\displaystyle X_k$: the corresponding association graph is an undirected graph $\displaystyle \mathcal{G} = (V, E)$ that is described by a node set $\displaystyle V$, which represents the components of a random vector, and an edge set $\displaystyle E$, which connects the nodes corresponding to components $\displaystyle X_j$ and $\displaystyle X_k$ if and only if $\displaystyle |\rho_{j, k}| \ge \varepsilon$, for a chosen threshold $\displaystyle \varepsilon \ge 0$.
 
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}
