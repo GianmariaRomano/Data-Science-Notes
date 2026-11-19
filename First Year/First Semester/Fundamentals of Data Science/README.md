@@ -6,7 +6,7 @@
 * **Exam Modality:** The exam consists of:
   1. A mid-term challenge followed by a group project, which is worth 33% of the grade.
 
-     Failing the project will result in having the grade be evaluated solely on the basis of the theory parts, although the final grade will be capped at 27.
+     Failing or not participating the project results in the final grade being capped at 26, although it is possible to take an optional oral exam to increase the score.
   3. A written multiple-choice exam, which is worth 34% of the grade.
   4. A network science exam, which is worth 33% of the grade.
 * **Lecture Schedule:**
