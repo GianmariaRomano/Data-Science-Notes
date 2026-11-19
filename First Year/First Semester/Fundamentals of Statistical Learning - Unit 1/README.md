@@ -45,6 +45,7 @@
 | November 12 | **Classwork 01** |
 | November 13 | Covariance and correlation, causal estimands. |
 | November 18 | The multivariate normal distribution, whitening and principal component analysis, partial and non-linear correlation. |
+| November 19 | Introduction to statistical inference: CDF estimation and point estimation. |
 
 </details>
 
