@@ -44,7 +44,7 @@
 | November 12 | Finding data variability through vector projections. |
 | November 16 | Matrix decompositions and principal component analysis as an optimization problem. |
 | November 17 | Clustering implementations. |
-| November 18 | Queues, stacks and graphs. |
+| November 19 | Queues, stacks and graphs. |
 
 </details>
 
