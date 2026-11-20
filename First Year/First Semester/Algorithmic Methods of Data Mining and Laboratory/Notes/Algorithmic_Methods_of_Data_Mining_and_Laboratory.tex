@@ -487,8 +487,8 @@ For this reason, priority queues are often implemented using heaps because the h
         Heap & $\displaystyle \Theta(\log(n))$ & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(\log(n))$ \\
         \hline
     \end{tabular}
-    \caption{Comparing the complexity of queue operations for different data structures}
-    \label{tab:queue_operations}
+    \caption{Comparing the complexity of priority queue operations for different data structures}
+    \label{tab:priority_queue_operations}
 \end{table}
 \section{Dictionaries}
 A dictionary is an abstract data type that stores pairs of keys, which are unique and immutable objects, and associated values while supporting the following operations:
@@ -512,6 +512,36 @@ However, a random function cannot be used as a hash map because, since it return
     \[h(x) = \Bigg(\sum_{i = 1}^4 \alpha_ix_i\Bigg) \text{, for which one can prove that } \mathbb{P}(h(x) = h(y)) = \frac{1}{p} \text{ } \forall x \neq y\]
 \end{examplebox}
 \noindent Overall, hash functions are often handled with buckets, which act as linked lists that store all the key-value pairs associated to the same hash value, so that, if the expected size of each bucket is small, operations can be carried out in constant time.
+\section{Queues}
+A queue is a ``first in, first out'' abstract data type that supports the following operations:
+\begin{itemize}
+    \item \texttt{Q.enqueue(x)}: The queue inserts value \texttt{k} at the end of the queue.
+    \item \texttt{Q.dequeue(x)}: The queue returns and removes the oldest element still in the queue.
+\end{itemize}
+Since implementing a queue using an array or a linked list tends to be inefficient, queues are typically implemented using a ``circular array'' structure that connects the last position with the first position to form a closed loop.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Data Structure} & \textbf{Enqueueing} & \textbf{Dequeueing} \\
+        \hline
+        Array & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(n)$ \\
+        \hline
+        Linked List & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(1)$ \\
+        \hline
+        Circular Array & $\displaystyle \Theta(1)$ & $\displaystyle \Theta(1)$ \\
+        \hline
+    \end{tabular}
+    \caption{Comparing the complexity of queue operations for different data structures}
+    \label{tab:queue_operations}
+\end{table}
+\section{Stacks}
+A stack is a ``last in, first out'' abstract data type that supports the following operations:
+\begin{itemize}
+    \item \texttt{S.push(x)}: The stack inserts value \texttt{x} at the top of the stack.
+    \item \texttt{S.pop()}: The stack returns and removes the element at the top of the stack.
+\end{itemize}
+Stacks are generally implemented using arrays because they allow to implement the required operations using native methods that run in constant time.
 
 \chapter{Data relationships}
 \section{Distance functions}
@@ -811,7 +841,7 @@ Moreover, if $\displaystyle \mathbf{v}$ is a right singular vector of a matrix $
     \[\mathbf{A}^T\mathbf{Av} = \mathbf{A}^T(\sigma\mathbf{u}) = \sigma\mathbf{A}^T\mathbf{u} = \sigma \cdot \sigma\mathbf{v} = \sigma^2\mathbf{v}\]
     By definition, $\displaystyle \sigma^2$ will be an eigenvalue of $\displaystyle \mathbf{A}^T\mathbf{A}$ corresponding to the eigenvector $\displaystyle \mathbf{v}$.
 \end{proofbox}
-\noindent In general, given a matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times m}$ with rank $\displaystyle r = \min\{n, m\}$, there exist $\displaystyle r$ triplets $\displaystyle \{(\sigma_i, \mathbf{u}_i, \mathbf{v}_i)\}_{i = 1}^r$ such that $\displaystyle \sigma_1 \ge \dots \ge \sigma_r > 0$ are singular values and the sets $\displaystyle \{\mathbf{u}_i\}_{i = 1}^r$ and $\displaystyle \{\mathbf{v}_i\}_{i = 1}^r$ contain mutually orthogonal left and right singular vectors, respectively. \newline
+\noindent In general, given a matrix $\displaystyle \mathbf{A} \in \mathbb{R}^{n \times m}$ with rank $\displaystyle r \leq \min\{n, m\}$, there exist $\displaystyle r$ triplets $\displaystyle \{(\sigma_i, \mathbf{u}_i, \mathbf{v}_i)\}_{i = 1}^r$ such that $\displaystyle \sigma_1 \ge \dots \ge \sigma_r > 0$ are singular values and the sets $\displaystyle \{\mathbf{u}_i\}_{i = 1}^r$ and $\displaystyle \{\mathbf{v}_i\}_{i = 1}^r$ contain mutually orthogonal left and right singular vectors, respectively. \newline
 Using these triplets, it is possible to perform a singular value decomposition that is defined by
 \[\mathbf{A} = \sum_{i = 1}^r \sigma_i\mathbf{u}_i\mathbf{v}_i^T = \begin{pmatrix}
     \mathbf{u}_1 & \dots & \mathbf{u}_r \\
@@ -869,7 +899,7 @@ In general, assuming the design matrix of a dataset is mean-centered, it is poss
     \[\mathbb{V}(\mathbf{X}) = \frac{1}{n}\lVert \mathbf{X} \rVert_F^2 = \frac{1}{n}\sum_{i = 1}^n\sum_{j = 1}^D \mathbf{X}_{ij}^2\]
 \end{examplebox}
 \section{Principal component analysis as an optimization problem}
-In order to capture as much information as possible from a dataset, it is necessary to project the corresponding design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ along the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
+In order to capture as much information as possible from a dataset, it is necessary to project the corresponding standardized design matrix $\displaystyle \mathbf{X} \in \mathbb{R}^{n \times D}$ along the direction that maximizes data variance, which is equivalent to solving the following optimization problem:
 \[\max_{\lVert \mathbf{v} \rVert = 1} \frac{1}{n}\lVert \mathbf{Xv} \rVert_2^2 = \max_{\lVert \mathbf{v} \rVert = 1} \lVert \mathbf{Xv} \rVert_2\]
 Using singular value decomposition, it is possible to prove that this direction is represented by the right singular vector $\displaystyle \mathbf{v}_1$, with $\displaystyle \lVert \mathbf{Xv}_1 \rVert_2^2 = \sigma_1^2$.
 \begin{proofbox}
@@ -885,6 +915,40 @@ Using singular value decomposition, it is possible to prove that this direction 
 \end{proofbox}
 \noindent Overall, the components associated to the largest singular values tend to capture the greatest amount of variance, whereas the components associated to small singular values are often discarded as uninformative features or noise. \newline
 In fact, dimensionality reduction focuses on retaining the $\displaystyle k$ most relevant components through an approximation $\displaystyle \mathbf{X}_k \in \mathbb{R}^{n \times D}$ that can be found by solving the following optimization problem:
-\[\min_{\mathbf{X}_k \in \mathbb{R}^{n \times D} \text{, } rank(\mathbf{X}_k) = k} \lVert \mathbf{X} - \mathbf{X}_k \rVert_F^2 \stackrel{\text{SVD}}{\Rightarrow} \mathbf{X}_k = \sum_{i = 1}^k \sigma_i\mathbf{u}_i\mathbf{v}_i^T\]
+\[\min_{\mathbf{X}_k \in \mathbb{R}^{n \times D} \text{, } rank(\mathbf{X}_k) = k} \lVert \mathbf{X} - \mathbf{X}_k \rVert_F^2 \stackrel{\text{SVD}}{\Rightarrow} \mathbf{X}_k = \sum_{i = 1}^k \sigma_i\mathbf{u}_i\mathbf{v}_i^T = \mathbf{XV}_k\mathbf{V}_k^T\]
+However, since the principal component analysis algorithm assumes the dataset has been standardized, performing dimensionality reduction requires setting
+\[\mathbf{Z}_{i, j} = \frac{\mathbf{X}_{i, j} - \mu_j}{\sigma_j} = \frac{\mathbf{X}_{i, j} - \big(\frac{1}{n}\sum_{i = 1}^n \mathbf{X}_{i, j}\big)}{\sqrt{\frac{1}{n}\sum_{i = 1}^n \big(\mathbf{X}_{i, j} - \big(\frac{1}{n}\sum_{i = 1}^n \mathbf{X}_{i, j}\big)\big)^2}} \text{ for every feature $j \in \{1, \dots, D\}$.}\]
+
+\chapter{Graphs}
+\section{Defining graphs}
+A graph $\displaystyle G = (V, E)$ is formally defined using a node set $\displaystyle V$, which represents a set of objects, and an edge set $\displaystyle E$, which describes object relationships in terms of connections. \newline
+Generally speaking, a graph can be classified as an ``undirected'' graph, whose edges represent bidirectional connections, or as a ``directed'' graph, whose edges represent unidirectional connections. \newline
+Additionally, a graph is said to be ``weighted'' if all of its edges are characterized by a (non-negative) weight assigned by a dedicated function $\displaystyle w: E \to \mathbb{R}^+$. \newline
+Lastly, a graph is said to be ``simple'' if it contains neither self-loops, which connect a node in the graph to itself, nor parallel edges, which connect the same pair of nodes in the same direction.
+\section{Neighbourhood and subgraphs}
+Given a graph $\displaystyle G = (V, E)$, a neighbour of a node $\displaystyle v \in V$ is any vertex that is connected to $\displaystyle v$ through an edge in the graph. \newline
+In particular, the neighbourhood of a vertex is a subgraph composed by all the neighbours of $\displaystyle v$ and all the edges connecting these nodes. \newline
+From a broader perspective, a subgraph of a graph $\displaystyle G = (V, E)$ is another graph $\displaystyle G'(V', E')$ such that $\displaystyle V' \subseteq V$ and $\displaystyle E' \subseteq E$.
+\section{Paths in a graph}
+A path is a sequence of distinct nodes where each pair of consecutive nodes is connected by an edge. \newline
+Since the length of a path can be represented by the number of edges forming a path or by the sum of their weights, the distance between two nodes in a graph is formally defined as the length of the shortest path between them, with the diameter of a graph indicating the maximum distance between any pair of nodes. \newline
+Generally speaking, a connected component within an undirected graph $\displaystyle G = (V, E)$ is a subgraph $\displaystyle G' = (V', E')$, with $\displaystyle V' \subseteq V$, such that each pair of distinct nodes is connected by a path. \newline
+For this reason, a graph is said to be ``connected'' if it consists of a single connected component.
+\section{Forests and trees}
+A tree is defined as an undirected acyclic graph that is connected. \newline
+Generally speaking, an undirected graph $\displaystyle G = (V, E)$, which has $\displaystyle n$ nodes and $\displaystyle m$ edges, is said to be a tree if (at least) two of the following conditions are satisfied:
+\begin{enumerate}
+    \item The graph is connected.
+    \item The graph is acyclic.
+    \item $\displaystyle m = n - 1$.
+\end{enumerate}
+\section{Storing a graph}
+A graph $\displaystyle G = (V, E)$ is typically stored using one of the following structures:
+\begin{itemize}
+    \item \textbf{Adjacency list: }Each node in the graph stores a list of its direct neighbours. \newline
+    This structure comes in handy to store sparse graphs because it requires $\displaystyle \Theta(|V| + |E|)$ memory.
+    \item \textbf{Adjacency matrix: }For a graph with $\displaystyle |V|$ nodes, an adjacency matrix of size $\displaystyle |V| \times |V|$ sets $\displaystyle A_{i, j} = 1$ if and only if there is an edge between node $\displaystyle i$ and node $\displaystyle j$, implying that an undirected graph always has a symmetric adjacency matrix. \newline
+    For this reason, this structure requires $\displaystyle \Theta(|V|^2)$ memory.
+\end{itemize}
 
 \end{document}

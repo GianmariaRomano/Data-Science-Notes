@@ -148,6 +148,8 @@
 
 \tableofcontents
 
+\part{Probability}
+
 \chapter{Defining probability}
 \section{Introducing a qualitative idea of probability}
 Probability is the field of mathematics that studies events and how likely they are to occur in order to describe relationships or patterns in existing models. \newline
@@ -1880,6 +1882,8 @@ In fact, this formulation allows to make the following estimate:
 \section{Association graphs}
 Let $\displaystyle \mathbf{X} \in \mathbb{R}^p$ be a random vector and define $\displaystyle \rho_{j, k}$ as a generic measure of association between its components $\displaystyle X_j$ and $\displaystyle X_k$: the corresponding association graph is an undirected graph $\displaystyle \mathcal{G} = (V, E)$ that is described by a node set $\displaystyle V$, which represents the components of a random vector, and an edge set $\displaystyle E$, which connects the nodes corresponding to components $\displaystyle X_j$ and $\displaystyle X_k$ if and only if $\displaystyle |\rho_{j, k}| \ge \varepsilon$, for a chosen threshold $\displaystyle \varepsilon \ge 0$.
 
+\part{Statistical Inference and Learning}
+
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}
 Assuming a continuous random variable follows an unknown probability distribution, several strategies allow to learn this distribution starting from a data sample $\displaystyle \mathcal{D}_n = \{x_1, \dots, x_n\}$ and plotting its behaviour.
@@ -1921,5 +1925,41 @@ Therefore, the estimated probability density function will be given by
     \label{fig:learn_kde}
 \end{figure}
 \noindent However, it should be noticed that, when performed on a distribution with a bounded support, kernel density estimation often results in the loss of information as some mass is placed outside of the support of the distribution.
+
+\chapter{Statistical inference}
+\section{The purpose of statistical inference}
+Assuming information about a (non-)parametric model $\displaystyle X \sim F_X$ is acquired as a random independent and identically distributed sample $\displaystyle \mathbf{X}_n = \{X_1, \dots, X_n\}$, the goal of statistical inference is to learn population features or parameters from data. \newline
+Common inference paradigms include frequentist inference, where a fixed unknown parameter is learned using a random procedure based on the sampling distribution of an estimator, or Bayesian inference, which focuses on analysing and updating the posterior distribution of an unknown random parameter starting from a prior belief. \newline
+Overall, statistical inference can be conducted using two main types of models:
+\begin{enumerate}
+    \item \textbf{Non-parametric models: }These models are more flexible because they do not make assumptions about the underlying data distribution.
+    \item \textbf{Parametric models: }These models assume that the data distribution belongs to a specific family represented by a finite number of parameters. \newline
+    However, if the assumptions are wrong, using a parametric model results in questionable results that are incorrect or miss important information.
+\end{enumerate}
+\section{Estimating a distribution}
+When learning a cumulative distribution function $\displaystyle F_X(x) = \mathbb{P}(X \leq x)$ from an independent and identically distributed sample $\displaystyle \mathbf{X}_n = \{X_1, \dots, X_n\}$, a model can follow two possible strategies. \newline
+In fact, this task can be posed as a pointwise problem, where the model fixes a point $\displaystyle x_0 \in \mathbb{R}$ and estimates the parameter $\displaystyle \theta^{(0)} = F_X(x_0)$, or as a uniform problem, where the model aims to learn a curve $\displaystyle \theta = F_X(x)$ from the space of all candidate cumulative distribution functions.
+\section{Point estimation}
+Point estimation aims to produce a single ``best guess'' of a population quantity using an independent and identically distributed sample $\displaystyle \mathbf{X}_n = \{X_1, \dots, X_n\}$. \newline
+In general, a point estimator $\displaystyle \hat{\theta}_n = \hat{\theta}(\mathbf{X}_n)$ is a function of the random sample: before observing data, an estimator acts as a random variable with distribution $\displaystyle G_n$ and, after observing a realization $\displaystyle \mathbf{x}_n = \{x_1, \dots, x_n\}$ of the sample, the quantity $\displaystyle \hat{\theta}_n(\mathbf{x}_n)$ represents a point estimate of the target quantity. \newline
+In particular, a point estimator is characterized by a bias, which measures how far the average estimate falls from the target quantity, and a standard error, which measures random sampling variability, that are defined as
+\[bias(\hat{\theta}_n) = \theta - \mathbb{E}(\hat{\theta}_n) \quad\quad\quad se(\hat{\theta}_n) = \sqrt{\mathbb{V}(\hat{\theta}_n)}\]
+Furthermore, since $\displaystyle \hat{\theta}_n \sim G_n$ is a function of the random sample, it is possible to compute its mean and variance using the following approach:
+\begin{align*}
+    \mathbb{E}(\hat{\theta}_n) &= \begin{cases}
+        \int \mathbf{u} \ dG_n(\mathbf{u}) &\quad\text{if $G_n$ is known} \\
+        \int\dots\int \hat{\theta}(x_1, \dots, x_n) \ dF_X(x_1)\dots dF_X(x_n) &\quad\text{via the LLS} \\
+    \end{cases} \\
+    \mathbb{V}(\hat{\theta}_n) &= \begin{cases}
+        \int (\mathbf{u} - \mathbf{\mu})^2 \ dG_n(\mathbf{u}) &\quad\text{if $G_n$ is known} \\
+        \int\dots\int (\hat{\theta}(x_1, \dots, x_n) - \mathbf{\mu})^2 \ dF_X(x_1)\dots dF_X(x_n) &\quad\text{via the LLS} \\
+    \end{cases}
+\end{align*}
+Because multiple estimators can be proposed for the same target $\displaystyle \theta \in \Theta$, statistical decision theory introduces a loss function $\displaystyle \mathcal{L}(\theta, \hat{\theta}_n)$ to evaluate the discrepancy between the target parameter $\displaystyle \theta$ and the estimator $\displaystyle \hat{\theta}_n$. \newline
+However, since $\displaystyle \hat{\theta}_n$ is a random object, the loss function is also a random variable, meaning that estimators are assessed based on the risk
+\[R_{\theta}(\hat{\theta}_n) = \mathbb{E}(\mathcal{L}(\theta, \hat{\theta}_n)) = \begin{cases}
+    \int \mathcal{L}(\theta, \mathbf{u}) \ dG_n(\mathbf{u}) &\quad\text{if $G_n$ is known} \\
+    \int\dots\int \mathcal{L}(\theta, \hat{\theta}(x_1, \dots, x_n)) \ dF_X(x_1)\dots dF_X(x_n) &\quad\text{via the LLS} \\
+\end{cases}\]
 
 \end{document}
