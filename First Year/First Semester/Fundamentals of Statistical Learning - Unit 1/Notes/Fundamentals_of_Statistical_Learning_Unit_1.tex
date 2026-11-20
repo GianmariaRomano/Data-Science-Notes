@@ -1360,6 +1360,49 @@ The squared distance covariance can be standardized to obtain the squared distan
 \[\rho^2(X, Y) = \frac{\gamma^2(\mathbf{X}, \mathbf{Y})}{\sqrt{\gamma^2(\mathbf{X}, \mathbf{X})}\sqrt{\gamma^2(\mathbf{Y}, \mathbf{Y})}}\]
 In particular, this quantity provides a strong measure correlation as $\displaystyle \rho^2(X, Y) = 0$ if and only if $\displaystyle X$ and $\displaystyle Y$ are independent.
 
+\chapter{Convergence and concentration}
+\section{The purpose of convergence}
+Analysing the asymptotic behaviour of a random variable allows to make long-run estimates of its properties in terms of convergence, which qualitatively describes how a sequence of random variables behaves as it grows infinitely large, and concentration, which quantitatively measures the speed of convergence. \newline
+In general, given a sequence of random variables $\displaystyle X_1, \dots, X_n$, which are typically assumed to have a common cumulative distribution function $\displaystyle F_n$, and another random variable $\displaystyle X$ with cumulative distribution function $\displaystyle F$, it is possible to define several types of convergence:
+\begin{enumerate}
+    \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``almost surely'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \xrightarrow{a. s.} X$, if, for every $\displaystyle \varepsilon \ge 0$, it is the case that
+    \[\mathbb{P}\Bigg(\lim_{n \to +\infty} |X_n - X| < \varepsilon\Bigg) = 1\]
+    \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``in probability'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \xrightarrow{P} X$, if, for every $\displaystyle \varepsilon \ge 0$, it is the case that
+    \[\lim_{n \to +\infty} \mathbb{P}(|X_n - X| > \varepsilon) = 0\]
+    \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``in $\displaystyle r^{th}$ mean'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \xrightarrow{L^r} X$, if
+    \[\lim_{n \to +\infty} \mathbb{E}(|X_n - X|^r) = 0\]
+    \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``in distribution'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \rightsquigarrow X$, if
+    \[\lim_{n \to +\infty} F_n(t) = F(t) \text{ for every point where $F$ is continuous.}\]
+\end{enumerate}
+\section{Concentration inequalities}
+Concentration inequalities establish boundaries on the fluctuation of a random variable in order to measure its convergence rate. \newline
+For instance, Markov's inequality states, if $\displaystyle X$ is a non-negative random variable with finite expectation, then, for any threshold $\displaystyle t > 0$, one has
+\[\mathbb{P}(X \ge t) \leq \frac{\mathbb{E}(X)}{t}\]
+\begin{proofbox}
+    For a non-negative random variable, it is possible to state that
+    \begin{align*}
+        \mathbb{E}(X) = \int_0^{+\infty} xf(x) \ dx
+            &= \int_0^t xf(x) \ dx + \int_t^{+\infty} xf(x) \ dx \\
+            &\ge \int_t^{+\infty} xf(x) \ dx \ge t\int_t^{+\infty} f(x) \ dx = t\mathbb{P}(X \ge t)
+    \end{align*}
+\end{proofbox}
+\noindent As a consequence to Markov's inequality, Chebyshev's inequality states that, if a random variable $\displaystyle X$ has finite mean and variance, then, for any threshold $\displaystyle t > 0$, one has
+\[\mathbb{P}(|X - \mathbb{E}(X)| \ge t) \leq \frac{\mathbb{V}(X)}{t^2}\]
+\begin{proofbox}
+    Note that $\displaystyle |X - \mathbb{E}(X)| \ge t$ holds if and only if $\displaystyle (X - \mathbb{E}(X))^2 \ge t^2$. \newline
+    Since the quantity $\displaystyle (X - \mathbb{E}(X))^2$ can be seen as a non-negative random variable, it is possible to apply Markov's inequality to state that
+    \[\mathbb{P}(|X - \mathbb{E}(X)| \ge t) = \mathbb{P}((X - \mathbb{E}(X))^2 \ge t^2) \stackrel{\text{Markov}}{\leq} \frac{\mathbb{E}((X - \mathbb{E}(X))^2)}{t^2} = \frac{\mathbb{V}(X)}{t^2}\]
+\end{proofbox}
+\noindent This inequality can be used to observe that, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F_n$, each having finite mean $\displaystyle \mu$ and variance $\displaystyle \sigma^2$, their sample mean $\displaystyle \overline{X}_n$ satisfies
+\[\mathbb{P}(|\overline{X}_n - \mathbb{E}(\overline{X}_n)| \ge t) = \mathbb{P}(|\overline{X}_n - \mu| \ge t) \leq \frac{\mathbb{V}(\overline{X}_n)}{t^2} = \frac{\sigma^2}{nt^2} \Rightarrow \mathbb{P}(|\overline{X}_n - \mu| \ge t) = O(n^{-1})\]
+Additionally, a sharper bound for convergence can be obtained through Chernoff's method. \newline
+In fact, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F$, which are almost surely bounded in some interval $\displaystyle [a, b]$, Hoeffding's inequality states that, for any threshold $\displaystyle t > 0$, their sample mean satisfies
+\[\mathbb{P}(|\overline{X}_n - \mu| \ge t) \leq 2e^{-\frac{2nt^2}{(b - a)^2}}\]
+\begin{examplebox}[Bounding the sample mean of a sequence of Bernoulli random variables]
+    Given a sequence of random variables $\displaystyle X_1, \dots, X_n \sim Ber(p)$, their sample mean satisfies
+    \[\mathbb{P}(|\overline{X}_n - p| \ge t) \stackrel{\text{Hoeffding}}{\leq} 2e^{-2nt^2} \stackrel{\text{Chebyshev}}{\leq} \frac{p(1 - p)}{nt^2} \leq \frac{1}{4nt^2}\]
+\end{examplebox}
+
 \chapter{Stochastic simulations}
 \section{Defining simulations}
 A stochastic simulation allows to study complex probabilistic models by generating values for a random variable that will be used into the model, providing an approximation of a random system. \newline
@@ -1944,7 +1987,7 @@ Point estimation aims to produce a single ``best guess'' of a population quantit
 In general, a point estimator $\displaystyle \hat{\theta}_n = \hat{\theta}(\mathbf{X}_n)$ is a function of the random sample: before observing data, an estimator acts as a random variable with distribution $\displaystyle G_n$ and, after observing a realization $\displaystyle \mathbf{x}_n = \{x_1, \dots, x_n\}$ of the sample, the quantity $\displaystyle \hat{\theta}_n(\mathbf{x}_n)$ represents a point estimate of the target quantity. \newline
 In particular, a point estimator is characterized by a bias, which measures how far the average estimate falls from the target quantity, and a standard error, which measures random sampling variability, that are defined as
 \[bias(\hat{\theta}_n) = \theta - \mathbb{E}(\hat{\theta}_n) \quad\quad\quad se(\hat{\theta}_n) = \sqrt{\mathbb{V}(\hat{\theta}_n)}\]
-Furthermore, since $\displaystyle \hat{\theta}_n \sim G_n$ is a function of the random sample, it is possible to compute its mean and variance using the following approach:
+Furthermore, since $\displaystyle \hat{\theta}_n \sim G_n$ is a function of an independent and identically distributed sample, it is possible to compute its mean and variance using the following approach:
 \begin{align*}
     \mathbb{E}(\hat{\theta}_n) &= \begin{cases}
         \int \mathbf{u} \ dG_n(\mathbf{u}) &\quad\text{if $G_n$ is known} \\
@@ -1961,5 +2004,21 @@ However, since $\displaystyle \hat{\theta}_n$ is a random object, the loss funct
     \int \mathcal{L}(\theta, \mathbf{u}) \ dG_n(\mathbf{u}) &\quad\text{if $G_n$ is known} \\
     \int\dots\int \mathcal{L}(\theta, \hat{\theta}(x_1, \dots, x_n)) \ dF_X(x_1)\dots dF_X(x_n) &\quad\text{via the LLS} \\
 \end{cases}\]
+Overall, an estimator is said to be unbiased if $\displaystyle bias(\hat{\theta}_n) = 0$, meaning that $\displaystyle \mathbb{E}(\hat{\theta}_n) = \theta$ for any sample size, although it is often sufficient for a good estimator to converge to $\displaystyle \theta$ when the model is correct.
+\begin{examplebox}[The mean squared error and the bias-variance trade-off]
+    When estimating a numeric scalar quantity, the mean squared error can be decomposed in terms of bias and variance as
+    \begin{align*}
+        MSE(\hat{\theta}_n) = \mathbb{E}((\hat{\theta}_n - \theta)^2)
+            &= \mathbb{E}((\hat{\theta}_n - \theta + \mathbb{E}(\hat{\theta}_n) - \mathbb{E}(\hat{\theta}_n))^2) \\
+            &= \mathbb{E}(((\hat{\theta}_n - \mathbb{E}(\hat{\theta}_n)) + (\mathbb{E}(\hat{\theta}_n) - \theta))^2) \\
+            &= \mathbb{V}(\hat{\theta}_n) + (bias(\hat{\theta}_n))^2
+    \end{align*}
+    For instance, given an observation from a mode $\displaystyle X \sim \mathcal{N}(\theta, 1)$, estimating the parameters using $\displaystyle \hat{\theta}_1 = X$ and $\displaystyle \hat{\theta}_2 = 3$ results in
+    \[R_{\theta}(\hat{\theta}_1) \stackrel{bias(\hat{\theta}_1) = 0}{=} \mathbb{V}(X) = 1 \quad R_{\theta}(\hat{\theta}_2) \stackrel{\mathbb{V}(\hat{\theta}_2) = 0}{=} (bias(\hat{\theta}_2))^2 = (3 - \theta)^2\]
+    These results reveal that neither estimator dominates the other uniformly over $\displaystyle \mathbb{R}$.
+\end{examplebox}
+\noindent In particular, an estimator is said to be ``risk consistent'' if $\displaystyle R_{\theta}(\hat{\theta}_n) \to 0$ as $\displaystyle n \to +\infty$, which also implies that the estimator converges in probability to the true parameter $\displaystyle \theta$. \newline
+Moreover, an estimator is said to be ``asymptotically normal'' if
+\[\frac{\hat{\theta}_n - \theta}{se(\hat{\theta}_n)} \rightsquigarrow \mathcal{N}(0, 1)\]
 
 \end{document}

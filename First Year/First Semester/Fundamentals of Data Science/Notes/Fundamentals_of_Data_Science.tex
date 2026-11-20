@@ -884,7 +884,7 @@ For instance, deep learning is a representation learning method that uses a hier
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{images/shallow_nn_nomenclature.png}
-    \caption{Nomenclature for a shallow neural network.}
+    \caption{Nomenclature for a neural network.}
     \label{fig:shallow_nn_nomenclature}
 \end{figure}
 \section{Shallow neural networks}
@@ -901,22 +901,112 @@ Therefore, learning a shallow neural network is equivalent to learning a total o
     \[y = \phi_0 + \phi_1h_1 + \phi_2h_2 + \phi_3h_3 \text{, where $h_i = Act(\theta_{i0} + \theta_i1x)$.}\]
     In particular, learning this model is equivalent to learning a total of $\displaystyle 20$ parameters.
 \end{examplebox}
-\subsection{Optimizing a shallow neural network using backpropagation}
+\section{Deep neural networks}
+A simple way of implementing a deep neural network is by stacking two, or more, shallow neural networks to compactly model more complex functions.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/deep_nn_stack.png}
+    \caption{Implementing a deep neural network by stacking two shallow neural networks.}
+    \label{fig:deep_nn_stack}
+\end{figure}
+\noindent In general, a deep neural network can be seen as a composition of functions that can be expressed as
+\[\mathbf{h} = \mathbf{Act}(\mathbf{\theta}_0 + \mathbf{\theta}x) \quad \mathbf{h'} = \mathbf{Act}(\mathbf{\psi}_0 + \mathbf{\Psi h}) \quad y = \mathbf{\phi'}_0 + \mathbf{\phi'h'}\]
+Since the required parameters are stored in dedicated weight matrices $\displaystyle \{\mathbf{\Omega}_k\}_{k = 0}^K$ and bias vectors $\displaystyle \{\mathbf{\beta}_k\}_{k = 0}^K$, learning a deep neural network with $\displaystyle D_i$ inputs, $\displaystyle K$ hidden layers, each consisting of $\displaystyle D$ units, and $\displaystyle D_o$ outputs is equivalent to learning a total of $\displaystyle D(D_i + 1) + (K - 1)(D^2 + D) + D_o(D + 1)$ parameters, assuming the bias terms are considered.
+\begin{examplebox}[Learning a deep neural network]
+    Consider the following deep neural network:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\linewidth]{images/deep_nn_composition.png}
+        \caption{Example of a deep neural network based on function compositions.}
+        \label{fig:deep_nn_composition}
+    \end{figure}
+    \noindent Learning this model is equivalent to learning a total of $\displaystyle 43$ parameters.
+\end{examplebox}
+\section{Optimizing a neural network using backpropagation}
 A neural network is optimized by performing backpropagation, which consists of repeatedly applying the chain rule to compute the gradients of a loss function. \newline
 Generally speaking, a neural network is optimized using the (binary) cross-entropy loss function, which is defined as
 \[\mathcal{L} = \frac{1}{N}\sum_{i = 1}^N \ell_i(f(x), y) \text{, for a dataset $\mathcal{D} = \{(x_i, y_i)\}_{i = 1}^N$.}\]
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{images/shallow_nn_binary.png}
-    \caption{Example of a shallow neural network for binary classification.}
-    \label{fig:shallow_nn_binary}
-\end{figure}
-\noindent For instance, optimizing a shallow neural network used for a binary classification task requires using the chain rule to compute the gradient of the loss function with respect to the parameters $\displaystyle w_1$, $\displaystyle w_2$ and $\displaystyle b$, resulting in
+\begin{examplebox}[Optimizing a shallow neural network for binary classification]
+    Consider a shallow neural network for a binary classification task:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\linewidth]{images/shallow_nn_binary.png}
+        \caption{Example of a shallow neural network for binary classification.}
+        \label{fig:shallow_nn_binary}
+    \end{figure}
+    \noindent Optimizing this model requires using the chain rule to compute the gradient of the loss function with respect to the parameters $\displaystyle w_1$, $\displaystyle w_2$ and $\displaystyle b$, resulting in
+    \begin{align*}
+        \frac{\partial\mathcal{L}}{\partial w_2} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial w_2} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot h \\
+        \frac{\partial\mathcal{L}}{\partial b} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial b} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot \mathbf{1}^T \\
+        \frac{\partial\mathcal{L}}{\partial w_1} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial h}\frac{\partial h}{\partial(xw_1)}\frac{\partial(xw_1)}{\partial w_1} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot w_2^T \cdot \mathbf{1}(xw_1 > 0) \cdot x
+    \end{align*}
+\end{examplebox}
+\noindent Overall, the main challenge with optimizing a neural network lies in the fact that mini-batch gradient descent requires a careful balance between gradient updates and computational efficiency.
+\subsection{Gradient optimization techniques}
+The simplest optimization technique is mini-batch stochastic gradient descent, which updates parameters along the negative direction of the gradient, meaning that
+\[\theta = \theta - \alpha\nabla_{\theta}\mathcal{L}_B(\theta)\]
+To ensure the gradient descent algorithm does not terminate at a local minimum or at a saddle point, it is possible to introduce a momentum hyperparameter that keeps track of past gradients to favour consistent parameter updates, resulting in
 \begin{align*}
-    \frac{\partial\mathcal{L}}{\partial w_2} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial w_2} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot h = (\hat{y} - y)h^T \\
-    \frac{\partial\mathcal{L}}{\partial b} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial b} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot \mathbf{1}^T = (\hat{y} - y)\mathbf{1}^T \\
-    \frac{\partial\mathcal{L}}{\partial w_1} &= \frac{\partial\mathcal{L}}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial z}\frac{\partial z}{\partial h}\frac{\partial h}{\partial(xw_1)}\frac{\partial(xw_1)}{\partial w_1} = \frac{\hat{y} - y}{\hat{y}(1 - \hat{y})} \cdot \hat{y}(1 - \hat{y}) \cdot w_2^T \cdot \mathbf{1}(xw_1 > 0) \cdot x = (\hat{y} - y) \cdot w_2^T \cdot \mathbf{1}(xw_1 > 0) \cdot x
+    \rho &= \mu\rho - \alpha\nabla_{\theta}\mathcal{L}(\theta) \\
+    \theta &= \theta + \rho
 \end{align*}
+In particular, to avoid overshooting near minima, the Nesterov momentum algorithm computes the gradient at a lookahead point, meaning that
+\begin{align*}
+    v_t &= \mu v_{t - 1} - \alpha\nabla\mathcal{L}_t(\theta_{t - 1}, \mu v_{t - 1}) \\
+    \theta_t &= \theta_{t - 1} + v_t
+\end{align*}
+Alternatively, it is possible to consider adaptive optimization algorithms that adjust the learning rate for each parameter. \newline
+For instance, the AdaGrad algorithm, which is often used with sparse features, scales each learning rate with respect to the square root of the cumulative squared gradients, meaning that
+\begin{align*}
+    g_t &= \nabla_{\theta}\mathcal{L}(f_{\theta}(x_t), y_t) \\
+    G_t &= G_{t - 1} + g_t^2 \\
+    \theta_t &= \theta_{t - 1} - \frac{\alpha g_t}{\sqrt{G_t + \varepsilon}}
+\end{align*}
+On the other hand, the RMSProp algorithm tracks a moving average of squared gradients using a decay parameter to control how quickly the past gradients are forgotten, resulting in
+\begin{align*}
+    s_t &= \rho s_{t - 1} + (1 - \rho)g_t^2 \text{, starting from } s_0 = 0 \\
+    \theta_t &= \theta_{t - 1} - \frac{\alpha g_t}{\sqrt{s_t} + \varepsilon}
+\end{align*}
+Today, one of the most common optimization algorithms is Adam, which combines momentum and adaptive scaling with bias correction, resulting in
+\begin{align*}
+    g_t &= \nabla_{\theta}\mathcal{L}(f_{\theta}(x_t), y_t) \\
+    m_t &= \beta_1m_{t - 1} + (1 - \beta_1)g_t \quad v_t = \beta_2v_{t - 1} + (1 - \beta_2)g_t^2 \\
+    \hat{m}_t &= \frac{m_t}{1 - \beta_1^t} \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t} \\
+    \theta_t &= \theta_{t - 1} - \frac{\alpha\hat{m}_t}{\sqrt{\hat{v}_t} + \varepsilon}
+\end{align*}
+In particular, the AdamW variant allows for direct parameter shrinkage by decoupling decay and adaptive estimates, resulting in
+\[\theta_t = (1 - \alpha_t\lambda)\theta_{t - 1} - \frac{\alpha\hat{m}_t}{\sqrt{\hat{v}_t} + \varepsilon}\]
+Lastly, if the weights are stored in two-dimensional matrix, the muon optimization algorithm combines momentum with the Newton-Schulz algorithm, resulting in
+\begin{align*}
+\mathbf{M}_t &= \beta \mathbf{M}_{t - 1} + (1 - \beta)\nabla_{\theta}\mathcal{L}(\theta_t) \\
+    \theta_{t + 1} &= \theta_t - \alpha sign(M_t)
+\end{align*}
+\subsection{Learning rate scheduling}
+Scheduling consists of handling how the learning rate changes throughout training. \newline
+While many models simply update the learning rate based on a pre-determined rule, other popular approaches include linear warmups with cosine decay, where the learning rate initially increases until a peak before decaying with respect to a cosine wave, or plateau scheduling, where the learning rate is decreased as soon as validation performance stops improving significantly.
+\subsection{Model initialization and stabilization}
+While biases can be initialized to zero, initializing zero or random weights causes the model to face many problems during optimization. \newline
+For this reason, (deep) neural networks are often initialized using Glorot initialization, which samples weights $W_{i, j} \sim \mathcal{N}(0, \frac{2}{d_{in} + d_{out}})$, or He initialization, which samples weights $W_{i, j} \sim \mathcal{N}(0, \frac{2}{d_{in}})$. \newline
+In addition, it is common practice to normalize the training features by standard scaling, which is  often implemented using one of the following strategies:
+\begin{itemize}
+    \item \textbf{Batch normalization: }Features are standardized using statistics computed from the current mini-batch, meaning that
+    \[y_i = \gamma\hat{x}_i + \beta \text{, where } \hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \varepsilon}}\]
+    By default, this strategy uses running estimates of the statistics obtained during training.
+    \item \textbf{Layer normalization: }Features are standardized with respect to one example, resulting in
+    \[y_i = \gamma_i\frac{x_i - \mu(x)}{\sqrt{\sigma^2(x) + \varepsilon}} + \beta_i\]
+\end{itemize}
+\subsection{Activation functions}
+An activation function introduces a non-linear transformation that allows stacked linear layers to approximate and optimize complex functions. \newline
+Since the sigmoid function often results in vanishing gradients during optimization, many models make use of the ReLU activation function or, to ensure inactive neurons can still learn, the Leaky ReLU variant.
+\subsection{Leveraging model performance}
+In order to reduce the risk of performance degradation, the ResNet model introduces residual connections that add a learnable transformation $\displaystyle y = x + F(x)$ to the input, meaning that the total gradient can be formulated as
+\begin{align*}
+    \mathbf{J}_y(x) &= \mathbf{I} + \mathbf{J}_F(x) \\
+    \nabla_x\mathcal{L} &= (\mathbf{I} + \mathbf{J}_F(x))^T\nabla_y\mathcal{L}
+\end{align*}
+In addition, to reduce the risk of overfitting during training, dropout regularization randomly sets some neurons to zero using a hyperparameter $\displaystyle p \in (0, 1)$, meaning that, for a binary mask $\displaystyle m$ wit dropout probability $\displaystyle p$, the resulting mean activation will be given by $\displaystyle \mathbb{E}(m \odot x|x) = (1 - p)x$. \newline
+For this reason, the inverted dropout technique scales the mean activation during training so that the expected values match during evaluations, meaning that
+\[h = \frac{m \odot x}{1 - p} \Rightarrow \mathbb{E}(h|x) = x\]
 
 \part{Network Science}
 
@@ -1199,6 +1289,8 @@ In particular, node centrality can be evaluated according to one of the followin
     \item \textbf{Betweenness: }Betweenness centrality measures the extent to which a node can act as a bridge along the shortest paths between pairs of nodes. \newline
     Assuming $\displaystyle \sigma_{st}$ denotes the number of shortest paths between nodes $\displaystyle s$ and $\displaystyle t$, with $\displaystyle \sigma_{st}(i)$ indicating the number of paths passing through node $\displaystyle i$, the betweenness centrality of a node is defined as
     \[Betweenness(i) = \sum_{s \neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}\]
+    For better interpretability, betweenness centrality is often normalized by dividing it by the number of possible pairs of other nodes, resulting in
+    \[Betweenness_{norm}(i) = \frac{2 \cdot Betweenness(i)}{(|V| - 1)(|V| - 2)}\]
 \end{itemize}
 
 \chapter{Random networks}
@@ -1244,7 +1336,7 @@ Since the clustering coefficient of an Erdős-Rényi network is equal to $\displ
 More specifically, when $\displaystyle p = 0$, the network consists of a set of small isolated components that do not depend on the size of the network. \newline
 By contrast, if $\displaystyle p = 1$, the network acts as a single $\displaystyle n$-clique whose structure does depend on the size of the network. \newline
 Overall, for an Erdős-Rényi network, it is possible to prove that, if $\displaystyle S$ is the proportion of nodes that belong to the largest connected component, the following relation holds:
-\[S = 1 - e^{-S\langle k \rangle} \Rightarrow \langle k \rangle = \frac{\ln(1 - S)}{S}\]
+\[S = 1 - e^{-S\langle k \rangle} \Rightarrow \langle k \rangle = -\frac{\ln(1 - S)}{S}\]
 \section{The Watts-Strogatz model}
 The Watts-Strogatz model aims to overcome a key limitation of the Erdős-Rényi model, whose low transitivity does not represent the behaviour observed in many real networks. \newline
 For this reason, a Watts-Strogatz network is built starting from a (one-dimensional) regular ring lattice with $\displaystyle n$ nodes and, while each node is initially connected to a fixed number $\displaystyle k_n$ of nearest neighbours, each edge in the network can be randomly rewired to another node with probability $\displaystyle p$.
@@ -1305,6 +1397,6 @@ Generally speaking, the diameter of a Barabási-Albert network is given by
 \[d_{\max} \approx \frac{\ln(n)}{\ln(\ln(n))}\]
 This means that the Barabási-Albert model exhibits the ``ultra-small-world'' property because distances tend to be smaller compared to those in an Erdős-Rényi network of similar size. \newline
 Additionally, for moderate network sizes, a Barabási-Albert network tends to be locally more clustered than an Erdős-Rényi network as its global clustering coefficient is given by
-\[C \approx \frac{\ln^2(n)}{n} \ge p \text{, which is the clustering coefficient of an Erdős-Rényi network.}\]
+\[C \approx \frac{\ln^2(n)}{n} \ge p\]
 
 \end{document}
