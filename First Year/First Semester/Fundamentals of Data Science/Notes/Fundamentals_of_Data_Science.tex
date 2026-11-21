@@ -1004,7 +1004,7 @@ In order to reduce the risk of performance degradation, the ResNet model introdu
     \mathbf{J}_y(x) &= \mathbf{I} + \mathbf{J}_F(x) \\
     \nabla_x\mathcal{L} &= (\mathbf{I} + \mathbf{J}_F(x))^T\nabla_y\mathcal{L}
 \end{align*}
-In addition, to reduce the risk of overfitting during training, dropout regularization randomly sets some neurons to zero using a hyperparameter $\displaystyle p \in (0, 1)$, meaning that, for a binary mask $\displaystyle m$ wit dropout probability $\displaystyle p$, the resulting mean activation will be given by $\displaystyle \mathbb{E}(m \odot x|x) = (1 - p)x$. \newline
+In addition, to reduce the risk of overfitting during training, dropout regularization randomly sets some neurons to zero using a probability $\displaystyle p \in (0, 1)$, meaning that, for a binary mask $\displaystyle m$ with dropout probability $\displaystyle p$, the resulting mean activation will be given by $\displaystyle \mathbb{E}(m \odot x|x) = (1 - p)x$. \newline
 For this reason, the inverted dropout technique scales the mean activation during training so that the expected values match during evaluations, meaning that
 \[h = \frac{m \odot x}{1 - p} \Rightarrow \mathbb{E}(h|x) = x\]
 

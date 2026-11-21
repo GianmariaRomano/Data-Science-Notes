@@ -515,7 +515,7 @@ However, a random function cannot be used as a hash map because, since it return
 \section{Queues}
 A queue is a ``first in, first out'' abstract data type that supports the following operations:
 \begin{itemize}
-    \item \texttt{Q.enqueue(x)}: The queue inserts value \texttt{k} at the end of the queue.
+    \item \texttt{Q.enqueue(x)}: The queue inserts value \texttt{x} at the end of the queue.
     \item \texttt{Q.dequeue(x)}: The queue returns and removes the oldest element still in the queue.
 \end{itemize}
 Since implementing a queue using an array or a linked list tends to be inefficient, queues are typically implemented using a ``circular array'' structure that connects the last position with the first position to form a closed loop.
@@ -947,7 +947,7 @@ A graph $\displaystyle G = (V, E)$ is typically stored using one of the followin
 \begin{itemize}
     \item \textbf{Adjacency list: }Each node in the graph stores a list of its direct neighbours. \newline
     This structure comes in handy to store sparse graphs because it requires $\displaystyle \Theta(|V| + |E|)$ memory.
-    \item \textbf{Adjacency matrix: }For a graph with $\displaystyle |V|$ nodes, an adjacency matrix of size $\displaystyle |V| \times |V|$ sets $\displaystyle A_{i, j} = 1$ if and only if there is an edge between node $\displaystyle i$ and node $\displaystyle j$, implying that an undirected graph always has a symmetric adjacency matrix. \newline
+    \item \textbf{Adjacency matrix: }For a graph with $\displaystyle |V|$ nodes, an adjacency matrix of size $\displaystyle |V| \times |V|$ sets $\displaystyle \mathbf{A}_{i, j} = 1$ if and only if there is an edge between node $\displaystyle i$ and node $\displaystyle j$, implying that an undirected graph always has a symmetric adjacency matrix. \newline
     For this reason, this structure requires $\displaystyle \Theta(|V|^2)$ memory.
 \end{itemize}
 

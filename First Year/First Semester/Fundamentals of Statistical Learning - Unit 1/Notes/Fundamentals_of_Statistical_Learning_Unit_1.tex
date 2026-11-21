@@ -1278,7 +1278,7 @@ In a more general sense, if a random vector $\displaystyle \mathbf{X} \sim \math
     \mathbf{\Sigma}_{21} & \mathbf{\mathbf{\Sigma}}_{22} \\
 \end{pmatrix}\]
 Therefore, it will be the case that $\displaystyle \mathbf{X}_1 \sim \mathcal{N}_q(\mathbf{\mu}_1, \mathbf{\Sigma}_{11})$ and $\displaystyle \mathbf{X}_2 \sim \mathcal{N}_{p - q}(\mathbf{\mu}_2, \mathbf{\Sigma}_{22})$. \newline
-Furthermore, the corresponding conditional distributions can also be modelled as multivariate normal distribution, having
+Furthermore, the corresponding conditional distributions can also be modelled as multivariate normal distributions, having
 \begin{align*}
     (\mathbf{X}_1|\mathbf{X}_2 = \mathbf{x}_2) &\sim \mathcal{N}_q(\mathbf{\mu}_{1|2}, \mathbf{\Sigma}_{1|2}) \quad \mathbf{\mu}_{1|2} = \mathbf{\mu}_1 + \mathbf{\Sigma}_{12}\mathbf{\Sigma}_{22}^{-1}(\mathbf{x}_2 - \mathbf{\mu}_2), \quad \mathbf{\Sigma}_{1|2} = \mathbf{\Sigma}_{11} - \mathbf{\Sigma}_{12}\mathbf{\Sigma}_{22}^{-1}\mathbf{\Sigma}_{21} \\
     (\mathbf{X}_2|\mathbf{X}_1 = \mathbf{x}_1) &\sim \mathcal{N}_{p - q}(\mathbf{\mu}_{2|1}, \mathbf{\Sigma}_{2|1}) \quad \mathbf{\mu}_{2|1} = \mathbf{\mu}_2 + \mathbf{\Sigma}_{21}\mathbf{\Sigma}_{11}^{-1}(\mathbf{x}_1 - \mathbf{\mu}_1), \quad \mathbf{\Sigma}_{2|1} = \mathbf{\Sigma}_{22} - \mathbf{\Sigma}_{21}\mathbf{\Sigma}_{11}^{-1}\mathbf{\Sigma}_{12}
@@ -1299,7 +1299,7 @@ Overall, the shape and orientation of the contours of a bivariate normal distrib
     \begin{align*}
         f_{\mathbf{X}}(x_1, x_2)
             &= \frac{1}{2\pi\sigma_1\sigma_2}e^{-\frac{1}{2}\bigg(\frac{(x_1 - \mu_1)^2}{\sigma_1^2} + \frac{(x_2 - \mu_2)^2}{\sigma_2^2}\bigg)} \\
-            &= \frac{1}{\sqrt{2\pi\sigma_1^2}}e^{-\frac{(x_1 - \mu_1)^2}{2\sigma_1^2}}\frac{1}{\sqrt{2\pi\sigma_2^2}}e^{-\frac{(x_2 - \mu_2)^2}{2\sigma_2^2}} = \mathcal{N}(\mu_1, \sigma_1^2)\mathcal{N}(\mu_2, \sigma_2^2) \Rightarrow X \bot Y
+            &= \frac{1}{\sqrt{2\pi\sigma_1^2}}e^{-\frac{(x_1 - \mu_1)^2}{2\sigma_1^2}}\frac{1}{\sqrt{2\pi\sigma_2^2}}e^{-\frac{(x_2 - \mu_2)^2}{2\sigma_2^2}} = \mathcal{N}(\mu_1, \sigma_1^2)\mathcal{N}(\mu_2, \sigma_2^2) \Rightarrow X_1 \bot X_2
     \end{align*}
 \end{examplebox}
 \noindent Like for the univariate case, it is possible to perform standardization on a multivariate normal distribution through the following transformation:
@@ -1310,7 +1310,7 @@ Assuming a random vector $\displaystyle \mathbf{X} \in \mathbb{R}^p$ has a full-
 In fact, by choosing the orthogonal rotation matrix $\displaystyle \mathbf{R} = \mathbf{U}$ and the diagonal scaling matrix $\displaystyle \mathbf{S} = \mathbf{D}^{\frac{1}{2}}$, it is possible to express the covariance matrix as
 \[\mathbf{\Sigma} = \mathbf{UDU}^T = (\mathbf{UD}^{\frac{1}{2}})(\mathbf{D}^{\frac{1}{2}}\mathbf{U}^T) = \mathbf{RS}(\mathbf{S}^T\mathbf{R}^T) = \mathbf{TT}^T\]
 For instance, applying the transformation $\displaystyle \mathbf{T}$ to a ``white'' data model with covariance matrix $\displaystyle \mathbf{I}_p$, which describes uncorrelated features with unit variances, yields a scaled and rotated model whose covariance matrix is $\displaystyle \mathbf{\Sigma} = \mathbf{TT}^T$. \newline
-In particular, principal component analysis aims to reverse this transformation: by projecting the centered random vectors onto a sequence of random vectors $\displaystyle \{\mathbf{u}_j\}_{j = 1}^p$, it is possible to define the ``principal components'' as a sequence of (random) coordinates
+In particular, principal component analysis aims to reverse this transformation: by projecting a centered random vector onto a sequence of coefficient vectors $\displaystyle \{\mathbf{u}_j\}_{j = 1}^p$, it is possible to define the ``principal components'' as a sequence of (random) coordinates
 \[Z_j = \mathbf{u}_j^T(\mathbf{X} - \mathbf{\mu}) \Rightarrow \mathbf{Z} = \begin{pmatrix}
     Z_1 \\
     \vdots \\
@@ -1321,7 +1321,7 @@ Since the resulting principal components are mutually uncorrelated, with each co
 For this reason, by exploiting the preservation of variance under orthogonal transformation, it is possible to see that
 \[\sum_{j = 1}^p \mathbb{V}(X_j) = tr(\mathbf{\Sigma}) = \sum_{j = 1}^p \lambda_j = tr(\mathbf{D}) = \sum_{j = 1}^p \mathbb{V}(Z_j)\]
 \section{Partial correlation given a confounder}
-If two random variables $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ depend on a confounder $\displaystyle \mathbf{Z}$, describing their relationship using the linear correlation coefficient tends to be misleading. \newline
+If two random variables $\displaystyle X$ and $\displaystyle Y$ depend on a confounder $\displaystyle \mathbf{Z}$, describing their relationship using the linear correlation coefficient tends to be misleading. \newline
 In this case, partial correlation allows to measure the association between $\displaystyle X$ and $\displaystyle Y$ after removing the effect of $\displaystyle \mathbf{Z}$. \newline
 This quantity is formally defined as the linear correlation between the residuals $\displaystyle \varepsilon_X = X - \Pi_{\mathbf{Z}}(X)$ and $\displaystyle \varepsilon_Y = Y - \Pi_{\mathbf{Z}}(Y)$, where the projections are defined as
 \begin{align*}
@@ -1358,7 +1358,7 @@ Given two random vectors $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y
 \[\gamma^2(\mathbf{X}, \mathbf{Y}) = Cov(\lVert \mathbf{X} - \mathbf{X}' \rVert_2, \lVert \mathbf{Y} - \mathbf{Y}' \rVert_2) - 2Cov(\lVert \mathbf{X} - \mathbf{X}'' \rVert_2, \lVert \mathbf{Y} - \mathbf{Y}'' \rVert_2)\]
 The squared distance covariance can be standardized to obtain the squared distance correlation coefficient, which is formally defined as
 \[\rho^2(X, Y) = \frac{\gamma^2(\mathbf{X}, \mathbf{Y})}{\sqrt{\gamma^2(\mathbf{X}, \mathbf{X})}\sqrt{\gamma^2(\mathbf{Y}, \mathbf{Y})}}\]
-In particular, this quantity provides a strong measure correlation as $\displaystyle \rho^2(X, Y) = 0$ if and only if $\displaystyle X$ and $\displaystyle Y$ are independent.
+In particular, this quantity provides a strong measure correlation as $\displaystyle \rho^2(X, Y) = 0$ if and only if $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ are independent.
 
 \chapter{Convergence and concentration}
 \section{The purpose of convergence}
@@ -2013,7 +2013,7 @@ Overall, an estimator is said to be unbiased if $\displaystyle bias(\hat{\theta}
             &= \mathbb{E}(((\hat{\theta}_n - \mathbb{E}(\hat{\theta}_n)) + (\mathbb{E}(\hat{\theta}_n) - \theta))^2) \\
             &= \mathbb{V}(\hat{\theta}_n) + (bias(\hat{\theta}_n))^2
     \end{align*}
-    For instance, given an observation from a mode $\displaystyle X \sim \mathcal{N}(\theta, 1)$, estimating the parameters using $\displaystyle \hat{\theta}_1 = X$ and $\displaystyle \hat{\theta}_2 = 3$ results in
+    For instance, given an observation from a model $\displaystyle X \sim \mathcal{N}(\theta, 1)$, estimating the parameter using $\displaystyle \hat{\theta}_1 = X$ and $\displaystyle \hat{\theta}_2 = 3$ results in
     \[R_{\theta}(\hat{\theta}_1) \stackrel{bias(\hat{\theta}_1) = 0}{=} \mathbb{V}(X) = 1 \quad R_{\theta}(\hat{\theta}_2) \stackrel{\mathbb{V}(\hat{\theta}_2) = 0}{=} (bias(\hat{\theta}_2))^2 = (3 - \theta)^2\]
     These results reveal that neither estimator dominates the other uniformly over $\displaystyle \mathbb{R}$.
 \end{examplebox}
