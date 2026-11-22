@@ -925,16 +925,16 @@ A graph $\displaystyle G = (V, E)$ is formally defined using a node set $\displa
 Generally speaking, a graph can be classified as an ``undirected'' graph, whose edges represent bidirectional connections, or as a ``directed'' graph, whose edges represent unidirectional connections. \newline
 Additionally, a graph is said to be ``weighted'' if all of its edges are characterized by a (non-negative) weight assigned by a dedicated function $\displaystyle w: E \to \mathbb{R}^+$. \newline
 Lastly, a graph is said to be ``simple'' if it contains neither self-loops, which connect a node in the graph to itself, nor parallel edges, which connect the same pair of nodes in the same direction.
-\section{Neighbourhood and subgraphs}
+\subsection{Neighbourhoods and subgraphs}
 Given a graph $\displaystyle G = (V, E)$, a neighbour of a node $\displaystyle v \in V$ is any vertex that is connected to $\displaystyle v$ through an edge in the graph. \newline
-In particular, the neighbourhood of a vertex is a subgraph composed by all the neighbours of $\displaystyle v$ and all the edges connecting these nodes. \newline
-From a broader perspective, a subgraph of a graph $\displaystyle G = (V, E)$ is another graph $\displaystyle G'(V', E')$ such that $\displaystyle V' \subseteq V$ and $\displaystyle E' \subseteq E$.
-\section{Paths in a graph}
+In particular, the neighbourhood of a vertex is a subgraph that is composed by all the neighbours of $\displaystyle v$ and all the edges connecting these nodes. \newline
+From a broader perspective, a subgraph of a graph $\displaystyle G = (V, E)$ is another graph $\displaystyle G' = (V', E')$ such that $\displaystyle V' \subseteq V$ and $\displaystyle E' \subseteq E$.
+\subsection{Paths in a graph}
 A path is a sequence of distinct nodes where each pair of consecutive nodes is connected by an edge. \newline
 Since the length of a path can be represented by the number of edges forming a path or by the sum of their weights, the distance between two nodes in a graph is formally defined as the length of the shortest path between them, with the diameter of a graph indicating the maximum distance between any pair of nodes. \newline
 Generally speaking, a connected component within an undirected graph $\displaystyle G = (V, E)$ is a subgraph $\displaystyle G' = (V', E')$, with $\displaystyle V' \subseteq V$, such that each pair of distinct nodes is connected by a path. \newline
 For this reason, a graph is said to be ``connected'' if it consists of a single connected component.
-\section{Forests and trees}
+\subsection{Forests and trees}
 A tree is defined as an undirected acyclic graph that is connected. \newline
 Generally speaking, an undirected graph $\displaystyle G = (V, E)$, which has $\displaystyle n$ nodes and $\displaystyle m$ edges, is said to be a tree if (at least) two of the following conditions are satisfied:
 \begin{enumerate}
@@ -942,7 +942,7 @@ Generally speaking, an undirected graph $\displaystyle G = (V, E)$, which has $\
     \item The graph is acyclic.
     \item $\displaystyle m = n - 1$.
 \end{enumerate}
-\section{Storing a graph}
+\subsection{Storing a graph}
 A graph $\displaystyle G = (V, E)$ is typically stored using one of the following structures:
 \begin{itemize}
     \item \textbf{Adjacency list: }Each node in the graph stores a list of its direct neighbours. \newline
