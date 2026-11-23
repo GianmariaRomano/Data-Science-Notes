@@ -45,6 +45,7 @@
 | November 16 | Matrix decompositions and principal component analysis as an optimization problem. |
 | November 17 | Clustering implementations. |
 | November 19 | Queues, stacks and graphs. |
+| November 23 | Graph exploration algorithms: Breadth-First Search, Depth-First Search. |
 
 </details>
 
