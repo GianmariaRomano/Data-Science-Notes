@@ -46,6 +46,7 @@
 | November 17 | Clustering implementations. |
 | November 19 | Queues, stacks and graphs. |
 | November 23 | Graph exploration algorithms: Breadth-First Search, Depth-First Search. |
+| November 24 | Exercise session on graphs. |
 
 </details>
 
