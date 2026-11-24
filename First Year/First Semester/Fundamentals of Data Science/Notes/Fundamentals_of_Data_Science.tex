@@ -1008,6 +1008,116 @@ In addition, to reduce the risk of overfitting during training, dropout regulari
 For this reason, the inverted dropout technique scales the mean activation during training so that the expected values match during evaluations, meaning that
 \[h = \frac{m \odot x}{1 - p} \Rightarrow \mathbb{E}(h|x) = x\]
 
+\chapter{Grid architectures}
+\section{Introducing inductive biases in image processing}
+Even though many models process images as flattened vectors, their grid-like structure already encodes which pixels are neighbours. \newline
+For this reason, while a dense layer ignores spatial ordering by learning separate weights for each input-output pair, a convolutional layer restricts interactions to local pixel neighbourhoods and reuses the same weights across all positions.
+\begin{examplebox}[Comparing weights across layers]
+    Consider a $\displaystyle (32 \times 32)$ RGB image that is mapped to $\displaystyle 16$ features per pixel: the flattened input has size $\displaystyle N_{in} = 32 \cdot 32 \cdot 3 = 3072$, while the flattened output will have size $\displaystyle N_{out} = 32 \cdot 32 \cdot 16 = 16384$. \newline
+    Therefore, using a dense layer requires a total of $\displaystyle 3072 \cdot 16384 = 50331648$ weights, whereas using a $\displaystyle (3 \times 3)$ convolution simply requires $\displaystyle (3 \cdot 3) \cdot 3 \cdot 16 = 432$ weights.
+\end{examplebox}
+\noindent While sharing parameters makes grid-aware functions easier to learn because they require fewer parameters, this approach tends to fail when the label depends on absolute positions, although this information can be provided by introducing positional coordinates as input channels.
+\section{Image patches}
+Since partitioning an image into disjoint tiles and classifying each tile independently yields a coarse label grid, using smaller tiles increases spatial resolution but leads to a loss of local context for classification. \newline
+For this reason, many modern models use larger patches, which are able to preserve local context, and slide the patch center one pixel at a time across the image, training a classifier to predict the class of the central pixel during training.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/image_grid.png}
+    \caption{Image classification using disjoint tiles.}
+    \label{fig:image_grid}
+\end{figure}
+\noindent Therefore, image processing models are characterized by translation equivariance, which means that shifting the input shifts the output mask identically, although whole-image classification models also require translation-invariance, where shifting the input keeps the global label unchanged.
+\section{The convolution operation}
+The convolution operation is often seen as a local rule that is applied to each pixel neighbourhood using a kernel $\displaystyle \mathbf{w}$ across overlapping patches.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Layer} & \textbf{Weights} \\
+    \hline
+    Dense & $\displaystyle N^2$ \\
+    \hline
+    Locally Connected & $\displaystyle NK$ \\
+    \hline
+    Convolutional & $\displaystyle K$ \\
+    \hline
+    \end{tabular}
+    \caption{Weights needed to process a one-dimensional signal of size $\displaystyle N$ using a kernel of size $\displaystyle K$.}
+    \label{tab:convolution_weights}
+\end{table}
+\noindent Alternatively, the convolution operation can be interpreted as a translation-equivariant linear map that is represented by the Toeplitz matrix, where locality creates a non-zero band and weight sharing repeats kernel coefficients across the main diagonal.
+\begin{examplebox}[Examples of simple convolutions]
+    Applying the kernel $\displaystyle \mathbf{w} = [1, 0, -1]$ to a one-dimensional input $\displaystyle \mathbf{x} = [2, 1, 4, 3, 0]$ results in
+    \[[2, 1, 4] \to -2, \quad [1, 4, 3] \to -2, \quad [4, 3, 0] \to 4 \Rightarrow \mathbf{z} = [-2, -2, 4]\]
+    Using the kernel $\displaystyle \mathbf{w} = [-1, 0, 1]$ on a patch whose rows are all equal to $\displaystyle [1, 3, 5]$ produces the total response
+    \[\mathbf{z} =  3 \cdot ((-1 \cdot 1) + (0 \cdot 3) + (1 \cdot 5)) = 3 \cdot 4 = 12\]
+    Lastly, the effect of a filter $\displaystyle \mathbf{w} = [a, b, c]$ on a one-dimensional signal of length $\displaystyle 5$ can be summarized by the following Toeplitz matrix:
+    \[\mathbf{Z} = \begin{pmatrix}
+        a & b & c & 0 & 0 \\
+        0 & a & b & c & 0 \\
+        0 & 0 & a & b & c \\
+    \end{pmatrix}\]
+\end{examplebox}
+\noindent In general, for a two-dimensional input $\displaystyle \mathbf{X} \in \mathbb{R}^{H \times W}$ and a kernel $\displaystyle \mathbf{K}$ with bias $\displaystyle b$, the output of a convolution is given by
+\[\mathbf{Z}[i, j] = b + \sum_u\sum_v \mathbf{K}[u, v]\mathbf{X}[i + u, j + v]\]
+However, since feature maps typically carry multiple channels, a sequence of convolutional layers filters an input map $\displaystyle \mathbf{x}_{\text{in}} \in \mathbb{R}^{C_{\text{in}} \times H \times W}$ to an output $\displaystyle \mathbf{x}_{\text{out}} \in \mathbb{R}^{C_{\text{out}} \times H \times W}$ that is defined as
+\[\mathbf{x}_{\text{out}}[k, :, :] = b + \sum_{c = 1}^{C_{\text{in}}} \mathbf{w}[k, c, :, :] * \mathbf{x}_{\text{in}}[c, :, :]\]
+Concerning convolutions, a special case occurs when using a $\displaystyle (1 \times 1)$ kernel, which mixes channels independently at each pixel using a total of $\displaystyle C_{\text{out}} \cdot C_{\text{in}} \cdot K_h \cdot K_w + C_{\text{out}}$ parameters, assuming bias terms are considered.
+\subsection{Pooling methods}
+A pooling layer aggregates local responses to downsample the output of a convolution. \newline
+Common pooling methods include max pooling, which retains strongest response within each patch, or average pooling, which computes the average response for each patch.
+\subsection{Introducing stride and dilation}
+Kernel traversal is typically controlled by the following hyperparameters:
+\begin{enumerate}
+    \item \textbf{Padding: }Introducing padding allows to extend the borders of an image, typically with zero-valued pixels, in order to cover edge regions during a convolution.
+    \item \textbf{Stride: }Introducing a stride causes the model to skip pixels across consecutive convolutions. \newline
+    While this technique can be useful for downsampling an image, it typically requires smoothing the input before a convolution in order to avoid aliasing.
+    \item \textbf{Dilation: }Specifying a dilation allows the kernel to cover a wider span without the need to learn additional weights.
+\end{enumerate}
+In general, performing a convolution on an input of size $\displaystyle N$ using a kernel of size $\displaystyle K$, eventually specifying a padding $\displaystyle P$, a stride $\displaystyle S$ and a dilation $\displaystyle D$, results in an output with the following dimension:
+\[N_{\text{out}} = \Bigg\lfloor\frac{N + 2P - K_{\text{eff}}}{S}\Bigg\rfloor + 1 \text{, where $K_{\text{eff}} = D(K - 1) + 1$.}\]
+In particular, these hyperparameters also influence a model's receptive field, which represents the region of an input that influences a certain output.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/receptive_field.png}
+    \caption{Visualizing the receptive field in an image processing model.}
+    \label{fig:receptive_field}
+\end{figure}
+\section{Multi-scale architectures}
+Since single-scale convolutional layers work on small patches, deep neural networks combine multiple spatial scales to properly capture local edges and global context to capture both spatial resolution and channel depth.
+\subsection{Feature pyramids}
+Many common convolutional neural networks form feature pyramids in which early convolutional layers capture edges and high spatial resolution, whereas deeper layers add coarse discriminative regions.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/feature_pyramids.png}
+    \caption{Comparing extracted features across various convolutional backbones.}
+    \label{fig:feature_pyramids}
+\end{figure}
+\subsection{Encoder-decoder models}
+An encoder-decoder network consists of an encoder module, which applies convolution and subsampling to compress an input image into a low-resolution latent representation $\displaystyle \mathbf{z}$, and a decoder module, which aims to reconstruct the input image starting from the latent representation $\displaystyle \mathbf{z}$. \newline
+However, since many distinct images can be compressed to the same latent representation, upsampling alone is typically not sufficient to reconstruct an input image. \newline
+For this reason, the U-Net model introduces skip connections that carry encoder-level feature maps to the corresponding decoder stages.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/u_net_model.png}
+    \caption{The skip connection shortcut of the U-Net model.}
+    \label{fig:u_net}
+\end{figure}
+\subsection{Residual networks}
+One of the main issues of deep convolutional neural networks lies in the fact that optimizing a stack of convolutional layers tends to be a mathematically unstable procedure. \newline
+For this reason, the ResNet model introduces residual blocks where the model learns a residual transformation with respect to the input.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/resnet_model.png}
+    \caption{Residual connections in the ResNet model.}
+    \label{fig:resnet}
+\end{figure}
+\noindent Assuming the dimensions and channels are preserved during a convolution, it is sufficient to use a parameter free identity transformation $\displaystyle y = x + F(x)$. \newline
+On the other hand, if the dimensions and/or channels are modified during a convolution, a linear transformation $\displaystyle y = W_sx + F(x)$ is used instead.
+\subsection{Positional channels}
+Whenever absolute positions provide useful information, it is possible to append (normalized) coordinate channels to perform location-dependent predictions, although introducing this information typically results in the loss of translation invariance. \newline
+For instance, the SIREN model uses a sinusoidal activation function to preserve high-frequency details, whereas neural radiance fields map coordinates and viewing directions onto colour and density in order to render colours by sampling ordered points along a camera ray.
+
 \part{Network Science}
 
 \chapter{Understanding networks}

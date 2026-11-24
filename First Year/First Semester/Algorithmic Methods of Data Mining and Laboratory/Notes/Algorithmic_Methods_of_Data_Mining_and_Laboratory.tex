@@ -947,8 +947,70 @@ A graph $\displaystyle G = (V, E)$ is typically stored using one of the followin
 \begin{itemize}
     \item \textbf{Adjacency list: }Each node in the graph stores a list of its direct neighbours. \newline
     This structure comes in handy to store sparse graphs because it requires $\displaystyle \Theta(|V| + |E|)$ memory.
-    \item \textbf{Adjacency matrix: }For a graph with $\displaystyle |V|$ nodes, an adjacency matrix of size $\displaystyle |V| \times |V|$ sets $\displaystyle \mathbf{A}_{i, j} = 1$ if and only if there is an edge between node $\displaystyle i$ and node $\displaystyle j$, implying that an undirected graph always has a symmetric adjacency matrix. \newline
-    For this reason, this structure requires $\displaystyle \Theta(|V|^2)$ memory.
+    \item \textbf{Adjacency matrix: }For a graph with $\displaystyle |V|$ nodes, an adjacency matrix of size $\displaystyle |V| \times |V|$ sets $\displaystyle \mathbf{A}_{i, j} = w_{ij}$ if and only if $\displaystyle (i, j) \in E$. \newline
+    While an adjacency matrix can be useful to summarize the structural properties of a graph, it tends to be inefficient because storing this structure requires $\displaystyle \Theta(|V|^2)$ memory.
 \end{itemize}
+\section{Graph exploration algorithms}
+Assuming the vertices of an undirected graph are characterized by a unique identifier, a graph exploration algorithm aims to iteratively visit the nodes of the graph to discover paths or structural patterns.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/graph_traversal.png}
+    \caption{Examples of graph exploration algorithms.}
+    \label{fig:graph_traversal}
+\end{figure}
+\noindent However, these algorithms tend to fail when a graph is not connected because the presence of multiple connected components implies that certain nodes are not connected by a path.
+\subsection{The breadth-first search algorithm}
+Breadth-first search is useful to find paths and path lengths in an undirected and unweighted graph. \newline
+Since this algorithm explores a graph level-by-level starting from a chosen source node, it is typically implemented using a queue that keeps track of the next nodes to visit.
+
+\begin{algorithm}[H]
+    \caption{The breadth-first algorithm.}
+    \KwData{An undirected and unweighted graph $\displaystyle G = (V, E)$ and a source node $\displaystyle s \in V$.}
+
+    Initialize an empty queue $\displaystyle Q$\;
+    \For{$\displaystyle v \in V$}{
+        $\displaystyle explored[v] \gets False$\;
+        $\displaystyle dist[v] \gets +\infty$\;
+    }
+    $\displaystyle Q.enqueue(s)$\;
+    $\displaystyle dist[s] \gets 0$\;
+    \While{$\displaystyle Q$ is not empty}{
+        $\displaystyle v \gets Q.dequeue()$\;
+        \For{each neighbour $\displaystyle u$ of $\displaystyle v$}{
+            \If{not $\displaystyle explored[u]$}{
+                $\displaystyle Q.enqueue(u)$\;
+                $\displaystyle explored[u] \gets True$\;
+                $\displaystyle dist[u] \gets dist[v] + 1$\;
+            }
+        }
+    }
+\end{algorithm}
+\noindent Depending on how the graph is stored, this algorithm runs either in $\displaystyle O(|V|^2)$ time, if an adjacency matrix is used, or in $\displaystyle O(|V| + |E|)$ time, if an adjacency list is used.
+\subsection{The depth-first search algorithm}
+Depth-first search is commonly used to detect cycles or connected components in an undirected and unweighted graph. \newline
+Since this algorithm starts from a source node and visits each path as deeply as possible before backtracking to explore new branches, it is typically implemented using a stack that keeps track of the next nodes to visit.
+
+\begin{algorithm}[H]
+    \caption{The depth-first algorithm.}
+    \KwData{An undirected and unweighted graph $\displaystyle G = (V, E)$ and a source node $\displaystyle s \in V$.}
+
+    Initialize an empty stack $\displaystyle S$\;
+    \For{$\displaystyle v \in V$}{
+        $\displaystyle explored[v] \gets False$\;
+    }
+    $\displaystyle S.push(s)$\;
+    \While{$\displaystyle S$ is not empty}{
+        $\displaystyle v \gets S.pop()$\;
+        \If{not $\displaystyle explored[v]$}{
+            $\displaystyle explored[v] \gets True$\;
+            \For{each neighbour $\displaystyle u$ of $\displaystyle v$}{
+                \If{not $\displaystyle explored[u]$}{
+                    $\displaystyle explored[u] \gets True$\;
+                }
+            }
+        }
+    }
+\end{algorithm}
+\noindent Depending on how the graph is stored, this algorithm runs either in $\displaystyle O(|V|^2)$ time, if an adjacency matrix is used, or in $\displaystyle O(|V| + |E|)$ time, if an adjacency list is used.
 
 \end{document}
