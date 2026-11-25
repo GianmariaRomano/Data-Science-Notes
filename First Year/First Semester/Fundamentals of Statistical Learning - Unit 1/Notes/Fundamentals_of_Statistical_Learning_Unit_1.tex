@@ -1357,26 +1357,29 @@ Overall, this quantity depends solely on the copula function associated to the j
 Given two random vectors $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ and two independent copies $\displaystyle (\mathbf{X}', \mathbf{Y}')$ and $\displaystyle (\mathbf{X}'', \mathbf{Y}'')$, the squared distance covariance between $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ is formally defined as
 \[\gamma^2(\mathbf{X}, \mathbf{Y}) = Cov(\lVert \mathbf{X} - \mathbf{X}' \rVert_2, \lVert \mathbf{Y} - \mathbf{Y}' \rVert_2) - 2Cov(\lVert \mathbf{X} - \mathbf{X}'' \rVert_2, \lVert \mathbf{Y} - \mathbf{Y}'' \rVert_2)\]
 The squared distance covariance can be standardized to obtain the squared distance correlation coefficient, which is formally defined as
-\[\rho^2(X, Y) = \frac{\gamma^2(\mathbf{X}, \mathbf{Y})}{\sqrt{\gamma^2(\mathbf{X}, \mathbf{X})}\sqrt{\gamma^2(\mathbf{Y}, \mathbf{Y})}}\]
-In particular, this quantity provides a strong measure correlation as $\displaystyle \rho^2(X, Y) = 0$ if and only if $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ are independent.
+\[\rho^2(\mathbf{X}, \mathbf{Y}) = \frac{\gamma^2(\mathbf{X}, \mathbf{Y})}{\sqrt{\gamma^2(\mathbf{X}, \mathbf{X})}\sqrt{\gamma^2(\mathbf{Y}, \mathbf{Y})}}\]
+In particular, this quantity provides a strong measure correlation as $\displaystyle \rho^2(\mathbf{X}, \mathbf{Y}) = 0$ if and only if $\displaystyle \mathbf{X}$ and $\displaystyle \mathbf{Y}$ are independent.
 
 \chapter{Convergence and concentration}
 \section{The purpose of convergence}
 Analysing the asymptotic behaviour of a random variable allows to make long-run estimates of its properties in terms of convergence, which qualitatively describes how a sequence of random variables behaves as it grows infinitely large, and concentration, which quantitatively measures the speed of convergence. \newline
-In general, given a sequence of random variables $\displaystyle X_1, \dots, X_n$, which are typically assumed to have a common cumulative distribution function $\displaystyle F_n$, and another random variable $\displaystyle X$ with cumulative distribution function $\displaystyle F$, it is possible to define several types of convergence:
+In general, given a sequence of random variables $\displaystyle X_1, \dots, X_n$, where each variable $\displaystyle X_k$ has its cumulative distribution function $\displaystyle F_k$, and another random variable $\displaystyle X$ with cumulative distribution function $\displaystyle F$, it is possible to define several types of convergence:
 \begin{enumerate}
     \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``almost surely'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \xrightarrow{a. s.} X$, if, for every $\displaystyle \varepsilon \ge 0$, it is the case that
     \[\mathbb{P}\Bigg(\lim_{n \to +\infty} |X_n - X| < \varepsilon\Bigg) = 1\]
     \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``in probability'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \xrightarrow{P} X$, if, for every $\displaystyle \varepsilon \ge 0$, it is the case that
     \[\lim_{n \to +\infty} \mathbb{P}(|X_n - X| > \varepsilon) = 0\]
+    This statement means that, as the sequence grows infinitely large, the deviations between a generic term and the target random variable tend to vanish.
     \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``in $\displaystyle r^{th}$ mean'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \xrightarrow{L^r} X$, if
     \[\lim_{n \to +\infty} \mathbb{E}(|X_n - X|^r) = 0\]
     \item A sequence of random variables $\displaystyle X_1, \dots, X_n$ converges ``in distribution'' to the random variable $\displaystyle X$, which is written as $\displaystyle X_n \rightsquigarrow X$, if
     \[\lim_{n \to +\infty} F_n(t) = F(t) \text{ for every point where $F$ is continuous.}\]
+    In particular, if $\displaystyle X_n \rightsquigarrow X$, then, for a bounded and continuous function $\displaystyle g$, one has
+    \[\lim_{n \to +\infty} \mathbb{E}(g(X_n)) = \mathbb{E}(g(X)) \text{, wherever $g$ is continuous.}\]
 \end{enumerate}
 \section{Concentration inequalities}
 Concentration inequalities establish boundaries on the fluctuation of a random variable in order to measure its convergence rate. \newline
-For instance, Markov's inequality states, if $\displaystyle X$ is a non-negative random variable with finite expectation, then, for any threshold $\displaystyle t > 0$, one has
+For instance, Markov's inequality states that, if $\displaystyle X$ is a non-negative random variable with finite expectation, then, for any threshold $\displaystyle t > 0$, one has
 \[\mathbb{P}(X \ge t) \leq \frac{\mathbb{E}(X)}{t}\]
 \begin{proofbox}
     For a non-negative random variable, it is possible to state that
@@ -1393,15 +1396,62 @@ For instance, Markov's inequality states, if $\displaystyle X$ is a non-negative
     Since the quantity $\displaystyle (X - \mathbb{E}(X))^2$ can be seen as a non-negative random variable, it is possible to apply Markov's inequality to state that
     \[\mathbb{P}(|X - \mathbb{E}(X)| \ge t) = \mathbb{P}((X - \mathbb{E}(X))^2 \ge t^2) \stackrel{\text{Markov}}{\leq} \frac{\mathbb{E}((X - \mathbb{E}(X))^2)}{t^2} = \frac{\mathbb{V}(X)}{t^2}\]
 \end{proofbox}
-\noindent This inequality can be used to observe that, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F_n$, each having finite mean $\displaystyle \mu$ and variance $\displaystyle \sigma^2$, their sample mean $\displaystyle \overline{X}_n$ satisfies
-\[\mathbb{P}(|\overline{X}_n - \mathbb{E}(\overline{X}_n)| \ge t) = \mathbb{P}(|\overline{X}_n - \mu| \ge t) \leq \frac{\mathbb{V}(\overline{X}_n)}{t^2} = \frac{\sigma^2}{nt^2} \Rightarrow \mathbb{P}(|\overline{X}_n - \mu| \ge t) = O(n^{-1})\]
+\noindent This inequality can be used to observe that, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F_n$, each having finite mean $\displaystyle \mu$ and variance $\displaystyle \sigma^2$, the sampling distribution of their sample mean $\displaystyle \overline{X}_n$ satisfies
+\[\mathbb{P}(|\overline{X}_n - \mu| \ge t) \leq = \frac{\sigma^2}{nt^2} \Rightarrow \mathbb{P}(|\overline{X}_n - \mu| \ge t) = O(n^{-1})\]
 Additionally, a sharper bound for convergence can be obtained through Chernoff's method. \newline
-In fact, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F$, which are almost surely bounded in some interval $\displaystyle [a, b]$, Hoeffding's inequality states that, for any threshold $\displaystyle t > 0$, their sample mean satisfies
-\[\mathbb{P}(|\overline{X}_n - \mu| \ge t) \leq 2e^{-\frac{2nt^2}{(b - a)^2}}\]
+In fact, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F$, which are almost surely bounded in some interval $\displaystyle [a, b]$, Hoeffding's inequality states that, for any threshold $\displaystyle t > 0$, the sampling distribution of their sample mean $\displaystyle \overline{X}_n$ satisfies
+\[\mathbb{P}(|\overline{X}_n - \mu| \ge t) \leq 2e^{-\frac{2nt^2}{(b - a)^2}} \Rightarrow \mathbb{P}(|\overline{X}_n - \mu| \ge t) = O(e^{-n})\]
 \begin{examplebox}[Bounding the sample mean of a sequence of Bernoulli random variables]
-    Given a sequence of random variables $\displaystyle X_1, \dots, X_n \sim Ber(p)$, their sample mean satisfies
+    Given a sequence of random variables $\displaystyle X_1, \dots, X_n \sim Ber(p)$, the sampling distribution of their sample mean $\displaystyle \overline{X}_n$ satisfies
     \[\mathbb{P}(|\overline{X}_n - p| \ge t) \stackrel{\text{Hoeffding}}{\leq} 2e^{-2nt^2} \stackrel{\text{Chebyshev}}{\leq} \frac{p(1 - p)}{nt^2} \leq \frac{1}{4nt^2}\]
 \end{examplebox}
+\section{The weak law of large numbers}
+Given a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F_X$, each having finite mean $\displaystyle \mu$, the weak law of large numbers states that the sampling distribution of the sample mean $\displaystyle \overline{X}_n$ converges in probability to the true mean $\displaystyle \mu$, resulting in
+\[\lim_{n \to +\infty} \mathbb{P}(|\overline{X}_n - \mu| > \varepsilon) = 0 \text{ } \forall \varepsilon \ge 0\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/wlln_bernoulli.png}
+    \caption{The sample mean of $\displaystyle Ber(0.6)$ random variables concentrates around $\displaystyle 0.6$ as $\displaystyle n$ increases.}
+    \label{fig:wlln_bernoulli}
+\end{figure}
+\noindent This statement means that, as a sequence of independent and identically distributed random variables grows infinitely large, the sampling distribution of the sample mean will concentrate around $\displaystyle \mu$.
+\section{The central limit theorem}
+The central limit theorem states that, as a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F_X$, each having finite mean $\displaystyle \mu$ and variance $\displaystyle \sigma^2$, grows infinitely large, the standardized sample mean converges in distribution to a standard Gaussian random variable, meaning that
+\[\lim_{n \to +\infty} F_n(t) = \Phi(t) \Rightarrow \overline{Z}_n =  \frac{\overline{X}_n - \mu}{\frac{\sigma}{\sqrt{n}}} \rightsquigarrow \mathcal{N}(0, 1)\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/clt_bernoulli.png}
+    \caption{The sample mean of $\displaystyle Ber(0.6)$ random variables approaches $\displaystyle \mathcal{N}(0, 1)$ as $\displaystyle n$ increases.}
+    \label{fig:clt_bernoulli}
+\end{figure}
+\noindent Therefore, any probabilistic statement regarding a standardized sampling distribution can be approximately translated into an equivalent statement about a standard normal distribution. \newline
+In addition, the central limit theorem can be applied even if the true variance is unknown by using a ``studentized'' formulation that replaces the population variance with the sample variance. \newline
+Furthermore, the central limit theorem can be quantified through the Berry-Esseen theorem: for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim F_X$, each having finite mean $\displaystyle \mu$ and variance $\displaystyle \sigma^2$, such that $\displaystyle \mu_3 = \mathbb{E}(|X - \mu|^3) < +\infty$, the maximum gap between the cumulative distribution function $\displaystyle G_n$ of the standardized sample mean and the cumulative distribution function $\displaystyle \Phi$ of a standard Gaussian random variable will be bounded as follows:
+\[L_{\infty}(G_n, \Phi) = \sup_{t \in \mathbb{R}} |G_n(t) - \Phi(t)| \leq \frac{33\mu_3}{4\sigma^3\sqrt{n}}\]
+\section{Convolution and moment generating functions}
+The central limit theorem provides a broad approximation because, no matter the shape of a population, the sampling distribution of the sample mean is approximately normal. \newline
+By contrast, performing a convolution ensures that, for a finite sample of a specific population model, the sampling distribution of the sample mean is exactly normal. \newline
+In general, for two independent discrete random variables $\displaystyle X$ and $\displaystyle Y$, a convolution allows to describe the distribution of their sum $\displaystyle Z = X + Y$ by partitioning an event $\displaystyle \{Z = z\} = \{X + Y = z\}$ in terms of the possible values $\displaystyle X$ can take, resulting in
+\begin{align*}
+    p_Z(z) = \mathbb{P}(Z = z) = \mathbb{P}(X + Y = z)
+        &= \sum_{x \in S_X} \mathbb{P}(\{X + Y = z\} \cap \{X = x\}) \\
+        &= \sum_{x \in S_X} \mathbb{P}(X = x)\mathbb{P}(X + Y = z|X = x) \\
+        &= \sum_{x \in S_X} \mathbb{P}(X = x)\mathbb{P}(Y = z - x) \\
+        &= \sum_{x \in S_X} p_X(x)p_Y(z - x) = (p_X * p_Y)(z)
+\end{align*}
+\begin{examplebox}[The sample mean of a sequence of Bernoulli random variables]
+    Given two independent and identically distributed random variables $\displaystyle X, Y \sim Ber(p)$, it is possible to show that their sum $\displaystyle Z = X + Y$ follows a binomial distribution by performing the following convolution:
+    \begin{align*}
+        \mathbb{P}(Z = z)
+            &= \sum_{x \in \{0, 1\}} \mathbb{P}(X = x)\mathbb{P}(Y = z - x) \\
+            &= \sum_{x \in \{0, 1\}} \Bigg[\binom{1}{x} p^x(1 - p)^{1 - x}\Bigg]\Bigg[\binom{1}{z - x} p^{z - x}(1 - p)^{1 - (z - x)}\Bigg] \\
+            &= p^z(1 - p)^{2 - z}\sum_{x \in \{0, 1\}} \binom{1}{x}\binom{1}{z - x} = \binom{2}{z}p^z(1 - p)^{2 - z} \Rightarrow Z \sim Binom(2, p)
+    \end{align*}
+    In general, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim Ber(p)$, it is possible to observe that the sampling distribution of their sample mean $\displaystyle \overline{X}_n$ is a scaled binomial distribution because
+    \[\overline{X}_n = \frac{1}{n}\sum_{i = 1}^n X_i = \frac{1}{n}S_n \stackrel{S_n \sim Bin(n, p)}{\Rightarrow} \mathbb{P}(\overline{X}_n = k) = \mathbb{P}(S_n = nk) \text{ } \forall k \in \Bigg\{0, \frac{1}{n}, \dots, \frac{n - 1}{n}, 1\Bigg\}\]
+\end{examplebox}
+\noindent Using a similar logic, it is possible to define a convolution between two independent continuous variables $\displaystyle X$ and $\displaystyle Y$ as
+\[f_Z(z) = (f_X * f_Y)(z) = \int_{-\infty}^{+\infty} f_X(z - t)f_Y(t) \ dt = \int_{-\infty}^{+\infty} f_X(t)f_Y(z - t) \ dt\]
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
