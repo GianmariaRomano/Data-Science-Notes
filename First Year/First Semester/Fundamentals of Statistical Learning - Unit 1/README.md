@@ -47,6 +47,7 @@
 | November 18 | The multivariate normal distribution, whitening and principal component analysis, partial and non-linear correlation. |
 | November 19 | Introduction to statistical inference: CDF estimation and point estimation. |
 | November 20 | Properties of estimators and concentration inequalities. |
+| November 25 | Convergence of random variables: The Weak Law of Large Numbers and the Central Limit Theorem. |
 
 </details>
 
