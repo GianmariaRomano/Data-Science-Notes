@@ -47,6 +47,7 @@
 | November 19 | Queues, stacks and graphs. |
 | November 23 | Graph exploration algorithms: Breadth-First Search, Depth-First Search. |
 | November 24 | Exercise session on graphs. |
+| November 26 | Dijkstra's algorithm and introduction to (minimum) spanning trees. |
 
 </details>
 
