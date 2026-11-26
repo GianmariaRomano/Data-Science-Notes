@@ -53,6 +53,7 @@
 | November 19 | Network analysis and exercises. |
 | November 20 | Deep neural networks. |
 | November 23 | Grid architectures for image processing. |
+| November 26 | The configuration model. |
 
 </details>
 
