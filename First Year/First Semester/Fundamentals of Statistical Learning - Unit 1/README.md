@@ -49,6 +49,7 @@
 | November 20 | Properties of estimators and concentration inequalities. |
 | November 25 | Convergence of random variables: The Weak Law of Large Numbers and the Central Limit Theorem. |
 | November 26 | Convolution, moment generating functions and pointwise CDF estimation via point estimation. |
+| November 27 | Introduction to set estimation via confidence intervals. |
 
 </details>
 
