@@ -1012,5 +1012,35 @@ Since this algorithm starts from a source node and visits each path as deeply as
     }
 \end{algorithm}
 \noindent Depending on how the graph is stored, this algorithm runs either in $\displaystyle O(|V|^2)$ time, if an adjacency matrix is used, or in $\displaystyle O(|V| + |E|)$ time, if an adjacency list is used.
+\subsection{Dijkstra's algorithm}
+Assuming an undirected graph $\displaystyle G = (V, E)$ is weighted using a non-negative cost function $\displaystyle w: E \to \mathbb{R}^+$, the breadth-first search algorithm fails to find shortest paths from a specified source node. \newline
+For this reason, Dijkstra's algorithm aims to solve this problem by iteratively picking the unvisited node with the smallest known distance and updating the distances to its neighbours.
+
+\begin{algorithm}[H]
+    \caption{Dijkstra's algorithm.}
+    \KwData{An undirected weighted graph $\displaystyle G = (V, E)$ and a source node $\displaystyle s \in V$.}
+
+    \For{$\displaystyle v \in V$}{
+        $\displaystyle len[v] \gets +\infty$\;
+    }
+    $\displaystyle len[s] \gets 0$\;
+    $\displaystyle unexplored \gets V \setminus \{s\}$\;
+    \ForEach{$\displaystyle (s, v) \in E$}{
+        $\displaystyle len[v] \gets \ell_{sv}$\;
+    }
+    \While{$\displaystyle uneqplored \neq \emptyset$}{
+        $\displaystyle v = \arg\min_{u \in unexplored} len[u]$\;
+        $\displaystyle unexplored \gets unexplored \setminus \{v\}$\;
+        \ForEach{$\displaystyle (v, u) \in E \cap (\{v\} \times unexplored)$}{
+            \If{$\displaystyle len[v] + \ell_{vu} < len[u]$}{
+                $\displaystyle len[u] \gets len[v] + \ell_{vu}$\;
+            }
+        }
+    }
+\end{algorithm}
+\noindent While keeping track of the nearest unvisited nodes causes this algorithm to run in $\displaystyle O(|V|^2 + |E|)$ time, it is possible to reduce the overall complexity to $\displaystyle O((|V| + |E|)\log(|V|))$ by introducing a min-heap to keep track of the next node to visit.
+\section{Finding minimum spanning trees}
+Given an undirected graph $\displaystyle G = (V, E)$, a spanning tree is a subgraph $\displaystyle G' = (V, E')$ that contains all nodes of $\displaystyle G$ and is a tree. \newline
+In particular, for a weighted graph, it is possible to define a minimum spanning tree as the spanning tree with minimum total cost.
 
 \end{document}

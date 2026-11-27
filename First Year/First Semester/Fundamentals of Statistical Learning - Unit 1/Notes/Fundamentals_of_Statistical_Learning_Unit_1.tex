@@ -1445,13 +1445,94 @@ In general, for two independent discrete random variables $\displaystyle X$ and 
         \mathbb{P}(Z = z)
             &= \sum_{x \in \{0, 1\}} \mathbb{P}(X = x)\mathbb{P}(Y = z - x) \\
             &= \sum_{x \in \{0, 1\}} \Bigg[\binom{1}{x} p^x(1 - p)^{1 - x}\Bigg]\Bigg[\binom{1}{z - x} p^{z - x}(1 - p)^{1 - (z - x)}\Bigg] \\
-            &= p^z(1 - p)^{2 - z}\sum_{x \in \{0, 1\}} \binom{1}{x}\binom{1}{z - x} = \binom{2}{z}p^z(1 - p)^{2 - z} \Rightarrow Z \sim Binom(2, p)
+            &= p^z(1 - p)^{2 - z}\sum_{x \in \{0, 1\}} \binom{1}{x}\binom{1}{z - x} = \binom{2}{z}p^z(1 - p)^{2 - z} \Rightarrow Z \sim Bin(2, p)
     \end{align*}
     In general, for a sequence of independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim Ber(p)$, it is possible to observe that the sampling distribution of their sample mean $\displaystyle \overline{X}_n$ is a scaled binomial distribution because
     \[\overline{X}_n = \frac{1}{n}\sum_{i = 1}^n X_i = \frac{1}{n}S_n \stackrel{S_n \sim Bin(n, p)}{\Rightarrow} \mathbb{P}(\overline{X}_n = k) = \mathbb{P}(S_n = nk) \text{ } \forall k \in \Bigg\{0, \frac{1}{n}, \dots, \frac{n - 1}{n}, 1\Bigg\}\]
 \end{examplebox}
 \noindent Using a similar logic, it is possible to define a convolution between two independent continuous variables $\displaystyle X$ and $\displaystyle Y$ as
 \[f_Z(z) = (f_X * f_Y)(z) = \int_{-\infty}^{+\infty} f_X(z - t)f_Y(t) \ dt = \int_{-\infty}^{+\infty} f_X(t)f_Y(z - t) \ dt\]
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Random Variable} & \textbf{Distribution} \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^n Ber(p)$ & $\displaystyle Y \sim Binom(n, p)$ \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^n Bin(n_i, p)$ & $\displaystyle Y \sim Bin\Bigg(\sum_{i = 1}^n n_i, p\Bigg)$ \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^n Geom(p)$ & $\displaystyle Y \sim NegBin(n, p)$ \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^n Pois(\mu_i)$ & $\displaystyle Y \sim Pois\Bigg(\sum_{i = 1}^n \mu_i\Bigg)$ \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^ \mathcal{N}(\mu_i, \sigma_i^2)$ & $\displaystyle Y \sim \mathcal{N}\Bigg(\sum_{i = 1}^n \mu_i, \sum_{i = 1}^n \sigma_i^2\Bigg)$ \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^n Exp(\lambda)$ & $\displaystyle Y \sim Gamma(n, \lambda)$ \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^n Gamma(\alpha_i, \lambda)$ & $\displaystyle Y \sim Gamma\Bigg(\sum_{i = 1}^n \alpha_i, \lambda\Bigg)$ \\
+        \hline
+        $\displaystyle  Y\sum_{i = 1}^n \mathcal{N}^2(0, 1)$ & $\displaystyle Y \sim \chi_{\nu}^2$ \\
+        \hline
+        $\displaystyle Y = \sum_{i = 1}^n \chi_{\nu_i}^2$ & $\displaystyle Y \sim \chi_{\sum_{i = 1}^n \nu_i}^2$ \\
+        \hline
+    \end{tabular}
+    \caption{List of known convolutions of common distributions.}
+    \label{tab:convolution_list}
+\end{table}
+\noindent In general, the distribution of the sum of independent random variables can be studied through moment generating functions. \newline
+In fact, the moment generating function of a random variable $\displaystyle X \sim F_X$ is formally defined as
+\[\psi_X(t) = \mathbb{E}(e^{tX}) = \int e^{tX} \ dF_X(x) \text{, which is well-defined around $t = 0$.}\]
+In particular, for a linear map $\displaystyle Y = \alpha + \beta X$, one has $\displaystyle \psi_Y(t) = e^{\alpha t}\psi_X(\beta t)$. \newline
+Additionally, given a sequence of independent random variables $\displaystyle X_1, \dots, X_n$, where each variable $\displaystyle X_i$ has its own moment generating function $\displaystyle \psi_{X_i}(t)$, the moment generating function of their sum $\displaystyle Y$ can be expressed as
+\[\psi_Y(t) = \prod_{i = 1}^n \psi_{X_i}(t)\]
+Furthermore, if two random variables $\displaystyle X$ and $\displaystyle Y$ are known to have moment generating functions $\displaystyle \psi_X$ and $\displaystyle \psi_Y$ respectively, then it is possible to state that $\displaystyle X = Y$ if and only if $\displaystyle \psi_X(t) = \psi_Y(t)$ for all $\displaystyle t$ in an open interval around $\displaystyle t = 0$. \newline
+Overall, the main application of moment generating functions consists of finding the moments of a random variable starting from the fact that
+\[\psi_X'(0) = \frac{d(\mathbb{E}(e^{tX}))}{dt}\Bigg|_{t = 0} = \mathbb{E}\Bigg(\frac{d(e^{tX})}{dt}\Bigg)\Bigg|_{t = 0} = \mathbb{E}(Xe^{tX})\Bigg|_{t = 0} = \mathbb{E}(X)\]
+In fact, for a random variable $\displaystyle X$ with moment generating function $\displaystyle \psi_X$, it is possible to use higher-order derivatives to state that $\displaystyle \psi^{(k)}(0) = \mathbb{E}(X^k)$.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Distribution} & \textbf{Moment Generating Function} \\
+        \hline
+        Degenerate in $\displaystyle x$ & $\displaystyle e^{tx}$ \\
+        \hline
+        $\displaystyle X \sim Ber(p)$ & $\displaystyle 1 - p + pe^t$ \\
+        \hline
+        $\displaystyle X \sim Bin(n, p)$ & $\displaystyle (1 - p + pe^t)^n$ \\
+        \hline
+        $\displaystyle X \sim Pois(\mu)$ & $\displaystyle e^{\mu(e^t - 1)}$ \\
+        \hline
+        $\displaystyle X \sim Unif(a, b)$ & $\displaystyle \frac{e^{tb} - e^{ta}}{t(b - a)}$ \\
+        \hline
+        $\displaystyle X \sim \mathcal{N}(\mu, \sigma^2)$ & $\displaystyle e^{t\mu + \frac{\sigma^2t^2}{2}}$ \\
+        \hline
+        $\displaystyle \mathbf{X} \sim \mathcal{N}_p(\mathbf{\mu}, \mathbf{\Sigma})$ & $\displaystyle e^{\mathbf{t}^T\big(\mathbf{\mu} + \frac{1}{2}\mathbf{\Sigma t}\big)}$ \\
+        \hline
+        $\displaystyle X \sim \chi_{\nu}^2$ & $\displaystyle (1 - 2t)^{-\frac{k}{2}}$ \\
+        \hline
+        $\displaystyle X \sim Exp(\lambda)$ & $\displaystyle \frac{1}{1 - \frac{t}{\lambda}}$ \text{, provided $t < \lambda$.} \\
+        \hline
+        $\displaystyle X \sim Gamma(\alpha, \lambda)$ & $\displaystyle (1 - t\lambda)^{-\alpha}$ \\
+        \hline
+        $\displaystyle X \sim Laplace(\mu, \lambda)$ & $\displaystyle \frac{e^{t\mu}}{1 - \lambda^2t^2}$ \\
+        \hline
+        $\displaystyle X \sim Cauchy(\mu, \theta)$ & Does not exist. \\
+        \hline
+    \end{tabular}
+    \caption{List of moment generating functions for common distributions.}
+    \label{tab:mgf_list}
+\end{table}
+\begin{examplebox}[The sample mean of independent and identically distributed Gaussians]
+    For independent and identically distributed random variables $\displaystyle X_1, \dots, X_n \sim \mathcal{N}(\mu, \sigma^2)$, it is possible to prove that their sample mean $\displaystyle \overline{X}_n$ also follows a normal distribution by computing its moment generating function:
+    \begin{align*}
+        \psi_{\overline{X}_n} = \mathbb{E}(e^{t\overline{X}_n}) = \mathbb{E}(e^{\frac{t}{n}\sum_{i = 1}^n X_i})
+            &\stackrel{\text{IID}}{=} (\mathbb{E}(e^{\frac{t}{n}X_i}))^n \\
+            &= \Bigg(\psi_{X_i}\Bigg(\frac{t}{n}\Bigg)\Bigg)^n \\
+            &= (e^{\frac{t\mu}{n} + \frac{\sigma^2t^2}{2n^2}})^n = e^{t\mu + \frac{\sigma^2t^2}{2n}} \Rightarrow \overline{X}_n \sim \mathcal{N}\Big(\mu, \frac{\sigma^2}{n}\Big)
+    \end{align*}
+\end{examplebox}
 
 \chapter{Stochastic simulations}
 \section{Defining simulations}
@@ -1979,21 +2060,8 @@ Let $\displaystyle \mathbf{X} \in \mathbb{R}^p$ be a random vector and define $\
 
 \chapter{Exploratory data analysis}
 \section{Learning distributions through graphical summaries}
-Assuming a continuous random variable follows an unknown probability distribution, several strategies allow to learn this distribution starting from a data sample $\displaystyle \mathcal{D}_n = \{x_1, \dots, x_n\}$ and plotting its behaviour.
-\subsection{Empirical cumulative distribution functions and histograms}
-It is possible to learn the cumulative distribution function of an unknown distribution through the empirical cumulative distribution function, which represents the cumulative distribution of a discrete distribution that assigns the same mass to each data point. \newline
-For this reason, the empirical cumulative distribution function can be defined as
-\[\hat{F}_n(x) = \frac{1}{n}\sum_{i = 1}^n \mathbf{1}(x_i \leq x) \text{, where } \mathbf{1}(x_i \leq x) = \begin{cases}
-    1 &\quad\text{if $x_i \leq x$} \\
-    0 &\quad\text{otherwise} \\
-\end{cases}\]
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.35\linewidth]{images/learn_ecdf.png}
-    \caption{Learning a distribution using the empirical cumulative distribution function.}
-    \label{fig:learn_ecdf}
-\end{figure}
-\noindent Alternatively, a model can learn the probability density function of the distribution using a histogram. \newline
+Assuming a continuous random variable follows an unknown probability distribution, several strategies allow to learn this distribution starting from a data sample $\displaystyle \mathcal{D}_n = \{x_1, \dots, x_n\}$ and plotting its behaviour. \newline
+For instance, a model can learn the probability density function of the distribution using a histogram. \newline
 In fact, on a support $\displaystyle S_X$, a histogram makes use of $\displaystyle n$ bins $\displaystyle \{B_1, \dots, B_n\}$, each with a fixed size $\displaystyle h$, to estimate the probability density function within each bin as
 \[\hat{f}_X(x) = \frac{1}{n|B_j|}\sum_{i = 1}^n \mathbf{1}(x_i \in B_j) \text{, where } \mathbf{1}(x_i \in B_j) = \begin{cases}
     1 &\quad\text{if $x_i \in B_j$} \\
@@ -2005,9 +2073,8 @@ In fact, on a support $\displaystyle S_X$, a histogram makes use of $\displaysty
     \caption{Learning a distribution using a histogram.}
     \label{fig:learn_hist}
 \end{figure}
-\noindent While histograms can be generalized to learn multivariate distributions, their usage remains more limited because they provide good results only when the probability density function is assumed to be homogeneously smooth.
-\subsection{Kernel density estimation}
-One of the main issues of learning continuous distributions using an empirical cumulative distribution function or a histogram lies in the fact that a step function is used to represent a smooth probability density function. \newline
+\noindent While histograms can be generalized to learn multivariate distributions, their usage remains more limited because they provide good results only when the probability density function is assumed to be homogeneously smooth. \newline
+In particular, one of the main issues of learning continuous distributions using an empirical cumulative distribution function or a histogram lies in the fact that a step function is used to represent a smooth probability density function. \newline
 For this reason, graphical exploratory data analysis is often conducted using kernel density estimation, which consists of applying a smoothing kernel $\displaystyle K$ that distributes the weight of each data point within a neighbourhood of that data point. \newline
 Therefore, the estimated probability density function will be given by
 \[\hat{f}_X(x) = \frac{1}{nh}\sum_{i = 1}^n K\Bigg(\frac{x - x_i}{h}\Bigg) \text{, where $h$ is the bandwidth of the chosen kernel.}\]
@@ -2070,5 +2137,35 @@ Overall, an estimator is said to be unbiased if $\displaystyle bias(\hat{\theta}
 \noindent In particular, an estimator is said to be ``risk consistent'' if $\displaystyle R_{\theta}(\hat{\theta}_n) \to 0$ as $\displaystyle n \to +\infty$, which also implies that the estimator converges in probability to the true parameter $\displaystyle \theta$. \newline
 Moreover, an estimator is said to be ``asymptotically normal'' if
 \[\frac{\hat{\theta}_n - \theta}{se(\hat{\theta}_n)} \rightsquigarrow \mathcal{N}(0, 1)\]
+\subsection{Using point estimation to estimate a distribution}
+One of the main applications of point estimations consists of estimating a cumulative distribution function $\displaystyle F_X$ starting from an independent and identically distributed sample $\displaystyle \mathbf{X}_n = \{X_1, \dots, X_n\}$. \newline
+In general, the empirical cumulative distribution function $\displaystyle \hat{F}_n$ is formally defined as a cumulative distribution function that places equal mass for each data point in the sample, meaning that
+\[\hat{F}_n(x) = \frac{1}{n}\sum_{i = 1}^n \mathbb{I}(X_i \leq x) \text{, where $\mathbb{I}(X_i \leq x) \sim Ber(F_X(x)) \text{ } \forall X_i \in \mathbf{X}_n$.}\]
+When considering the pointwise formulation of the problem, the model aims to learn a single parameter
+\[\theta_n^{(0)} = \hat{F}_n(x_0) = \frac{1}{n}\sum_{i = 1}^n \mathbb{I}(X_i \leq x_0) \in [0, 1] = \Theta\]
+It is possible to observe that, by its definition, an empirical cumulative distribution function is an unbiased estimator because
+\[\mathbb{E}(\hat{\theta}_n) \stackrel{\text{IID}}{=} \frac{n\mathbb{E}(\mathbb{I}(X \leq x))}{n} \stackrel{\mathbb{I}(X \leq x_0) \sim Ber(F_X(x_0))}{=} F_X(x_0) = \theta^{(0)} \Rightarrow bias(\hat{\theta}_n^{(0)}) = 0\]
+For this reason, the empirical cumulative distribution function is consistent in squared loss because, using the bias-variance decomposition, one has
+\begin{align*}
+    R_{\theta}(\hat{\theta}_n^{(0)}) = \mathbb{E}((\hat{\theta}_n^{(0)} - \theta)^2)
+        &= \mathbb{V}(\hat{\theta}_n^{(0)}) + (bias(\hat{\theta}_n^{(0)}))^2 \\
+        &= \frac{n\mathbb{V}(\mathbb{I}(X \leq x_0))}{n^2} = \frac{F_X(x_0)(1 - F_X(x_0))}{n} \xrightarrow{n \to +\infty} 0
+\end{align*}
+Moreover, the pointwise estimator converges in probability to the true parameter because, for any threshold $\displaystyle t > 0$, one has
+\[\mathbb{P}(|\hat{F}_n(x_0) - F_X(x_0)| > t) \stackrel{\text{Chebyshev}}{\leq} \frac{\hat{F}_n(x_0)(1 - \hat{F}_n(x_0))}{nt^2} \stackrel{\text{Hoeffding}}{\leq} 2e^{-2nt^2}\]
+Lastly, it is possible to observe that the empirical cumulative distribution represents a scaled binomial distribution that is asymptotically normal because, by the studentized formulation of the central limit theorem, one has $\displaystyle \hat{\theta}_n^{(0)} \stackrel{.}{\sim} \mathcal{N}(\theta^{(0)}, se^2(\hat{\theta}_n^{(0)}))$. \newline
+When considering the uniform formulation of the problem, the model instead aims to learn a curve
+\[\hat{\theta}_n = \hat{F}_n(x) \in \{\text{All cumulative distribution functions}\} = \Theta\]
+It is possible to observe that this estimator is also risk consistent because the Glivenko-Cantelli ensures that
+\[\sup_{\hat{F}_n \in \Theta}\sup_{x \in \mathbb{R}} |\hat{F}_n(x) - F_X(x)| \to 0 \text{ with probability $1$.}\]
+This theorem implies that a discrete distribution is able to learn any distribution with probability $\displaystyle 1$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/learn_ecdf.png}
+    \caption{Learning a distribution using the empirical cumulative distribution function.}
+    \label{fig:learn_ecdf}
+\end{figure}
+\noindent A quantitative interpretation of the Glivenko-Cantelli property is provided by the Dvoretzy-Kiefer-Wolfowitz inequality, which ensures that, for any threshold $\displaystyle t > 0$, one has
+\[\mathbb{P}\Bigg(\sup_{x \in \mathbb{R}} |\hat{F}_n(x) - F_X(x)| > t\Bigg) \leq 2e^{-2nt^2} \text{ uniformly over $F_X$.}\]
 
 \end{document}

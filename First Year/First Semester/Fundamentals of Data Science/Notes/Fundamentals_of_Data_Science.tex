@@ -1508,5 +1508,63 @@ Generally speaking, the diameter of a Barabási-Albert network is given by
 This means that the Barabási-Albert model exhibits the ``ultra-small-world'' property because distances tend to be smaller compared to those in an Erdős-Rényi network of similar size. \newline
 Additionally, for moderate network sizes, a Barabási-Albert network tends to be locally more clustered than an Erdős-Rényi network as its global clustering coefficient is given by
 \[C \approx \frac{\ln^2(n)}{n} \ge p\]
-
+\section{The configuration model}
+A configuration model is an ensemble $\displaystyle G(n, \mathbf{k})$ that creates a random graph following a degree sequence represented by the vector $\displaystyle \mathbf{k} = \{k_i\}_{i = 1}^n$, which stores the degree of each node in non-increasing order. \newline
+Under this setting, the probability that two nodes $\displaystyle i$ and $\displaystyle j$, which have degree $\displaystyle k_i$ and $\displaystyle k_j$ respectively, is modelled as
+\[p_{i, j} = \frac{k_ik_j}{2|E| - k_i}\]
+\subsection{The Chung-Lu model}
+Assuming it is sufficient to resemble the target degree sequence $\displaystyle \mathbf{k}$ only in expectation, the Chung-Lu model allows to create a random graph using the same approach of the Erdős-Rényi model. \newline
+In fact, the probability that a node $\displaystyle i$ with degree $\displaystyle k_i = 1$ connects to a node $\displaystyle j$ with degree $\displaystyle k_j$ will be given by
+\[p_{i, j} = \frac{k_j}{2m - 1} \text{, provided $\max_{i \in V} k_i^2 < 2m$ to ensure $p_{i, j} \leq 1$.}\]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/chung_lu_configuration.png}
+    \caption{Examples of networks from the Chung-Lu configuration model.}
+    \label{fig:chung_lu_config}
+\end{figure}
+\noindent For this reason, the adjacency matrix of a Chung-Lu network will satisfy
+\[A_{ij} = A_{ji} = \begin{cases}
+  1 &\quad\text{with probability $p_{i, j}$} \\
+  0 &\quad\text{otherwise} \\
+\end{cases}\]
+Overall, since the Chung-Lu model resembles the degree sequence only in expectation, it is possible to observe that the degree of a specific node $\displaystyle i$ across several instances of the network will follow a Poisson distribution with rate $\displaystyle \lambda = k_i$. \newline
+Furthermore, while the Chung-Lu model is normally considered for undirected graphs, it can be extended to create undirected networks by specifying both the in-degree sequence $\displaystyle \mathbf{k}_{\text{in}}$ and the out-degree sequence $\displaystyle \mathbf{k}_{\text{out}}$ and setting
+\[p_{i, j} \approx \frac{k_i^{\text{out}}k_j^{\text{in}}}{m}\]
+\subsection{The Molloy-Reed model}
+The Molloy-Reed model is defined as a ``stub matching'' model because it creates a network from an array $\displaystyle v$ of size $\displaystyle 2|E|$ where the index associated to node $\displaystyle k_i$ appears exactly $\displaystyle k_i$ times.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/molloy_reed.png}
+    \caption{An idea of the Molloy-Reed model.}
+    \label{fig:molloy_reed}
+\end{figure}
+\noindent In fact, since each entry of the array can be seen as a half-edge in the network, it is possible to choose a random permutation of the array to create a graph in which each pair of adjacent nodes in the permutation gets connected by an edge, eventually allowing self-loops or parallel edges as well.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/molloy_reed_configuration.png}
+    \caption{Examples of networks from the Molloy-Reed configuration model.}
+    \label{fig:molloy_reed_config}
+\end{figure}
+\subsection{The Monte Carlo Markov chain algorithm}
+The Monte Carlo Markov chain algorithm aims to sample networks that follow a specified degree sequence but do not contain neither self-loops nor multiple edges. \newline
+In particular, this algorithm typically works on a graph created by the Havel-Hakimi algorithm, which determines whether a given degree sequence is ``graphical'', meaning that there exists as single graph that satisfies it. \newline
+Assuming the nodes of the graph are decreasingly sorted by degree in an array $\displaystyle L$, the Havel-Hakimi algorithm recursively picks the vertex $\displaystyle v_i$ with the currently highest degree and connects it to the $\displaystyle k_i$ vertices located immediately to its right in the array, ultimately setting $\displaystyle k_i = 0$. \newline
+Next, the degrees of the chosen nodes are decreased by $\displaystyle 1$ and any node with degree equal to zero gets removed from the array. \newline
+This procedure goes on until all nodes have degree equal to zero, meaning that the degree sequence is graphical, or $\displaystyle k_i > i - 1$, which means that the algorithm fails because there are not enough nodes left for $\displaystyle i$ to connect to.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/monte_carlo_configuration.png}
+    \caption{Examples of networks from the Monte Carlo Markov chain algorithm.}
+    \label{fig:mcmc_config}
+\end{figure}
+\noindent Generally speaking, the Monte Carlo Markov chain algorithm starts from a graph $\displaystyle G_0$, which exhibit some target structural properties and satisfies the desired degree sequence $\displaystyle \mathbf{k}$, and repeatedly applies a simple function $\displaystyle g: G_t \to G_{t + 1}$ to create a sequence of graphs $\displaystyle G_0, \dots, G_t$ where each term depends exclusively on the previous one. \newline
+In fact, the function turns a generic graph $\displaystyle G_t$ into the next term $\displaystyle G_{t + 1}$ using the ``double edge swap'' technique, which consists of choosing a random pair of edges $\displaystyle (u, v)$ and $\displaystyle (x, y)$ and creating a new network by replacing the chosen edges either with pair $\displaystyle (u, x)$ and $\displaystyle (v, y)$ or with pair $\displaystyle (u, y)$ and $\displaystyle (v, x)$. \newline
+In particular, if the resulting graph $\displaystyle G_{t + 1}$ does not satisfy the required structural properties, the algorithm goes back to graph $\displaystyle G_t$ and repeats the double edge swap on another pair of edges.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/mcmc.png}
+    \caption{An idea of the double edge swap technique.}
+    \label{fig:mcmc}
+\end{figure}
+\noindent Since this technique incrementally randomizes connections while preserving the desired degree sequence, it is possible to prove empirically that the algorithm creates a network that is independent from the starting graph after about $\displaystyle 20|E|$ edge swaps, after which new consecutive swaps can be made about every $\displaystyle 2|E|$ steps.
 \end{document}
