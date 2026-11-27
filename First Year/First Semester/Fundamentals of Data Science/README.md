@@ -53,7 +53,8 @@
 | November 19 | Network analysis and exercises. |
 | November 20 | Deep neural networks. |
 | November 23 | Grid architectures for image processing. |
-| November 26 | The configuration model. |
+| November 26 | The configuration model: Chung-Lu, Molloy-Reed, Monte Carlo Markov Chains. |
+| November 27 | Sequence models. |
 
 </details>
 
