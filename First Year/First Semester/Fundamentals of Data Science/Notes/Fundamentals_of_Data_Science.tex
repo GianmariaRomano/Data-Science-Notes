@@ -1118,6 +1118,92 @@ On the other hand, if the dimensions and/or channels are modified during a convo
 Whenever absolute positions provide useful information, it is possible to append (normalized) coordinate channels to perform location-dependent predictions, although introducing this information typically results in the loss of translation invariance. \newline
 For instance, the SIREN model uses a sinusoidal activation function to preserve high-frequency details, whereas neural radiance fields map coordinates and viewing directions onto colour and density in order to render colours by sampling ordered points along a camera ray.
 
+\chapter{Sequence models}
+\section{The idea behind sequence models}
+A sequence model takes an input sequence and, at a generic step, aims to detect what information should be carried forward to predict the next element.
+\begin{examplebox}[Next-word prediction]
+    A language model treats text data as a sequence of tokens, which represent a simple atomic unit within the sequence. \newline
+    In fact, given an observed prefix $\displaystyle x_1, \dots, x_t$, the model aims to predict the target $\displaystyle x_{t + 1}$ by analysing the probability distribution of each possible next word.
+\end{examplebox}
+\noindent For this reason, sequence models are useful to process data where element order and context matter.
+\section{Causal convolutional models}
+A causal convolutional model is a convolutional neural network in which the output at time step $\displaystyle t$ depends exclusively on the inputs observed at or before that time step, meaning that no future data leakage will occur. \newline
+In particular, a causal convolutional layer computes the output of time step $\displaystyle (t + 1)$ by applying a one-dimensional convolution on the preceding input sequence $\displaystyle x_1, \dots, x_t$, ensuring no information from future steps is involved.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/causal_convolution.png}
+    \caption{An idea of the causal convolution mechanism.}
+    \label{fig:causal_convolution}
+\end{figure}
+\begin{examplebox}[An example of causal convolution]
+    A causal convolutional model makes predictions according to the rule $\displaystyle y_t = 2x_t - x_{t - 1}$, starting from the term $\displaystyle x_0 = 0$. \newline
+    On the input sequence $\displaystyle \mathbf{x} = (x_1, x_2, x_3) = (3, 1, 4)$, the model makes the following predictions:
+    \[y_1 = (2 \cdot 3) - 0 = 6 \quad y_2 = (2 \cdot 1) - 3 = -1 \quad y_3 = (2 \cdot 4) - 1 = 7\]
+\end{examplebox}
+\noindent Generally speaking, the receptive field of a causal convolutional model increases with the number of convolutional layers, especially when larger stride and dilation are employed. \newline
+However, at each time step, the model can only exploit information within its receptive field, meaning that inputs outside this region will not influence the output.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/receptive_field_causal_convolution.png}
+    \caption{The receptive field of a causal convolution model.}
+    \label{fig:receptive_field_cc}
+\end{figure}
+\section{Recurrent neural networks}
+A recurrent neural network introduces a hidden state, which encodes information from previous steps, that is used to predict the current output, meaning that
+\[h_t = F(h_{t - 1}, x_t) \quad\quad\quad o_t = G(h_t)\]
+\begin{examplebox}[An example of hidden state recurrence]
+    A recurrent neural network updates its hidden state using the recurrence $\displaystyle h_t = 0.5h_{t - 1} + x_t$, starting from the term $\displaystyle h_0 = 0$. \newline
+    On the input sequence $\displaystyle \mathbf{x} = (x_1, x_2, x_3) = (1, 2, 0)$, the model makes the following updates:
+    \[h_1 = (0.5 \cdot 0) + 1 = 1 \quad h_2 = (0.5 \cdot 1) + 2 = 2.5 \quad h_3 = (0.5 \cdot 2.5) + 0 = 1.25\]
+    Indeed, the same final result can be obtained by unrolling the recurrence and setting
+    \[h_3 = 0.5(0.5x_1 + x_2) + x_3 = 0.25x_1 + 0.5x_2 + x_3\]
+\end{examplebox}
+\noindent For this reason, under the Markov assumption, a recurrent neural network only needs to retain the current hidden state $\displaystyle h_{t + 1} = F(h_t, x_{t + 1})$ to predict the next element in the sequence.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/recurrent_neural_network.png}
+    \caption{An idea of the recurrent neural network architecture.}
+    \label{fig:recurrent_neural_network}
+\end{figure}
+\noindent Moreover, recurrent neural networks can be extended to vector-valued inputs and hidden states by reformulating the recurrence and output equations as
+\[\mathbf{h}_t = \phi(\mathbf{W}_x\mathbf{x}_t + \mathbf{W}_h\mathbf{h}_{t - 1} + \mathbf{b}_h) \quad\quad\quad \mathbf{o}_t = \mathbf{W}_o\mathbf{h}_t + \mathbf{b}_o\]
+In this formulation, the weight matrices and bias vectors will be shared across all time steps, whereas the input vectors and hidden states will evolve over time.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{images/rnn_weights.png}
+    \caption{Weight sharing in a recurrent neural network.}
+    \label{fig:rnn_weights}
+\end{figure}
+\noindent However, the structure of a recurrent neural network introduces computational bottlenecks because, since each hidden state depends on the previous one, computations cannot be parallelized. \newline
+For this reason, recurrent neural networks are trained using ``backpropagation through time'', which consists of unfolding the model and applying the chain rule backwards across time steps, meaning that the gradient associated to a shared parameter will be obtained by accumulating contributions across all the steps where the parameter was used during the forward pass.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/rnn_bptt.png}
+    \caption{An idea of the backpropagation through time mechanism.}
+    \label{fig:rnn_bptt}
+\end{figure}
+\noindent Therefore, assuming the model computes a loss at each time step, the total loss $\displaystyle \mathcal{L}$ can be expressed as the sum of individual losses $\displaystyle \ell_t$ from each time step. \newline
+In particular, if the sensitivity $\displaystyle \delta_t$ measures how a change in the hidden state $\displaystyle h_t$ affects the overall loss, it is possible to formulate optimization as follows:
+\[\mathcal{L} = \sum_{t = 1}^T \ell_t \quad\quad\quad \delta_t = \frac{\partial\mathcal{L}}{\partial h_t} = \frac{\partial\ell_t}{\partial h_t} + w\delta_{t + 1} \text{, starting from $\delta_{T + 1} = 0$.}\]
+Overall, the main problem with optimizing a recurrent neural network lies in the fact that optimizing distant terms in the sequence can result in vanishing or exploding gradients because
+\[\frac{\partial h_t}{\partial h_{t - k}} = w^k \text{, which measures how much $h_{t - k}$ affects $h_t$.}\]
+For this reason, many recurrent neural networks make use of gradient clipping, which puts a limit on the gradient's magnitude before giving it to the optimizer, or truncated backpropagation through time, which processes a long sequence as a series of shorter segments.
+\section{Autoregressive models}
+When dealing with text prediction tasks, a tokenizer splits the input text into a sequence of unique tokens that are identified using a learned vector that is stored in a dedicated embedding table. \newline
+Therefore, given a vocabulary composed by $\displaystyle V$ tokens, a language model can create a next-word probability distribution using the softmax mechanism, resulting in
+\[p_j = \frac{e^{o_j}}{\sum_{r = 1}^V e^{o_r}} \text{ for each candidate token $j$.}\]
+Since an autoregressive model predicts each token based on the previously observed ones, it is possible to factorize the joint probability of observing a sequence of tokens using the chain rule, resulting in
+\[p_{\theta}(x_1, \dots, x_T) = \prod_{k = 1}^T p_{\theta}(x_k|x_1, \dots, x_{k - 1})\]
+Assuming each word $\displaystyle j$ can be described using its probability $\displaystyle p_j$ and a one-hot encoding $\displaystyle y_j$, it is possible to train an autoregressive model using the cross-entropy loss function
+\[\mathcal{L} = -\sum_{j = 1}^V y_j\ln(p_j) \text{, which takes only the contribution from the observed term.}\]
+Since causal convolutional models and recurrent neural networks have limited receptive fields, an autoregressive model typically makes use of causal attention, which dynamically weighs past and current tokens during each prediction.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/autoregression.png}
+    \caption{Comparing the causal attention mechanism to other sequence models.}
+    \label{fig:autoregression}
+\end{figure}
+
 \part{Network Science}
 
 \chapter{Understanding networks}

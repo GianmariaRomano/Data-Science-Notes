@@ -2142,9 +2142,9 @@ One of the main applications of point estimations consists of estimating a cumul
 In general, the empirical cumulative distribution function $\displaystyle \hat{F}_n$ is formally defined as a cumulative distribution function that places equal mass for each data point in the sample, meaning that
 \[\hat{F}_n(x) = \frac{1}{n}\sum_{i = 1}^n \mathbb{I}(X_i \leq x) \text{, where $\mathbb{I}(X_i \leq x) \sim Ber(F_X(x)) \text{ } \forall X_i \in \mathbf{X}_n$.}\]
 When considering the pointwise formulation of the problem, the model aims to learn a single parameter
-\[\theta_n^{(0)} = \hat{F}_n(x_0) = \frac{1}{n}\sum_{i = 1}^n \mathbb{I}(X_i \leq x_0) \in [0, 1] = \Theta\]
+\[\hat{\theta}_n^{(0)} = \hat{F}_n(x_0) = \frac{1}{n}\sum_{i = 1}^n \mathbb{I}(X_i \leq x_0) \in [0, 1] = \Theta\]
 It is possible to observe that, by its definition, an empirical cumulative distribution function is an unbiased estimator because
-\[\mathbb{E}(\hat{\theta}_n) \stackrel{\text{IID}}{=} \frac{n\mathbb{E}(\mathbb{I}(X \leq x))}{n} \stackrel{\mathbb{I}(X \leq x_0) \sim Ber(F_X(x_0))}{=} F_X(x_0) = \theta^{(0)} \Rightarrow bias(\hat{\theta}_n^{(0)}) = 0\]
+\[\mathbb{E}(\hat{\theta}_n^{(0)}) \stackrel{\text{IID}}{=} \frac{n\mathbb{E}(\mathbb{I}(X \leq x))}{n} \stackrel{\mathbb{I}(X \leq x_0) \sim Ber(F_X(x_0))}{=} F_X(x_0) = \theta^{(0)} \Rightarrow bias(\hat{\theta}_n^{(0)}) = 0\]
 For this reason, the empirical cumulative distribution function is consistent in squared loss because, using the bias-variance decomposition, one has
 \begin{align*}
     R_{\theta}(\hat{\theta}_n^{(0)}) = \mathbb{E}((\hat{\theta}_n^{(0)} - \theta)^2)
@@ -2167,5 +2167,28 @@ This theorem implies that a discrete distribution is able to learn any distribut
 \end{figure}
 \noindent A quantitative interpretation of the Glivenko-Cantelli property is provided by the Dvoretzy-Kiefer-Wolfowitz inequality, which ensures that, for any threshold $\displaystyle t > 0$, one has
 \[\mathbb{P}\Bigg(\sup_{x \in \mathbb{R}} |\hat{F}_n(x) - F_X(x)| > t\Bigg) \leq 2e^{-2nt^2} \text{ uniformly over $F_X$.}\]
+\section{Set estimation}
+Generally speaking, a set estimator for a vector parameter $\displaystyle \mathbf{\theta} \in \Theta \subseteq \mathbb{R}^k$ is a random set $\displaystyle C_n(\mathbf{X}_n) \subseteq \mathbb{R}^k$ that is a computed from a random sample $\displaystyle \mathbf{X}_n = \{X_1, \dots, X_n\}$. \newline
+In particular, an interval estimator for a scalar parameter $\displaystyle \theta \in \mathbb{R}$ provides a range of plausible values using an interval that is bounded by functions of the data, meaning that
+\[C_n(\mathbf{X}_n) = [L(\mathbf{X}_n), U(\mathbf{X}_n)] \text{, with $L(\mathbf{X}_n) \leq U(\mathbf{X}_n)$ almost surely.}\]
+Since an ideal set estimator is small and contains the true parameter $\displaystyle \theta$, risk analysis is often conducted using one of the following loss functions:
+\[\mathcal{L}(\theta, C_n) = h(\text{vol}(C_n)) - \mathbb{I}(\theta \in C_n) \text{ or } \mathcal{L}(\theta, C_n) = h(\text{vol}(C_n)) + dist(\theta, C_n)\]
+Given an independent and identically distributed random sample $\displaystyle \mathbf{X}_n = \{X_1, \dots, X_n\} \sim F_X$, a confidence interval with coverage level $\displaystyle (1 - \alpha)$ is a random set $\displaystyle C_n(\alpha) = [L(\mathbf{X}_n), U(\mathbf{X}_n)]$ such that
+\[\mathbb{P}_{F_X}(\theta \in C_n(\alpha)) \ge 1 - \alpha \text{ uniformly over $\theta$.}\]
+In the context of frequentist inference, a confidence interval can be interpreted as a probability statement on the random procedure $\displaystyle C_n(\alpha)$ used to capture $\displaystyle \theta$ because, by repeating this procedure, the sequence of realizations of $\displaystyle C_n(\alpha)$ will contain $\displaystyle \theta$ at least $\displaystyle (1 - \alpha)$ of the time.
+\begin{examplebox}[Asymptotic pivoting]
+    Assuming an estimator $\displaystyle \hat{\theta}_n$ is asymptotically normal, meaning that $\displaystyle \hat{\theta}_n \stackrel{.}{\sim} \mathcal{N}(\theta, se^2(\hat{\theta}_n))$, define the quantity
+    \[z_{\frac{\alpha}{2}} = -Q_{\mathcal{N}}\bigg(\frac{\alpha}{2}\bigg) = Q_{\mathcal{N}}\bigg(1 - \frac{\alpha}{2}\bigg)\]
+    Standardizing the distribution allows to define a random variable whose distribution actually does not depend on $\displaystyle \theta$ because
+    \[Z = \frac{\hat{\theta}_n - \theta}{se(\hat{\theta}_n)} \stackrel{.}{\sim} \mathcal{N}(0, 1) \Rightarrow \mathbb{P}(|Z| \leq z_{\frac{\alpha}{2}}) = 1 - \alpha\]
+    Therefore, one can build a confidence interval by considering
+    \begin{align*}
+        1 - \alpha
+            &\stackrel{.}{\approx} \mathbb{P}\Bigg(\Bigg|\frac{\hat{\theta}_n - \theta}{se(\hat{\theta}_n)}\Bigg| \leq z_{\frac{\alpha}{2}}\Bigg) \\
+            &= \mathbb{P}(-\hat{\theta}_n - z_{\frac{\alpha}{2}}se(\hat{\theta}_n) \leq - \theta \leq -\hat{\theta}_n + z_{\frac{\alpha}{2}}se(\hat{\theta}_n)) \\
+            &= \mathbb{P}(\hat{\theta}_n - z_{\frac{\alpha}{2}}se(\hat{\theta}_n) \leq \theta \leq \hat{\theta}_n + z_{\frac{\alpha}{2}}se(\hat{\theta}_n))
+    \end{align*}
+    This result suggests that the random set $\displaystyle C_n(\alpha) = [\hat{\theta}_n - z_{\frac{\alpha}{2}}se(\hat{\theta}_n), \hat{\theta}_n + z_{\frac{\alpha}{2}}se(\hat{\theta}_n)]$ can serve as an approximate $\displaystyle (1 - \alpha)$ confidence interval for $\displaystyle \theta$, but only asymptotically.
+\end{examplebox}
 
 \end{document}
